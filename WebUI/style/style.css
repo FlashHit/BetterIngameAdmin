@@ -1,0 +1,1939 @@
+/* Region Scrollbars */
+::-webkit-scrollbar {
+ 	display: none;
+}
+#popup::-webkit-scrollbar, #squadNamesDropDown::-webkit-scrollbar, #adminpanelbody::-webkit-scrollbar {
+ 	display: inline;
+ 	width: 5px;
+}
+#popup::-webkit-scrollbar-thumb, #squadNamesDropDown::-webkit-scrollbar-thumb, #adminpanelbody::-webkit-scrollbar-thumb {
+ 	background-color: #8e8e8e;
+	background-clip: padding-box;
+}
+#popup::-webkit-scrollbar-track, #adminpanelbody::-webkit-scrollbar-track {
+  	background-color: #bbbbbb;
+}
+#squadNamesDropDown::-webkit-scrollbar-track{
+  	background-color: #f0f0f0;
+}
+/* Endregion */
+
+body {
+	font-family: bffont;
+	width: 1074px; 
+	margin-left: calc((100vw - 1074px) / 2); 
+	margin-top: calc((100vh - 473px) / 2); 
+	user-select: none;
+}
+
+#scoreboard {
+	display: none; 
+	z-index: 2;
+}
+
+/* Region Scoreboard */
+table {
+	display: none;
+	border-collapse: collapse;
+	text-align: left;
+	padding: 10px;
+	float: left;
+	display: inline-block;
+	height: 448px;
+	width: 536px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding: 0;
+	margin-top: 30px;
+}
+#table1 tbody #firstrow, #table1 tbody #firstrow:hover {
+	background: linear-gradient(#73c3ff, #7ac6ffad) !important;
+}
+#table2 tbody #firstrow, #table2 tbody #firstrow:hover, #table3 tbody #firstrow, #table3 tbody #firstrow:hover, #table4 tbody #firstrow, #table4 tbody #firstrow:hover {
+	background: linear-gradient(#963232, #993737a3) !important;
+}
+#table3, #table4, #tables, #clientSettings {
+	display: none;
+}
+#firstrow {
+	color: #fff;
+	height: 30px;
+	font-size: 18px;
+	background-color: #555;
+	text-shadow: 0px 0px 7px #ffffff82;
+	position: absolute;
+	width: 536px;
+	margin-top: -30px;
+	line-height: 24px;
+}
+th {
+	font-weight: 100;
+}
+tbody tr {
+	height: 28px;
+	font-size: 16.5px;
+	background: linear-gradient(#2a3843, #020611d6);
+	color: #fff;
+	background: linear-gradient(#27343c, #263239d1);
+	border-top: 0;
+	width: calc(100% - 1px);
+	text-shadow: 0px 0px 10px #6ed7ff;	
+}
+td {
+	padding-top: 0;
+}
+#localPlayerScoreboard {
+	background: linear-gradient(rgba(255, 156, 55, 0.96), rgba(181,109,35,0.96));
+	color: #000 !important;
+	text-shadow: 0px 0px 7px #000406a3;
+}
+
+#squadMates {
+	background: linear-gradient(#759532, rgba(117, 149, 50, 0.67));
+	text-shadow: 0px 0px 6px #c1ccba;
+}
+
+.isDead {
+	text-shadow: none;
+	color: #a6a6a6;
+}
+
+#team1, #team2, #team3, #team4 {
+	width: calc(535px * 0.1);
+}
+#place1, #place2, #place3, #place4  {
+	width: calc(535px * 0.05);
+}
+#tickets1, #tickets2, #tickets3, #tickets4 {
+	width: calc(535px * 0.5);
+}
+#name1, #name2, #name3, #name4 {
+	font-size: 16px;
+	padding-left: 50px;
+	width: calc(535px * 0.48);
+}
+#localPlayerScoreboard #name1 {
+	text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.79);
+}
+#killsHeader1, #killsHeader2, #killsHeader3, #killsHeader4, #kills1, #kills2, #kills3, #kills4 {
+	width: calc(535px * 0.08);
+}
+#deathsHeader1, #deathsHeader2, #deathsHeader3, #deathsHeader4, #deaths1, #deaths2, #deaths3, #deaths4 {
+	width: calc(535px * 0.08);
+}
+#scoreHeader1, #scoreHeader2, #scoreHeader3, #scoreHeader4, #points1, #points2, #points3, #points4 {
+	width: calc(535px * 0.13);
+}
+#pingHeader1, #pingHeader2, #pingHeader3, #pingHeader4, #ping1, #ping2, #ping3, #ping4 {
+	width: calc(535px * 0.08);
+}
+#team1, #team2, #team3, #team4 {
+	padding-left: 10px;
+}
+#place1, #place2, #place3, #place4 {
+	padding-left: 5px;
+}
+#action {
+	margin-top: 3px;
+	width: 0px;
+	height: 0px;
+	-webkit-transform: rotate(360deg);
+	border-style: solid;
+	border-width: 8px 7.5px 0 7.5px;
+	border-color: #ffffff transparent;
+}
+tr:hover {
+    background: linear-gradient(#fff, #bfbfbfd6) !important;
+    color: #000;
+    text-shadow: 0px 0px 7px #000406a3;
+}
+tr:hover td #action, #localPlayerScoreboard td #action {
+    border-color: #333 transparent transparent transparent;
+}
+tr:hover td #action:hover, #localPlayerScoreboard td #action:hover {
+    border-color: #000 transparent;
+}
+#table1, #table3 {
+	margin-right: 1px;
+}
+#empty {
+	background: linear-gradient(rgba(55, 55, 55, 0.6), rgba(40, 40, 40, 0.52)) !important;
+}
+#table2, #table4 {
+	margin-left: 1px;
+}
+/* Endregion */
+
+/* Region Popup */
+#popup {
+	width: 500px;
+	height: 444px;
+	position: absolute;
+	left: calc(50vw - 250px);
+	background-color: rgba(0, 0, 0, 0.9);
+	text-align: center;
+	display: none;
+	box-sizing: border-box;
+	text-transform: uppercase;
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin-top: 34px;
+	box-shadow: 0px 0px 0px 16000px #00000087;
+}
+#titlepopup {
+	color: #000;
+	font-weight: 600;
+	background: linear-gradient(rgba(255, 156, 55, 0.96), rgba(181,109,35,0.96));
+	height: 34px;
+	font-size: 19px;
+	line-height: 34px;
+	margin-top: -34px;
+	width: inherit;
+	position: fixed;
+	text-shadow: 0px 0px 7px #000406a3;
+}
+#popupelement {
+	margin: 21px 100px;
+	padding: 20px;
+	border: 1px solid #fff;
+	color: #fff;
+}
+#popupelement:hover {
+	background-color: #fff;
+	color: #000;
+}
+/* Endregion */
+
+/* Region Vote stuff */
+#votepopup {
+	margin: auto;
+	position: absolute;
+	bottom:50vh;
+	left:0;
+	overflow: visible;
+	display: none;
+	z-index: 1;
+}
+#orangeRect {
+	background: linear-gradient(rgba(255, 156, 55, 0.96), rgba(181,109,35,0.96));
+	width: 250px;
+	height: 40px;
+	padding: 0px 10px;
+	color: #fff;
+	font-weight: 600;
+	line-height: 11px;
+	font-size: 14px;
+}
+#voteyes, #voteno {
+	border:0;
+	background: linear-gradient(rgba(41,56,63,0.8), rgba(55, 64, 68, 0.8));
+	height: 4.3%;
+	color: #fff;
+	padding-left: 15px;
+	line-height: 9px;
+	font-size: 14px;
+	display: flex;
+	flex-direction: column;
+	bottom: 0;
+}
+label{
+	font-family: bffont;
+	color: white;
+	text-shadow:2px 2px 10px #7fccff;
+	display: block;
+	overflow: hidden;
+	white-space: nowrap;
+	vertical-align: middle;
+	line-height:1.7em;
+	margin-left:3%;
+	letter-spacing: 0.3px;
+}
+#votetitleleft {
+	float: left;
+	width: max-content;
+	color: #000;
+	text-transform: uppercase;
+}
+#votetitleright {
+	float: left;
+	width: 20%;
+	text-transform: uppercase;
+}
+#votetitleright p {
+	float: right;
+}
+#countyesvotes, #countnovotes {
+	float: right;
+	padding-right: 15px;
+}
+/* Endregion */
+
+/* Region manually added dropDown with CSS for "Move" to "Squad" */
+.dropdown {
+	position: relative;
+	display: inline-block;
+	margin-left: 7px;
+}
+.dropdown input {
+	font-family: bffont;
+	padding: 10px;
+}
+.dropdown-content {
+	display: none;
+	position: absolute;
+	border-top: 1px solid #eee;
+	border-right: 1px solid #eee;
+	border-left: 1px solid #eee;
+	border-bottom: 1px solid #eee;
+	background-color: #fff;
+	min-width: 171px;
+	z-index: 1;
+	max-height: 200px;
+	overflow: auto;
+}
+.dropdown-content p {
+	margin: 0;
+	padding: 8px 0;
+	padding-left: 10px;
+	font-size: 13px;
+	text-transform: none;
+	text-align: left;
+}
+.dropdown-content p:hover {
+	background-color: #0f2266;
+	color: #fff;
+}
+.dropDownButton {
+	border: 1px solid #000;
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	margin-top: 3px;
+	width: 0px;
+	height: 0px;
+	-webkit-transform: rotate(360deg);
+	border-style: solid;
+	border-width: 8px 7.5px 0 7.5px;
+	border-color: #414141 transparent;
+}
+/* Endregion */
+
+/* Region Scoreboard Kit Icons */
+#squadMates.isDead {
+	color: #4a4a4a;
+}
+#squadMates.isDead:hover {
+	color: #000;
+}
+#name1, .ID_M_RECON.isDead #name1 {
+	background-position-x: 4px;
+	background-position-y: -4px;
+	background-size: 38px auto;
+	background-repeat: no-repeat;
+}
+#localPlayerScoreboard.isDead #name1 {
+	background-image: url(/images/Dead-Black.png) !important;
+}
+#squadMates.isDead #name1 {
+	background-image: none !important;
+}
+.isDead #name1 {
+	background-image: none !important;
+}
+.isDead:hover #name1, #squadMates.isDead:hover #name1 {
+	background-image: url(/images/Dead-Black.png) !important;
+}
+#localPlayerScoreboard.ID_M_ASSAULT #name1 {
+	background-image: url(/images/Assault-Black.png);
+}
+#squadMates.ID_M_ASSAULT #name1 {
+	background-image: url(/images/Assault-White-Squad.png);
+}
+.ID_M_ASSAULT #name1 {
+	background-image: url(/images/Assault-White.png);
+}
+.ID_M_ASSAULT:hover #name1, #squadMates.ID_M_ASSAULT:hover #name1 {
+	background-image: url(/images/Assault-Black.png);
+}
+#localPlayerScoreboard.ID_M_ENGINEER #name1 {
+	background-image: url(/images/Engineer-Black.png);
+}
+#squadMates.ID_M_ENGINEER #name1 {
+	background-image: url(/images/Engineer-White-Squad.png);
+}
+.ID_M_ENGINEER #name1 {
+	background-image: url(/images/Engineer-White.png);
+}
+.ID_M_ENGINEER:hover #name1, #squadMates.ID_M_ENGINEER:hover #name1 {
+	background-image: url(/images/Engineer-Black.png);
+}
+#localPlayerScoreboard.ID_M_SUPPORT #name1 {
+	background-image: url(/images/Support-Black.png);
+}
+#squadMates.ID_M_SUPPORT #name1 {
+	background-image: url(/images/Support-White-Squad.png);
+}
+.ID_M_SUPPORT #name1 {
+	background-image: url(/images/Support-White.png);
+}
+.ID_M_SUPPORT:hover #name1, #squadMates.ID_M_SUPPORT:hover #name1 {
+	background-image: url(/images/Support-Black.png);
+}
+#localPlayerScoreboard.ID_M_RECON #name1 {
+	background-image: url(/images/Recon-Black.png);
+}
+#squadMates.ID_M_RECON #name1 {
+	background-image: url(/images/Recon-White-Squad.png);
+}
+.ID_M_RECON #name1 {
+	background-image: url(/images/Recon-White.png);
+	background-size: 45px auto;
+	background-position-x: 1px;
+	background-position-y: -6px;
+}
+.ID_M_RECON:hover #name1, #squadMates.ID_M_RECON:hover #name1 {
+	background-image: url(/images/Recon-Black.png);
+}
+/* Endregion */
+
+/* Region Popup elements */
+#moveReason, #killReason, #kickReason, #tbanReason, #tbanDuration, #banReason {
+	padding: 10px;
+	margin-top: 20px;
+}
+
+#popupelements {
+	margin: 0;
+	width: 100%;
+  	position: absolute;
+  	top: 50%;
+  	-ms-transform: translateY(-50%);
+  	transform: translateY(-50%);
+}
+
+input[type="checkbox"] {
+  display: none;
+}
+
+input[type="checkbox"] + label {
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+input[type="checkbox"] + label:before {
+  width: 30px;
+  height: 15px;
+  border-radius: 15px;
+  border: 1px solid #ddd;
+  background-color: #EEE;
+  content: "";
+  margin-right: 7.5px;
+  transition: background-color 0.5s linear;
+}
+
+input[type="checkbox"] + label:after {
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  background-color: #fff;
+  content: "";
+  transition: margin 0.1s linear;
+  box-shadow: 0px 0px 5px #aaa;
+  position: absolute;
+  left: 1px;
+  top: 1px;
+}
+
+input[type="checkbox"]:checked + label:before {
+  background-color: #2b8718;
+}
+
+input[type="checkbox"]:checked + label:after {
+  margin: 0 0 0 15px;
+}
+/* Endregion */
+
+/* Region Local Ping Top Left */
+#showLocalPing {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: auto;
+    height: 12px;
+    background-color: #0000002e;
+    padding: 0 5px;
+	display: none;
+}
+
+#showLocalPing p {
+    padding: 0;
+    margin: 0;
+    color: #ffffffb8;
+    font-size: 10px;
+    line-height: 9px;
+    text-align: center;
+}
+
+#showLocalPing p span {
+    color: #1ec419;
+}
+/* Endregion */
+
+/* Do I still need this region */
+/* Region popup elements */
+#mouseSensitivity {
+    border: 1px solid #000;
+    width: 260px;
+    height: 30px;
+    padding: 0 15px;
+}
+
+#defaultIronSightsLookSpeedMultiplier, #x2_0xZoomLookSpeedMultiplier, #x3_4xZoomLookSpeedMultiplier, #x4_0xZoomLookSpeedMultiplier, #x6_0xZoomLookSpeedMultiplier, #x7_0xZoomLookSpeedMultiplier, #x8_0xZoomLookSpeedMultiplier, #x10_0xZoomLookSpeedMultiplier, #x12_0xZoomLookSpeedMultiplier, #x20xZoomLookSpeedMultiplier, #defaultBaseFieldOfView, #defaultIronSightsFieldOfView, #x2_0xZoomFieldOfView, #x3_4xZoomFieldOfView, #x4_0xZoomFieldOfView, #x6_0xZoomFieldOfView, #x7_0xZoomFieldOfView, #x8_0xZoomFieldOfView, #x10_0xZoomFieldOfView, #x12_0xZoomFieldOfView, #x20xZoomFieldOfView {
+    border: 1px solid #000;
+    width: 260px;
+    height: 30px;
+    padding: 0 15px;
+	margin-bottom: 15px;
+}
+#labelFirstMarginTop {
+	margin-top: 15px;
+}
+	/* I use this for EditAdminRights I think */
+#checkBoxSwitches {
+    width: 200px;
+    text-align: left;
+    margin-left: 150px;
+}
+/* Endregion */
+
+/* Region Close X for popup */
+#close {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 34px;
+  height: 34px;
+  opacity: 0.8;
+}
+#close:hover {
+  opacity: 1;
+}
+#close:before, #close:after {
+  position: absolute;
+  left: 16px;
+  content: ' ';
+  height: 35px;
+  width: 2px;
+  background-color: #333;
+}
+#close:before {
+  transform: rotate(45deg);
+}
+#close:after {
+  transform: rotate(-45deg);
+}
+/* Endregion */
+
+/* Delete this */
+/* Region AdminPanel PopUp OLD */
+#adminpanelpopup {
+	display: none;
+	position: absolute; 
+	width: 1074px; 
+	height: 478px; 
+	background-color: #000;
+}
+#adminpanelheader {
+	height: 50px; 
+	background: linear-gradient(rgba(255, 156, 55, 0.96), rgba(181,109,35,0.96));
+}
+#generalSettings, #mapSettings {
+	width: max-content; 
+	float: left; 
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+#generalSettings:hover, #mapSettings:hover {
+	background: linear-gradient(rgba(245, 124, 0, 0.96), rgba(179, 91, 0, 0.96));
+}
+#generalSettings span, #mapSettings span {
+	margin: auto; 
+	line-height: 30px; 
+	padding: 15px;
+}
+#adminpanelbody {
+	padding: 15px;
+	overflow-y: auto;
+	height: 398px;
+}
+#generalsettingsElement {
+	float: left;
+	margin-right: 20px;
+	margin-bottom: 15px;
+}
+#adminpanelbody label {
+	margin-left: 0;
+	margin-bottom: 0;
+	margin-right: 15px;
+	text-transform: uppercase;
+}
+#serverName, #serverDescription, #serverMessage, #gamePassword {
+	padding: 10px;
+	width: 215px;
+}
+#maxPlayers, #teamKillCountForKick, #teamKillValueForKick, #teamKillValueIncrease, #teamKillValueDecrease, #teamKillKicksForBan, #idleTimeout, #idleBanRounds, #roundStartPlayerCount, #roundRestartPlayerCount, #roundLockdownCountdown, #vehicleSpawnDelay, #soldierHealth, #playerRespawnTime, #playerManDownTime, #bulletDamage, #tickets, #gunmasterWeaponsPreset, #suppressionMultiplier, #timeScale, #squadSize, #serverBannerURL {
+	padding: 0; 
+	width: 150px;
+}
+/* padding above was 10px and not 0*/
+#lineBreak {
+	float:left; 
+	width: 100%; 
+	margin: 0;
+}
+#adminpanelheader #close {
+  right: 0px;
+  top: 0px;
+  width: 48px;
+  height: 48px;
+  opacity: 0.8;
+}
+#adminpanelheader #close:hover {
+  opacity: 1;
+}
+#adminpanelheader #close:before, #adminpanelheader #close:after {
+  left: 24px;
+  height: 49px;
+}
+/* Endregion */
+
+/* Region MapLists */
+#mapListField {
+  width: 500px;
+  height: 315px;
+  overflow: auto;
+}
+#mapListConfiguration, #modListConfiguration {
+	display: none;
+}
+#modListConfiguration p {
+	padding-left: 15px;
+}
+.mapListFieldElementMap, .mapRotationFieldElementMap {
+  float: left;
+  width: calc(50% - 30px);
+  padding-left: 15px;
+}
+.mapListFieldElementGameMode, .mapRotationFieldElementGameMode {
+  float: left;
+  width: 50%;
+  text-align: right;
+  height: 28px;
+}
+.mapListFieldElementRounds, .mapRotationFieldElementRounds {
+  float: left;
+}
+/* Endregion */
+
+/* Region top tabbar */
+#headertabs{
+	display: none;
+	position: absolute;
+	height: 30px;
+	margin-top: -50px;
+	background-color: #fff;
+	width: 1074px;
+}
+#headertabs div {
+	float: left;
+	width: 33.33333333%;
+	background: linear-gradient(#263239d1, #27343c);
+	color: #fff;
+	text-shadow: 0px 0px 10px #6ed7ff;	
+}
+#headertabs .active, #headertabs .active:hover {
+	background: linear-gradient(#ffffff, #909090d1);
+	color: #000;
+	text-shadow: 0px 0px 0px #0000;	
+}
+#headertabs div:hover {
+	background: linear-gradient(rgba(64, 84, 96, 0.82), rgb(62, 82, 94));
+	color: #fff;
+	text-shadow: 0px 0px 10px #6ed7ff;
+}
+#headertabs div p {
+	text-align: center;
+	text-transform: uppercase;
+	font-size: 25px;
+	margin: 0;
+	line-height: 27px;
+	padding-bottom: 3px;
+}
+/* Endregion */
+
+/* Region ServerInfo */
+#serverInfo {
+	display: none;
+	width: 1074px;
+}
+#serverInfoColumn1 {
+	float: left;
+	width: 559px; 
+	height: 444px;
+	margin-right: 2px;
+	background-color: #0000;
+}
+#serverInfoColumn2 {
+	float: left;
+	width: 512px; 
+	height: 444px;
+	margin-left: 1px;
+	background-color: #0000;
+}
+#serverNameDescrContainerHeader {
+	height: 30px;
+	background: linear-gradient(#296fa4, #4b7da2ad) !important;
+	color: #fff;
+	font-size: 18px;
+	padding-left: 12px;
+	line-height: 30px;
+}
+#serverNameDescrContainerHeader p, #serverNameDescrContainerBody p {
+	margin: 0;
+}
+#serverNameDescrContainerBody {
+	height: 98px;
+	margin-bottom: 1px;
+	background: linear-gradient(rgba(2, 3, 4, 0.86), rgba(35, 46, 53, 0.85));
+	color: #fff;
+	padding-left: 15px;
+	line-height: 30px;
+}
+#serverInfo p, #clientSettings p, #serverSetupSettings p {
+	margin: 0;
+}
+#serverInfoMapHeader, #serverInfoModeHeader, #serverInfoPlayerCountHeader, #serverInfoSpectatorCountHeader, #serverInfoPlayerPingHeader, #serverInfoPresetHeader, #serverInfoRegionHeader, #serverInfoOwnerHeader {
+	height: 24px;
+	background: linear-gradient(#263239d1, #27343c);
+	color: #fff;
+	padding-left: 8px;
+	line-height: 20px;
+	font-size: 20px;
+}
+#serverInfoPresetConfigurationHeader, #serverInfoMapRotationHeader, #serverInfoPlayersTopHeader {
+	height: 24px;
+	background: linear-gradient(#296fa4, #4b7da2ad) !important;
+	color: #fff;
+	padding-left: 12px;
+	line-height: 22px;
+	font-size: 17px;
+}
+#serverInfoColumn1innerContainerLeft {
+	width: calc(50% - 2px);
+	float: left;
+	text-transform: uppercase;
+	margin-right: 2px;
+}
+#serverInfoColumn1innerContainerRight {
+	width: calc(50% - 1px);
+	float: left;
+	text-transform: uppercase;
+	margin-left: 1px;
+}
+#serverInfoMapImg{
+	background-image: url(fb://UI/Art/Menu/LevelThumbs/MP01_thumb);
+	background-size: 100% 100%;
+	width: 294px;
+	height: 121px;
+	margin-left: -8px;;
+	margin-right: -8px;
+	margin-bottom: 8px;
+	margin-top: 1px;
+}
+#serverInfoModeImg {
+	background: url("fb://UI/Art/GameMode/gm_tdm");
+	background-size: cover;
+	width: 400px;
+	height: 129px;
+	margin-top: 1px;
+}
+#serverInfoPlayerCount, #serverInfoPlayerPing, #serverInfoSpectatorCount, #serverInfoPreset {
+	margin-bottom: 3px;
+}
+#serverInfoMap>p, #serverInfoMode>p, #serverInfoPlayerCount>p, #serverInfoSpectatorCount>p, #serverInfoPlayerPing>p, #serverInfoPreset>p, #serverInfoRegion>p, #serverInfoOwner>p {
+	height: 24px;
+	background: linear-gradient(rgba(2, 3, 4, 0.86), rgba(35, 46, 53, 0.85));
+	color: #fff;
+	padding-left: 8px;
+	line-height: 23px;
+}
+#serverInfoMapRotation>p, #serverInfoPlayersTop>p, #serverInfoPresetConfigurationBody {
+	height: 24px;
+	background: linear-gradient(rgba(2, 3, 4, 0.86), rgba(35, 46, 53, 0.85));
+	color: #fff;
+	padding-left: 14px;
+	line-height: 23px;
+}
+#serverInfoMapRotationBody:hover, #serverInfoPlayersTop>p:hover, #serverInfoPresetConfigurationBody:hover {
+	background: linear-gradient(rgba(43, 59, 75, 0.86), rgba(72, 93, 106, 0.85));
+	color: #fff;
+}
+#serverInfoOwner>p {
+	text-transform: none;
+}
+#serverInfoBannerImg {
+	height: 128px;
+	margin-bottom: 1px;
+	background-image: url("fb://UI/Static/ServerBanner/BFServerBanner");
+}
+#serverInfoBannerImgSrc {
+	height: 128px;
+	background-image: url("fb://UI/Static/ServerBanner/BFServerBanner");
+}
+#serverInfoColumn2innerContainerLeft, #serverInfoColumn2innerContainerRight {
+	width: calc(100% / 3);
+	float: left;
+}
+#serverInfoColumn2innerContainerMiddle {
+	width: calc(100% / 3 - 3.97px);
+	margin-left: 2px;
+	margin-right: 2px;
+	float: left;
+}
+#serverInfoColumn2innerContainer {
+	height: 48px;
+	text-transform: uppercase;
+}
+#serverInfoConfigurationElement, .mapListFieldElement, .mapRotationFieldElement {
+	background: linear-gradient(#263239d1, #27343c);
+	color: #fff;
+	text-transform: uppercase;
+	height: 28px;
+	line-height: 28px;
+}
+#serverInfoConfigurationElement:hover, .mapListFieldElement:hover, .mapRotationFieldElement:hover {
+	background: linear-gradient(#364d5cd1, #30424d);
+}
+#serverInfoConfigurationElement .serverInfoConfigurationElementLeft {
+	float: left;
+	width: 60%;
+}
+
+#serverInfoConfigurationElement .serverInfoConfigurationElementRight {
+	float: right;
+	width: 40%;
+	text-align: right;
+}
+.serverInfoConfigurationElementLeft>p {
+	padding-left: 15px;
+}
+.serverInfoConfigurationElementRight>p {
+	padding-right: 15px;
+}
+.serverInfoConfigurationElementVeniceUnleashed {
+	padding-left: 15px;
+	background: linear-gradient(#505050, #646464ad );
+	color: #000;
+	font-weight: 900;    
+	text-transform: uppercase;
+    height: 30px;
+    line-height: 30px;
+}
+#serverInfoConfiguration, #mapListConfiguration, #modListConfiguration {
+	height: 280px;
+	overflow: auto;
+}
+#currentMap, #nextMap, #currentMap2, #nextMap2 {
+	width: 25px;
+	height: 32px;
+	object-fit: cover;
+	margin-right: -2px;
+	margin-top: -2px;
+	margin-left: 7px;
+}
+#currentMap3, #nextMap3 {
+	width: 25px;
+	height: 32px;
+	object-fit: cover;
+	margin-right: 7px;
+	margin-top: -2px;
+	margin-left: -2px;
+}
+#mapRotationConfiguration::-webkit-scrollbar, #mapListConfiguration::-webkit-scrollbar, #modListConfiguration::-webkit-scrollbar, #serverInfoConfiguration::-webkit-scrollbar, .presetsConfiguration::-webkit-scrollbar {
+ 	display: inline;
+ 	width: 6px;
+}
+#mapRotationConfiguration::-webkit-scrollbar-thumb, #mapListConfiguration::-webkit-scrollbar-thumb, #modListConfiguration::-webkit-scrollbar-thumb, #serverInfoConfiguration::-webkit-scrollbar-thumb, .presetsConfiguration::-webkit-scrollbar-thumb {
+ 	background-color: #ffffff;
+	background-clip: padding-box;
+}
+#mapRotationConfiguration::-webkit-scrollbar-track, #mapListConfiguration::-webkit-scrollbar-track, #modListConfiguration::-webkit-scrollbar-track, #serverInfoConfiguration::-webkit-scrollbar-track, .presetsConfiguration::-webkit-scrollbar-track {
+  	background-color: rgba(192, 193, 207, 0.22);
+}
+#serverInfoMapRotationBody {
+	height: 24px;
+	background: linear-gradient(rgba(2, 3, 4, 0.86), rgba(35, 46, 53, 0.85));
+	color: #fff;
+	line-height: 23px;
+	width: inherit;
+	overflow: hidden;
+	text-overflow: clip;
+	white-space: nowrap;
+	padding-left: 14px;
+	padding-right: 14px;
+}
+.slide-left:hover span {
+  animation: slide-left 5s;
+
+}
+#serverInfoMapRotationBody>p{
+	overflow:hidden;
+	text-overflow: clip;
+	white-space: nowrap;
+	width: min-content;
+}
+@keyframes slide-left {
+  from {
+    margin-left: 0%;
+    width: 100%;
+  }
+
+  to {
+    margin-left: -27%;
+    width: 100%;
+  }
+}
+.textMove{
+	text-overflow: clip;
+	white-space: nowrap;
+	overflow: hidden;
+}
+/* Endregion */
+
+/* Region Client Setting Top Bar */
+#clientHeadertabs{
+	height: 30px;
+	background-color: #fff;
+	width: calc(1074px - 25%);
+}
+#clientHeadertabs div {
+	float: left;
+	width: 33.334%;
+	background: linear-gradient(#263239d1, #27343c);
+	color: #fff;
+	text-shadow: 0px 0px 10px #6ed7ff;	
+}
+#clientHeadertabs .active, #clientHeadertabs .active:hover {
+	background: linear-gradient(#ffffff, #909090d1);
+	color: #000;
+	text-shadow: 0px 0px 0px #0000;	
+}
+#clientHeadertabs div:hover {
+	background: linear-gradient(rgba(64, 84, 96, 0.82), rgb(62, 82, 94));
+	color: #fff;
+	text-shadow: 0px 0px 10px #6ed7ff;
+}
+#clientHeadertabs div p {
+	text-align: center;
+	text-transform: uppercase;
+	font-size: 25px;
+	margin: 0;
+	line-height: 27px;
+	padding-bottom: 3px;
+}
+/* Endregion */
+
+/* Region Client Settings */
+#generalClientSettings, #mouseSensitivtyClientSettings, #fovClientSettings {
+	margin-top: 25px;
+	width: 590px;
+}
+#mouseSensitivtyClientSettings, #fovClientSettings {
+	display: none;
+}
+#generalClientSettingsElement {
+	background: linear-gradient(#263239d1, #27343c);
+	color: #fff;
+	text-transform: uppercase;
+	height: 28px;
+	line-height: 28px;
+	margin-bottom: 2px;
+}
+#generalClientSettingsElement:hover {
+	background: linear-gradient(#364d5cd1, #30424d);
+}
+#generalClientSettingsElement .generalClientSettingsElementLeft {
+	float: left;
+	width: 60%;
+}
+
+#generalClientSettingsElement .generalClientSettingsElementRight {
+	float: right;
+	width: 40%;
+	text-align: right;
+}
+.generalClientSettingsElementLeft>p {
+	padding-left: 15px;
+}
+.generalClientSettingsElementRight>p {
+	padding-right: 15px;
+}
+.arrow {
+  border: solid #ffffff;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 5px;
+  float: right;
+  margin-top: 7px;
+}
+.right {
+  transform: rotate(-45deg);
+  margin-left: 5px;
+}
+.left {
+  transform: rotate(135deg);
+  margin-right: 5px;
+}
+.generalClientSettingsElementRight span {
+	float: right;
+	text-align: center;
+	width: 175px;
+}
+.generalClientSettingsElementRight span input{
+	background: none;
+	border: none;
+	color: #fff;
+	font-family: bffont;
+	font-size: 16px;
+	text-align: center;
+	width: inherit;
+}
+.generalClientSettingsElementRight span input::-webkit-outer-spin-button,
+.generalClientSettingsElementRight span input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.generalClientSettingsElementRight span input:focus {
+	outline: none;
+}
+.buttons {
+	position: absolute;
+	bottom: calc(50vh - 280px);
+}
+.closeTab, .resetMouseSensitivityMultipliers, .applyMultipliers, .resetFov {
+	height: 34px;
+	background: linear-gradient(#263239d1, #27343c);
+	color: #fff;
+	text-align: center;
+	line-height: 34px;
+	text-transform: uppercase;
+	float: left;
+	margin-right: 15px;
+}
+.closeTab:hover, .resetMouseSensitivityMultipliers:hover, .applyMultipliers:hover, .resetFov:hover, #serverSetup:hover, #mapRotationSetup:hover, .mapRotationButtons:hover, .serverSetupButtons:hover, .serverSetupManageButtons:hover {
+	background: linear-gradient(#364d5cd1, #30424d);
+}
+.closeTab, .applyMultipliers, .resetFov {
+	width: 100px;
+}
+.resetMouseSensitivityMultipliers {
+	width: 200px;
+}
+#serverSetup, #mapRotationSetup {
+	height: 34px;
+	background: linear-gradient(#263239d1, #27343c);
+	color: #fff;
+	text-align: center;
+	line-height: 34px;
+	text-transform: uppercase;
+	float: right;
+	margin-top: 15px;
+	padding-left: 15px;
+	padding-right: 15px;
+	margin-left: 15px;
+	display: none;
+}
+/* Endregion */
+
+/* Region Admin Map Rotation and serverSetup*/
+#mapRotationTab, #serverSetupTab {
+	display: none;
+}
+#mapRotationConfiguration {
+	height: 252px;
+	overflow: auto;
+}
+#mapRotationSettings, #serverSetupSettings {
+	display: none;
+	padding-top: 40px;
+}
+.mapRotationHeader {
+	height: 30px;
+	background: linear-gradient(#296fa4, #4b7da2ad) !important;
+	color: #fff;
+	font-size: 18px;
+	line-height: 30px;
+}
+.mapRotationHeader p {
+	text-transform: uppercase;
+	padding-left: 12px;
+	margin: 0;
+}
+.mapRotationLeft, .mapRotationRight {
+	width: calc(50% - 4px);
+	float: left;
+}
+.serverSetupLeft {
+	width: calc(56% - 4px);
+	float: left;
+}
+.serverSetupRight {
+	width: calc(39% - 4px);
+	float: left;
+}
+.mapRotationLeft, .serverSetupLeft {
+	margin-right: 4px;
+}
+.mapRotationRight, .serverSetupRight {
+	margin-left: 4px;
+}
+.currentAndNextMap {
+	height: 28px;
+	background: linear-gradient(rgba(2, 3, 4, 0.68), rgba(35, 46, 53, 0.65));
+	color: #fff;
+	padding-left: 8px;
+	line-height: 28px;
+	text-transform: uppercase;
+	margin-bottom: 8px;
+}
+#mapRotationCurrentMap, #mapRotationNextMap {
+	vertical-align: top;
+}
+.mapRotationButtons {
+	height: 34px;
+    background: linear-gradient(#263239d1, #27343c);
+    color: #fff;
+    text-align: center;
+    line-height: 34px;
+    text-transform: uppercase;
+    float: right;
+    margin-top: 116px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: 15px;
+}
+.mapRotationButtons p {
+	margin: 0;
+}
+/* Endregion */
+
+/* Region ServerBanner Loading Screen */
+#bannerContainer {
+	position: absolute;
+	width: 512px;
+	height: 262px;
+	left: 96px;
+	top: 255px;
+}
+#bannerHeader p {
+	margin: 0;
+	line-height: 30px;
+	font-size: 18px;
+	padding-left: 12px;
+	color: #fff;
+}
+#bannerDescription p {
+	margin: 0;
+	line-height: 16px;
+	font-size: 16px;
+	padding: 8px 12px;
+	letter-spacing: 0.23px;
+}
+#bannerHeader {
+	height: 30px;
+	background: linear-gradient(#296fa4, #4b7da2ad) !important;
+}
+#bannerImg, #bannerImgSrc {
+	height: 128px;
+	background-image: url(fb://UI/Static/ServerBanner/BFServerBanner);
+}
+
+#bannerDescription {
+	background-color: #0000005c;
+	height: 105px;
+}
+#banner {
+	height: 720px;
+	width: 1280px;
+	font-family: bffont;
+	color: #fff;
+	overflow: hidden;
+	margin: 0;
+	position: absolute;
+	top: calc(50vh - 360px);
+	left: calc(50vw - 640px);
+}
+/* Endregion */
+
+/* Region Server Setup*/
+#serverSetupNameDescEtc {
+	margin-top: 4px;
+	width: 100%;
+	background-color: rgba(0, 0, 0, 0.44);
+	padding: 15px 0 10px 0;
+}
+.serverSetupNameDescEtcSetting {
+	padding: 0 20px 12px 20px;
+}
+.serverSetupNameDescEtcHeader {
+	text-transform: uppercase;
+	color: #fff;
+	font-size: 18px;
+	margin-bottom: 3px;
+}
+.serverSetupNameDescEtcBody input {
+	width: calc(100% - 30px);
+	border: none;
+	padding: 4px 15px;
+	font-size: 18px;
+	font-family: bffont;
+	font-weight: 600;
+}
+#serverSetupTextDescription {
+	height: 222px;
+}
+.serverSetupButtons {
+	height: 34px;
+    background: linear-gradient(#263239d1, #27343c);
+    color: #fff;
+    text-align: center;
+    line-height: 34px;
+    text-transform: uppercase;
+    float: left;
+    margin-top: 75px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: 15px;
+}
+.serverSetupManageButtons {
+	height: 34px;
+    background: linear-gradient(#263239d1, #27343c);
+    color: #fff;
+    text-align: left;
+    line-height: 34px;
+    text-transform: uppercase;
+    margin-top: 5px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-left: 15px;
+    width: 250px;
+}
+.serverSetupButtons p, .serverSetupManageButtons p {
+	margin: 0;
+}
+#serverSetupTextDescription {
+	padding: 0 15px;
+	color: #fff;
+	font-size: 18px;
+	text-shadow: 0px 0px 10px #79d4f8;	
+}
+/* Endregion */
+
+/* Region Manage Presets*/
+#managePresetsSettings {
+	display: none;
+}
+.managePresetsSettingsLeft {
+	width: calc(56% - 4px);
+	float: left;
+}
+.presetsConfiguration {
+	height: 392px;
+	overflow: auto;
+}
+.managePresetsSettingsLeft p {
+	margin: 0;
+}
+#presetHardcore, #presetInfantry, #presetHardcoreNoMap, #presetCustom {
+	display: none;
+}
+.presetsConfiguration #generalClientSettingsElement {
+	margin-bottom: 0 !important;
+}
+/* Endregion */
+
+/* Region Responsiveness shit */
+@media(max-width: 1176px){
+	body {
+		margin-left: calc((100vw - 986px) / 2); 
+		margin-top: calc((100vh - 435px) / 2); 
+	}
+	table {
+		height: 416px;
+		width: 492px;
+		margin-top: 28px;
+	}				
+	#firstrow {
+		height: 28px;
+		font-size: 16.5px;
+		margin-top: -28px;
+		width: 492px;
+		line-height: 24px;
+	}
+	#table2 {
+	  margin-left: 1px;
+	}
+	tbody tr {
+		height: 25.5px;
+		font-size: 15px;
+		line-height: 0px;
+	}
+	#name2 {
+		font-size: 15px;
+		padding-left: 28px;
+		width: calc(492px * 0.51);
+	}
+	#name1 {
+		font-size: 15px;
+		padding-left: 50px;
+		width: calc(498px * 0.49);
+	}
+	#action {
+		border-width: 6px 5.75px 0 5.75px;
+	}
+	#team1, #team2, #place2 {
+		width: calc(492px * 0.09);
+	}
+	#place1 {
+		width: calc(492px * 0.05);
+	}
+	#tickets1, #tickets2 {
+		width: calc(492px * 0.65);
+	}
+	#killsHeader1, #killsHeader2 {		
+		width: calc(492px * 0.06);
+	} 
+	#kills1, #kills2 {		
+		width: calc(492px * 0.06);
+	}
+	#deathsHeader1, #deathsHeader2, #deaths1, #deaths2 {
+		width: calc(492px * 0.06);
+	}
+	#scoreHeader1, #scoreHeader2 {
+		width: calc(492px * 0.13);
+	}
+	#points1, #points2 {
+		width: calc(492px * 0.14);
+	}
+	#pingHeader1, #pingHeader2 {
+		width: calc(492px * 0.13);
+	}
+	#ping1, #ping2 {
+		width: calc(492px * 0.13);
+	}
+	#team1, #team2 {
+		padding-left: 6px;
+	}
+	#place1, #place2 {
+		padding-left: 5px;
+	}
+	#orangeRect {
+		width: 200px;
+		height: 35px;
+		padding: 0px 10px;
+		line-height: 13px;
+		font-size: 11px;
+	}
+
+	#voteyes, #voteno {
+		padding-left: 12px;
+		line-height: 8px;
+		font-size: 12px;
+	}
+	#countyesvotes, #countnovotes {
+		padding-right: 12px;
+	}
+}
+@media(max-width: 1152px){
+	body {
+		margin-left: calc((100vw - 966px) / 2); 
+		margin-top: calc((100vh - 425px) / 2); 
+	}
+	table {
+		height: 400px;
+		width: 482px;
+		margin-top: 27px;
+	}				
+	#firstrow {
+		height: 27px;
+		font-size: 16.5px;
+		margin-top: -27px;
+		width: 482px;
+		line-height: 22px;
+	}
+	#table2 {
+	  margin-left: 1px;
+	}
+	tbody tr {
+		height: 25px;
+		font-size: 15px;
+		line-height: 0px;
+	}
+	#name1, #name2 {
+		font-size: 15px;
+		padding-left: 50px;
+		width: calc(482px * 0.49);
+	}
+	#action {
+		border-width: 6px 5.75px 0 5.75px;
+	}
+	#team1, #team2, #place2 {
+		width: calc(482px * 0.09);
+	}
+	#place1 {
+		width: calc(482px * 0.05);
+	}
+	#tickets1, #tickets2 {
+		width: calc(482px * 0.65);
+	}
+	#killsHeader1, #killsHeader2 {		
+		width: calc(482px * 0.06);
+	} 
+	#kills1, #kills2 {		
+		width: calc(482px * 0.06);
+	}
+	#deathsHeader1, #deathsHeader2, #deaths1, #deaths2 {
+		width: calc(482px * 0.06);
+	}
+	#scoreHeader1, #scoreHeader2 {
+		width: calc(482px * 0.13);
+	}
+	#points1, #points2 {
+		width: calc(482px * 0.14);
+	}
+	#pingHeader1, #pingHeader2 {
+		width: calc(482px * 0.13);
+	}
+	#ping1, #ping2 {
+		width: calc(482px * 0.13);
+	}
+	#team1, #team2 {
+		padding-left: 6px;
+	}
+	#place1, #place2 {
+		padding-left: 5px;
+	}
+}
+@media(max-width: 1024px){
+	body {
+		margin-left: calc((100vw - 858px) / 2); 
+		margin-top: calc((100vh - 378px) / 2); 
+	}
+	table {
+		height: 352px;
+		width: 428px;
+		margin-top: 24px;
+	}				
+	#firstrow {
+		height: 24px;
+		font-size: 14px;
+		margin-top: -24px;
+		width: 428px;
+		line-height: 20px;
+	}
+	#table2 {
+	  margin-left: 1px;
+	}
+	tbody tr {
+		height: 21.5px;
+		font-size: 13px;
+		line-height: 0px;
+	}
+	#name2 {
+		font-size: 13px;
+		padding-left: 20px;
+		width: calc(428px * 0.51);
+	}
+	#name1 {
+		font-size: 13px;
+		padding-left: 40px;
+		width: calc(428px * 0.49);
+	}
+	#action {
+		border-width: 6px 5.75px 0 5.75px;
+	}
+	#team1, #team2, #place2 {
+		width: calc(428px * 0.09);
+	}
+	#place1 {
+		width: calc(428px * 0.05);
+	}
+	#tickets1, #tickets2 {
+		width: calc(428px * 0.65);
+	}
+	#killsHeader1, #killsHeader2 {		
+		width: calc(428px * 0.06);
+	} 
+	#kills1, #kills2 {		
+		width: calc(428px * 0.06);
+	}
+	#deathsHeader1, #deathsHeader2, #deaths1, #deaths2 {
+		width: calc(428px * 0.06);
+	}
+	#scoreHeader1, #scoreHeader2 {
+		width: calc(428px * 0.11);
+	}
+	#points1, #points2 {
+		width: calc(428px * 0.11);
+	}
+	#pingHeader1, #pingHeader2 {
+		width: calc(428px * 0.13);
+	}
+	#ping1, #ping2 {
+		width: calc(428px * 0.13);
+	}
+	#team1, #team2 {
+		padding-left: 6px;
+	}
+	#place1, #place2 {
+		padding-left: 5px;
+	}
+	#orangeRect {
+		width: 155px;
+		height: 24px;
+		padding: 0px 8px 0px 8px;
+		line-height: 6px;
+		font-size: 9px;
+	}
+	#voteyes, #voteno {
+		padding-left: 10px;
+		line-height: 9px;
+		font-size: 9px;
+	}
+	#countyesvotes, #countnovotes {
+		padding-right: 10px;
+	}
+	#name1, .ID_M_RECON.isDead #name1 {
+		background-position-x: 0px;
+		background-position-y: -3px;
+		background-size: 30px auto;
+		background-repeat: no-repeat;
+	}
+	.ID_M_RECON #name1 {
+		background-image: url(/images/Recon-White.png);
+		background-size: 34px auto;
+		background-position-x: -1px;
+		background-position-y: -5px;
+	}
+}
+@media(max-width: 900px){
+	body {
+		margin-left: calc((100vw - 672px) / 2); 
+		margin-top: calc((100vh - 296px) / 2); 
+	}
+	table {
+		height: 288px;
+		width: 335px;
+		margin-top: 19px;
+	}
+	#firstrow {
+		height: 19px;
+		font-size: 11px;
+		margin-top: -19px;
+		width: 335px;
+		line-height: 16px;
+	}
+	#table2 {
+	  margin-left: 1px;
+	}
+	tbody tr {
+		height: 17.5px;
+		font-size: 10px;
+		line-height: 0px;
+	}
+	#name2 {
+		font-size: 10.5px;
+		padding-left: 20px;
+		width: calc(535px * 0.59);
+	}
+	#name1 {
+		font-size: 10.5px;
+		padding-left: 40px;
+		width: calc(535px * 0.46);
+	}
+	#action {
+		border-width: 4px 3.75px 0 3.75px;
+	}
+	#team1, #team2, #place2 {
+		width: calc(535px * 0.09);
+	}
+	#place1 {
+		width: calc(535px * 0.05);
+	}
+	#tickets1, #tickets2 {
+		width: calc(535px * 0.65);
+	}
+	#killsHeader1, #killsHeader2 {		
+		width: calc(535px * 0.06);
+	} 
+	#kills1, #kills2 {		
+		width: calc(535px * 0.06);
+	}
+	#deathsHeader1, #deathsHeader2, #deaths1, #deaths2 {
+		width: calc(535px * 0.06);
+	}
+	#scoreHeader1, #scoreHeader2 {
+		width: calc(535px * 0.07);
+	}
+	#points1, #points2 {
+		width: calc(535px * 0.13);
+	}
+	#pingHeader1, #pingHeader2 {
+		width: calc(535px * 0.07);
+	}
+	#ping1, #ping2 {
+		width: calc(535px * 0.13);
+	}
+	#team1, #team2 {
+		padding-left: 5px;
+	}
+	#place1, #place2 {
+		padding-left: 4px;
+	}
+	#orangeRect {
+		width: 137px;
+		height: 20px;
+		padding: 0px 6px 0px 6px;
+		line-height: 4px;
+		font-size: 8px;
+	}
+	#voteyes, #voteno {
+		padding-left: 8px;
+		line-height: 9px;
+		font-size: 9px;
+	}
+	#countyesvotes, #countnovotes {
+		padding-right: 8px;
+	}
+	#name1, .ID_M_RECON.isDead #name1 {
+		background-position-x: 1px;
+		background-position-y: -3px;
+		background-size: 25px auto;
+		background-repeat: no-repeat;
+	}
+	.ID_M_RECON #name1 {
+		background-image: url(/images/Recon-White.png);
+		background-size: 28px auto;
+		background-position-x: 0px;
+		background-position-y: -4px;
+	}
+	#popup {
+		width: 300px;
+		height: 279px;
+		left: calc(50vw - 150px);
+		margin-top: 28px;
+	}
+	#titlepopup {
+		height: 28px;
+		font-size: 13px;
+		line-height: 28px;
+		margin-top: -28px;
+	}
+	#popupelement {
+		font-size: 10px;
+		margin: 16px 50px;
+		padding: 20px;
+	}
+	#popupelement:hover {
+		background-color: #fff;
+		color: #000;
+	}
+	#close {
+	  width: 28px;
+	  height: 28px;
+	}
+	#close:before, #close:after {
+	  left: 13px;
+	  height: 29px;
+	}
+	#mouseSensitivity {
+		width: 170px;
+		height: 30px;
+		padding: 0 15px;
+		margin-top: 10px;
+		font-size: 10px;
+	}
+	label {
+		font-size: 12px;
+		margin-bottom: 2px;
+	}
+	#defaultIronSightsLookSpeedMultiplier, #x2_0xZoomLookSpeedMultiplier, #x3_4xZoomLookSpeedMultiplier, #x4_0xZoomLookSpeedMultiplier, #x6_0xZoomLookSpeedMultiplier, #x7_0xZoomLookSpeedMultiplier, #x8_0xZoomLookSpeedMultiplier, #x10_0xZoomLookSpeedMultiplier, #x12_0xZoomLookSpeedMultiplier, #x20xZoomLookSpeedMultiplier, #defaultBaseFieldOfView, #defaultIronSightsFieldOfView, #x2_0xZoomFieldOfView, #x3_4xZoomFieldOfView, #x4_0xZoomFieldOfView, #x6_0xZoomFieldOfView, #x7_0xZoomFieldOfView, #x8_0xZoomFieldOfView, #x10_0xZoomFieldOfView, #x12_0xZoomFieldOfView, #x20xZoomFieldOfView {
+		width: 170px;
+		height: 30px;
+		padding: 0 15px;
+		margin-bottom: 10px;
+		font-size: 10px;
+	}
+	#checkBoxSwitches {
+		width: 100px;
+		margin-top: 15px;
+		margin-left: 75px;
+	}
+	input[type="checkbox"] + label {
+	  	font-size: 12px;
+	  	line-height: 1.1;
+	  	color: #fff;
+	  	margin-bottom: 10px;
+	}
+
+	input[type="checkbox"] + label:before {
+	  	width: 20px;
+	  	height: 10px;
+	  	border-radius: 10px;
+	  	border: 1px solid #ddd;
+	  	background-color: #EEE;
+	  	content: "";
+	  	margin-right: 7.5px;
+	  	transition: background-color 0.5s linear;
+	}
+
+	input[type="checkbox"] + label:after {
+	  	width: 10px;
+	  	height: 10px;
+	  	border-radius: 10px;
+	  	background-color: #fff;
+	  	content: "";
+	  	transition: margin 0.1s linear;
+	  	box-shadow: 0px 0px 5px #aaa;
+	  	position: absolute;
+	  	left: 1px;
+	  	top: 1px;
+	}
+
+	input[type="checkbox"]:checked + label:after {
+	  	margin: 0 0 0 10px;
+	}
+	.dropdown {
+		margin-left: 0px;
+		margin-bottom: 12px;
+	}
+	.dropdown input {
+		padding: 5px;
+		width: 180px;
+		font-size: 12px;
+	}
+	.dropdown-content {
+		min-width: 191px;
+		max-height: 150px;
+	}
+	.dropdown-content p {
+		margin: 0;
+		padding: 7px 0;
+		padding-left: 7px;
+		font-size: 12px;
+	}
+	.dropDownButton {
+		top: 11px;
+		right: 12px;
+		margin-top: 3px;
+		border-width: 6px 5.5px 0 6px;
+	}
+	#moveReason, #killReason, #kickReason, #tbanReason, #banReason {
+		padding: 7px;
+		margin-top: 0;
+		width: 176px;
+		font-size: 12px;
+		line-height: 1.1;
+	}
+	#tbanDuration {
+		padding: 7px;
+		margin-bottom: 12px;
+		width: 176px;
+		font-size: 12px;
+		line-height: 1.1;
+	}
+}
+@media(max-width: 720px){
+	body {
+		margin-left: calc((100vw - 604px) / 2); 
+		margin-top: calc((100vh - 266px) / 2); 
+	}
+	table {
+		height: 224px;
+		width: 301px;
+		margin-top: 17px;
+	}
+	#firstrow {
+		height: 17px;
+		font-size: 10px;
+		margin-top: -17px;
+		width: 301px;
+		line-height: 13px;
+	}
+	#table2 {
+	  margin-left: 1px;
+	}
+	tbody tr {
+		height: 14px;
+		font-size: 9.5px;
+		line-height: 0px;
+	}
+	#name2 {
+		font-size: 9.5px;
+		padding-left: 20px;
+		width: calc(301px * 0.52);
+	}
+	#name1 {
+		font-size: 9.5px;
+		padding-left: 40px;
+		width: calc(301px * 0.46);
+	}
+	#team1, #team2, #place2 {
+		width: calc(301px * 0.09);
+	}
+	#place1 {
+		width: calc(301px * 0.05);
+	}
+	#tickets1, #tickets2 {
+		width: calc(301px * 0.60);
+	}
+	#killsHeader1, #killsHeader2 {		
+		width: calc(301px * 0.06);
+	} 
+	#kills1, #kills2 {		
+		width: calc(301px * 0.06);
+	}
+	#deathsHeader1, #deathsHeader2, #deaths1, #deaths2 {
+		width: calc(301px * 0.06);
+	}
+	#scoreHeader1, #scoreHeader2 {
+		width: calc(301px * 0.15);
+	}
+	#points1, #points2 {
+		width: calc(301px * 0.20);
+	}
+	#pingHeader1, #pingHeader2 {
+		width: calc(301px * 0.14);
+	}
+	#ping1, #ping2 {
+		width: calc(301px * 0.16);
+	}
+	#team1, #team2 {
+		padding-left: 5px;
+	}
+	#place1, #place2 {
+		padding-left: 3px;
+	}
+	#orangeRect {
+		width: 120px;
+		height: 20px;
+		padding: 0px 6px 0px 6px;
+		line-height: 4px;
+		font-size: 7px;
+	}
+	#voteyes, #voteno {
+		padding-left: 7px;
+		line-height: 7px;
+		font-size: 7px;
+	}
+	#countyesvotes, #countnovotes {
+		padding-right: 7px;
+	}
+	#name1, .ID_M_RECON.isDead #name1 {
+		background-position-x: 4px;
+		background-position-y: -2px;
+		background-size: 20px auto;
+		background-repeat: no-repeat;
+	}
+	.ID_M_RECON #name1 {
+		background-image: url(/images/Recon-White.png);
+		background-size: 24px auto;
+		background-position-x: 2px;
+		background-position-y: -4px;
+	}
+}
+@media(max-width: 640px){
+	body {
+		margin-left: calc((100vw - 538px) / 2); 
+		margin-top: calc((100vh - 236px) / 2); 
+	}
+	table {
+		height: 224px;
+		width: 268px;
+		margin-top: 15px;
+	}
+	#firstrow {
+		height: 15px;
+		font-size: 9.5px;
+		margin-top: -15px;
+		width: 268px;
+		line-height: 12px;
+	}
+	#table2 {
+	  margin-left: 1px;
+	}
+	tbody tr {
+		height: 14px;
+		font-size: 9px;
+		line-height: 0px;
+	}
+	#name1, #name2 {
+		font-size: 9px;
+		padding-left: 20px;
+		width: calc(268px * 0.5);
+	}
+	#team1, #team2, #place1, #place2 {
+		width: calc(268px * 0.09);
+	}
+	#tickets1, #tickets2 {
+		width: calc(268px * 0.60);
+	}
+	#killsHeader1, #killsHeader2 {		
+		width: calc(268px * 0.06);
+	} 
+	#kills1, #kills2 {		
+		width: calc(268px * 0.06);
+	}
+	#deathsHeader1, #deathsHeader2, #deaths1, #deaths2 {
+		width: calc(268px * 0.06);
+	}
+	#scoreHeader1, #scoreHeader2 {
+		width: calc(268px * 0.15);
+	}
+	#points1, #points2 {
+		width: calc(268px * 0.20);
+	}
+	#pingHeader1, #pingHeader2 {
+		width: calc(268px * 0.14);
+	}
+	#ping1, #ping2 {
+		width: calc(268px * 0.16);
+	}
+	#team1, #team2 {
+		padding-left: 5px;
+	}
+	#place1, #place2 {
+		padding-left: 3px;
+	}
+	#table2 {
+	  margin-left: 0;
+	}
+	#name1, .ID_M_RECON.isDead #name1 {
+		background-position-x: -4px;
+		background-position-y: -2px;
+		background-size: 20px auto;
+		background-repeat: no-repeat;
+	}
+	.ID_M_RECON #name1 {
+		background-image: url(/images/Recon-White.png);
+		background-size: 24px auto;
+		background-position-x: -6px;
+		background-position-y: -4px;
+	}
+}
+/* Endregion */

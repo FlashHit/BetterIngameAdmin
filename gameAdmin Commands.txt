@@ -1,0 +1,6 @@
+gameAdmin.add <playerName> <canMove, canKill, canKick, canTban, canBan, canEditAdminRights>	- adds the player with the given abilities
+gameAdmin.list 											- returns a full list
+gameAdmin.load											- loads the saved gameAdmin.list from db if available
+gameAdmin.clear											- clears the list
+gameAdmin.remove <playerName> 									- removes the player
+gameAdmin.save											- saves the curren gameAdmin.list to db

@@ -1,0 +1,9 @@
+{
+	"Name": "BetterIngameAdmin",
+	"Authors": ["Flash_Hit"],
+	"Description": "Provides addition functions for players and admins.",
+	"URL": "none",
+	"Version": "0.0.1",
+	"HasWebUI": true,
+	"HasVeniceEXT": true
+}

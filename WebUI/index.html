@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html id="overlay" lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<style>	@font-face {
+					font-family: "bffont";
+					src: url("bffont.ttf");
+				}
+		</style>
+		<script type="text/javascript" src="script/script.js"></script>
+		<link rel="stylesheet" href="style/style.css">
+	</head>
+<body>
+	<div id="votepopup">
+		<div id="orangeRect">
+			<div id="votetitleleft"><p>Voteban player: Flash_Hit</p></div>
+			<div id="votetitleright"><p>40 sec</p></div>
+		</div>
+		<div id="voteyes"><p><span>Press F8 to vote YES</span><span id="countyesvotes">5 y</span></p>
+		</div>
+		<div id="voteno"><p><span>Press F9 to vote NO</span><span id="countnovotes">4 n</span></p>
+		</div>
+	</div>
+	<div id="scoreboard">
+		<div id="headertabs">
+			<div id="serverInfoTab" class="headertab" onclick="showServerInfo()"><p>Server Info</p></div>
+			<div id="scoreboardTab" class="headertab active" onclick="showScoreboard()"><p>Scoreboard</p></div>
+			<div id="settingsTab" class="headertab" onclick="showClientSettings()"><p>Settings</p></div>
+			<div id="mapRotationTab" class="headertab" onclick="mapRotationSetup()"><p>Map Rotation</p></div>
+			<div id="serverSetupTab" class="headertab" onclick="serverSetup()"><p>Server Setup</p></div>
+		</div>
+		<div id="serverInfo">
+			<div id="serverInfoColumn1">
+				<div id="serverNameDescrContainer">
+					<div id="serverNameDescrContainerHeader"><p>Server Name</p></div>
+					<div id="serverNameDescrContainerBody"><p>Server Description</p></div>
+				</div>
+				<div id="serverInfoColumn1innerContainer">
+					<div id="serverInfoColumn1innerContainerLeft">
+						<div id="serverInfoMap"><div id="serverInfoMapHeader"><p>Map</p></div><p id="serverInfoMapBody">Operation Métro</p><div id="serverInfoMapImg"></div></div>
+						<div id="serverInfoPlayerCount"><div id="serverInfoPlayerCountHeader"><p>Players</p></div><p><span id="playerCount">1</span>/<span id="maxPlayers">64</span></p></div>
+						<div id="serverInfoPlayerPing"><div id="serverInfoPlayerPingHeader"><p>Ping</p></div><p id="serverInfoPlayerPingBody">0 ms</p></div>
+						<div id="serverInfoRegion"><div id="serverInfoRegionHeader"><p>Region</p></div><p id="region">EU</p></div>
+					</div>
+					<div id="serverInfoColumn1innerContainerRight">
+						<div id="serverInfoMode"><div id="serverInfoModeHeader"><p>Mode</p></div><p id="serverInfoModeBody" >Conquest</p><div id="serverInfoModeImg"></div></div>
+						<div id="serverInfoSpectatorCount"><div id="serverInfoSpectatorCountHeader"><p>Spectators</p></div><p>0/24</p></div>
+						<div id="serverInfoPreset"><div id="serverInfoPresetHeader"><p>Preset</p></div><p id="serverInfoPresetBody">Custom</p></div>
+						<div id="serverInfoOwner"><div id="serverInfoOwnerHeader"><p>Owner</p></div><p id="serverInfoOwnerBody">OwnerNotSet</p></div>
+					</div>
+				</div>
+			</div>
+			<div id="serverInfoColumn2">
+				<div id="serverInfoBannerImg"><div id="serverInfoBannerImgSrc"></div></div>
+				<div id="serverInfoColumn2innerContainer">
+					<div id="serverInfoColumn2innerContainerLeft">
+						<div id="serverInfoPresetConfiguration"><div id="serverInfoPresetConfigurationHeader"><p>Preset</p></div><p id="serverInfoPresetConfigurationBody" onclick="showServerInfoConfiguration()">Custom</p></div>
+					</div>
+					<div id="serverInfoColumn2innerContainerMiddle">
+						<div id="serverInfoMapRotation"><div id="serverInfoMapRotationHeader"><p>Map Rotation</p></div><div id="serverInfoMapRotationBody" onclick="showMapRotation()"><p id="checkModeName"><span class="textMove">Conquest</span></p></div></div>
+					</div>
+					<div id="serverInfoColumn2innerContainerRight">
+						<div id="serverInfoPlayersTop"><div id="serverInfoPlayersTopHeader"><p>Mod List</p></div><p id="serverInfoPlayersTopBody"  onclick="showModList()">Active: 1</p></div>
+					</div>
+				</div>
+				<div id="serverInfoConfiguration">
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Friendly Fire</p></div>
+						<div class="serverInfoConfigurationElementRight" id="friendlyFire"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Kick IDLE Player after seconds</p></div>
+						<div class="serverInfoConfigurationElementRight" id="idleTimeout"><p>300</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Team Balance</p></div>
+						<div class="serverInfoConfigurationElementRight" id="autobalance"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p># of TK before player is kicked</p></div>
+						<div class="serverInfoConfigurationElementRight" id="teamKillCountForKick"><p>5</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Ban player after # of kicks</p></div>
+						<div class="serverInfoConfigurationElementRight" id="teamKillKicksForBan"><p>3</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Vehicles</p></div>
+						<div class="serverInfoConfigurationElementRight" id="vehicleSpawn"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Regenerative Health</p></div>
+						<div class="serverInfoConfigurationElementRight" id="regenerateHealth"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Only Squad Leader Spawn</p></div>
+						<div class="serverInfoConfigurationElementRight" id="onlySquadLeaderSpawn"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show Minimap</p></div>
+						<div class="serverInfoConfigurationElementRight" id="miniMap"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show HUD</p></div>
+						<div class="serverInfoConfigurationElementRight" id="hud"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Use Minimap Spotting</p></div>
+						<div class="serverInfoConfigurationElementRight" id="minimapSpotting"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Use 3D Spotting</p></div>
+						<div class="serverInfoConfigurationElementRight" id="3dSpotting"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Kill Cam</p></div>
+						<div class="serverInfoConfigurationElementRight" id="killCam"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>3P Vehicle Cam</p></div>
+						<div class="serverInfoConfigurationElementRight" id="3rdPersonCam"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show enemy name tags</p></div>
+						<div class="serverInfoConfigurationElementRight" id="nameTag"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Gun Master Weapons Preset</p></div>
+						<div class="serverInfoConfigurationElementRight" id="gunmasterWeaponsPreset"><p>Normal</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>CTF timelimit</p></div>
+						<div class="serverInfoConfigurationElementRight" id="ctfRoundTimeModifier"><p>100</p></div>
+					</div>
+					<!-- Unranked Settings -->
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Respawn Time in %</p></div>
+						<div class="serverInfoConfigurationElementRight" id="playerRespawnTime"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Man Down Time in %</p></div>
+						<div class="serverInfoConfigurationElementRight" id="playerManDownTime"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Health in %</p></div>
+						<div class="serverInfoConfigurationElementRight" id="soldierHealth"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Bullet Damage Modifier in %</p></div>
+						<div class="serverInfoConfigurationElementRight" id="bulletDamage"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p># of Players to start round</p></div>
+						<div class="serverInfoConfigurationElementRight" id="roundStartPlayerCount"><p>8</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Max Players</p></div>
+						<div class="serverInfoConfigurationElementRight" id="maximumPlayers"><p>8</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Tickets in %</p></div>
+						<div class="serverInfoConfigurationElementRight" id="tickets"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Number of rounds</p></div>
+						<div class="serverInfoConfigurationElementRight" id="rounds"><p>1</p></div>
+					</div>
+					<!-- Vanilla Settings Tab from console would end now -->
+					<div class="serverInfoConfigurationElementVeniceUnleashed"><p>Venice Unleashed Settings</p></div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Bluetint</p></div>
+						<div class="serverInfoConfigurationElementRight" id="colorCorrectionEnabled"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Sun Flare</p></div>
+						<div class="serverInfoConfigurationElementRight" id="sunFlare"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Suppression Multiplier in %</p></div>
+						<div class="serverInfoConfigurationElementRight" id="suppressionMultiplier"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Time Scale in %</p></div>
+						<div class="serverInfoConfigurationElementRight" id="timeScale"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Allow Deserting</p></div>
+						<div class="serverInfoConfigurationElementRight" id="desertingAllowed"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Destruction Enabled</p></div>
+						<div class="serverInfoConfigurationElementRight" id="destructionEnabled"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Vehicle Disabling</p></div>
+						<div class="serverInfoConfigurationElementRight" id="vehicleDisablingEnabled"><p>Yes</p></div>
+					</div> 
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Tick Rate</p></div>
+						<div class="serverInfoConfigurationElementRight" id="frequencyMode"><p>30 Hz</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Squad Size</p></div>
+						<div class="serverInfoConfigurationElementRight" id="squadSize"><p>4</p></div>
+					</div>
+				</div>
+				<div id="mapListConfiguration"></div>
+				<div id="modListConfiguration"></div>
+			</div>
+		</div>
+		<div id="clientSettings">
+			<div id="clientHeadertabs">
+				<div id="generalClientSettingsTab" class="headertab active" onclick="showGeneralClientSettings()"><p>General</p></div>
+				<div id="mouseSensitivtyClientSettingsTab" class="headertab" onclick="showMouseSensitivtyClientSettings()"><p>Mouse Sensitivity</p></div>
+				<div id="fovClientSettingsTab" class="headertab" onclick="showFovClientSettings()"><p>Field Of View</p></div>
+			</div>
+			<div id="generalClientSettings">
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>Scoreboard</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="toggleHoldScoreboard()"></i><span id="scoreboardMethod">Hold Tab</span><i class="arrow left" onclick="toggleHoldScoreboard()"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>Show Ping</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="showOrHidePing()"></i><span id="showPing">No</span><i class="arrow left" onclick="showOrHidePing()"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>Hide Votings</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="showOrHideVotings()"></i><span id="hideVotings">No</span><i class="arrow left" onclick="showOrHideVotings()"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>[Admin] Channel</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="onOff('adminChannel')"></i><span id="adminChannel">On</span><i class="arrow left" onclick="onOff('adminChannel')"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>[All] Channel</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="onOff('allChannel')"></i><span id="allChannel">On</span><i class="arrow left" onclick="onOff('allChannel')"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>[Team] Channel</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="onOff('teamChannel')"></i><span id="teamChannel">On</span><i class="arrow left" onclick="onOff('teamChannel')"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>[Squad] Channel</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="onOff('squadChannel')"></i><span id="squadChannel">On</span><i class="arrow left" onclick="onOff('squadChannel')"></i></p></div>
+				</div>
+				<div id="serverSetup" onclick="serverSetup()">Server Setup</div>
+				<div id="mapRotationSetup" onclick="mapRotationSetup()">Map Rotation</div>
+				<div class="buttons">
+					<div class="closeTab" onclick="closeSmart()">Close</div>
+					<div class="resetFov" onclick="resetGeneralClientSettings()">Reset</div>
+					<div class="applyMultipliers" onclick="applyGeneralClientSettings()">Apply</div>
+				</div>
+			</div>
+			<div id="mouseSensitivtyClientSettings">
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>Mouse Sensitivity</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plusMouseSens('actualMouseSensitivity', 1.5, 0.01)"></i><span><input onKeyUp="if(this.value >=1.5) this.value = 1.5; if(this.value <=0) this.value = 0;" id="actualMouseSensitivity" type="number" step="0.01" min="0" max="1.5" value="0.5"></span><i class="arrow left" onclick="minusMouseSens('actualMouseSensitivity', 0, 0.01)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>Iron Sights, Kobra, RDS Multiplier</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('ironSightsMultiplier', 1, 0.01)"></i><span><input onKeyUp="if(this.value >=1) this.value = 1; if(this.value <=0) this.value = 0;" id="ironSightsMultiplier" type="number" step="0.01" min="0" max="1" value="0.5"></span><i class="arrow left" onclick="minus('ironSightsMultiplier', 0, 0.01)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>Holo Multiplier</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('holoMultiplier', 1, 0.01)"></i><span><input onKeyUp="if(this.value >=1) this.value = 1; if(this.value <=0) this.value = 0;" id="holoMultiplier" type="number" step="0.01" min="0" max="1" value="0.5"></span><i class="arrow left" onclick="minus('holoMultiplier', 0, 0.01)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>3.4x Multiplier</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('3xMultiplier', 1, 0.01)"></i><span><input onKeyUp="if(this.value >=1) this.value = 1; if(this.value <=0) this.value = 0;" id="3xMultiplier" type="number" step="0.01" min="0" max="1" value="0.5"></span><i class="arrow left" onclick="minus('3xMultiplier', 0, 0.01)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>4x Multiplier</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('4xMultiplier', 1, 0.01)"></i><span><input onKeyUp="if(this.value >=1) this.value = 1; if(this.value <=0) this.value = 0;" id="4xMultiplier" type="number" step="0.01" min="0" max="1" value="0.5"></span><i class="arrow left" onclick="minus('4xMultiplier', 0, 0.01)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>6x Multiplier</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('6xMultiplier', 1, 0.01)"></i><span><input onKeyUp="if(this.value >=1) this.value = 1; if(this.value <=0) this.value = 0;" id="6xMultiplier" type="number" step="0.01" min="0" max="1" value="0.5"></span><i class="arrow left" onclick="minus('6xMultiplier', 0, 0.01)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>7x Multiplier</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('7xMultiplier', 1, 0.01)"></i><span><input onKeyUp="if(this.value >=1) this.value = 1; if(this.value <=0) this.value = 0;" id="7xMultiplier" type="number" step="0.01" min="0" max="1" value="0.5"></span><i class="arrow left" onclick="minus('7xMultiplier', 0, 0.01)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>8x Multiplier</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('8xMultiplier', 1, 0.01)"></i><span><input onKeyUp="if(this.value >=1) this.value = 1; if(this.value <=0) this.value = 0;" id="8xMultiplier" type="number" step="0.01" min="0" max="1" value="0.5"></span><i class="arrow left" onclick="minus('8xMultiplier', 0, 0.01)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>10x Multiplier</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('10xMultiplier', 1, 0.01)"></i><span><input onKeyUp="if(this.value >=1) this.value = 1; if(this.value <=0) this.value = 0;" id="10xMultiplier" type="number" step="0.01" min="0" max="1" value="0.5"></span><i class="arrow left" onclick="minus('10xMultiplier', 0, 0.01)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>12x Multiplier</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('12xMultiplier', 1, 0.01)"></i><span><input onKeyUp="if(this.value >=1) this.value = 1; if(this.value <=0) this.value = 0;" id="12xMultiplier" type="number" step="0.01" min="0" max="1" value="0.5"></span><i class="arrow left" onclick="minus('12xMultiplier', 0, 0.01)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>20x Multiplier</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('20xMultiplier', 1, 0.01)"></i><span><input onKeyUp="if(this.value >=1) this.value = 1; if(this.value <=0) this.value = 0;" id="20xMultiplier" type="number" step="0.01" min="0" max="1" value="0.5"></span><i class="arrow left" onclick="minus('20xMultiplier', 0, 0.01)"></i></p></div>
+				</div>
+				<div class="buttons">
+					<div class="closeTab" onclick="closeSmart()">Close</div>
+					<div class="resetMouseSensitivityMultipliers" onclick="resetMouseSensitivityMultipliers()">Reset Multipliers</div>
+					<div class="applyMultipliers" onclick="saveMouseSensitivityMultipliers()">Apply</div>
+				</div>
+			</div>
+			<div id="fovClientSettings">
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>Field Of View (Broken)</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('actualFov', 160, 1)"></i><span><input onKeyUp="if(this.value >=160) this.value = 160; if(this.value <=60) this.value = 60;" id="actualFov" type="number" step="1" min="60" max="160" value="75"></span><i class="arrow left" onclick="minus('actualFov', 60, 1)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>Iron Sights, Kobra, RDS FOV</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('ironSightsFov', 160, 1)"></i><span><input onKeyUp="if(this.value >=160) this.value = 160; if(this.value <=51.774) this.value = 51.774;" id="ironSightsFov" type="number" step="1" min="51.774" max="160" value="51.774"></span><i class="arrow left" onclick="minus('ironSightsFov', 51.774, 1)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>Holo FOV</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('holoFov', 160, 1)"></i><span><input onKeyUp="if(this.value >=160) this.value = 160; if(this.value <=41.846) this.value = 41.846;" id="holoFov" type="number" step="1" min="41.846" max="160" value="41.846"></span><i class="arrow left" onclick="minus('holoFov', 41.846, 1)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>3.4x FOV</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('3xFov', 160, 1)"></i><span><input onKeyUp="if(this.value >=160) this.value = 160; if(this.value <=26.46) this.value = 26.46;" id="3xFov" type="number" step="1" min="26.46" max="160" value="26.46"></span><i class="arrow left" onclick="minus('3xFov', 26.46, 1)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>4x FOV</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('4xFov', 160, 1)"></i><span><input onKeyUp="if(this.value >=160) this.value = 160; if(this.value <=22.801) this.value = 22.801;" id="4xFov" type="number" step="1" min="22.801" max="160" value="22.801"></span><i class="arrow left" onclick="minus('4xFov', 22.801, 1)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>6x FOV</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('6xFov', 160, 1)"></i><span><input onKeyUp="if(this.value >=160) this.value = 160; if(this.value <=15.425) this.value = 15.425;" id="6xFov" type="number" step="1" min="15.425" max="160" value="15.425"></span><i class="arrow left" onclick="minus('6xFov', 15.425, 1)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>7x FOV</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('7xFov', 160, 1)"></i><span><input onKeyUp="if(this.value >=16) this.value = 160; if(this.value <=13.174) this.value = 13.174;" id="7xFov" type="number" step="1" min="13.174" max="160" value="13.174"></span><i class="arrow left" onclick="minus('7xFov', 13.174, 1)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>8x FOV</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('8xFov', 160, 1)"></i><span><input onKeyUp="if(this.value >=160) this.value = 160; if(this.value <=11.582) this.value = 11.582;" id="8xFov" type="number" step="1" min="11.582" max="160" value="11.582"></span><i class="arrow left" onclick="minus('8xFov', 11.582, 1)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>10x FOV</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('10xFov', 160, 1)"></i><span><input onKeyUp="if(this.value >=160) this.value = 160; if(this.value <=9.324) this.value = 9.324;" id="10xFov" type="number" step="1" min="9.324" max="160" value="9.324"></span><i class="arrow left" onclick="minus('10xFov', 9.324, 1)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>12x FOV</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('12xFov', 160, 1)"></i><span><input onKeyUp="if(this.value >=160) this.value = 160; if(this.value <=7.728) this.value = 7.728;" id="12xFov" type="number" step="1" min="7.728" max="160" value="7.728"></span><i class="arrow left" onclick="minus('12xFov', 7.728, 1)"></i></p></div>
+				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>20x FOV</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('20xFov', 160, 1)"></i><span><input onKeyUp="if(this.value >=160) this.value = 160; if(this.value <=4.665) this.value = 4.665;" id="20xFov" type="number" step="1" min="4.665" max="160" value="4.665"></span><i class="arrow left" onclick="minus('20xFov', 4.665, 1)"></i></p></div>
+				</div>
+				<div class="buttons">
+					<div class="closeTab" onclick="closeSmart()">Close</div>
+					<div class="resetFov" onclick="resetFieldOfView()">Reset</div>
+					<div class="applyMultipliers" onclick="saveFieldOfView()">Apply</div>
+				</div>
+			</div>
+		</div>
+		<div id="mapRotationSettings">
+			<div class="mapRotationLeft">
+				<div class="mapRotationHeader"><p>Select Next Map</p></div>
+				<div id="mapRotationConfiguration"></div>
+			</div>
+			<div class="mapRotationRight">
+				<div class="mapRotationHeader"><p>Current Map</p></div>
+				<div class="currentAndNextMap"><img id="currentMap3" src=""/><span id="mapRotationCurrentMap"></span></div>
+				<div class="mapRotationHeader"><p>Next Map</p></div>
+				<div class="currentAndNextMap"><img id="nextMap3" src=""/><span id="mapRotationNextMap"></span></div>
+				<!--<div class="mapRotationButtons" onclick="endRoundPopUp()"><p>End Round</p></div>-->
+				<div class="mapRotationButtons" onclick="nextRound()"><p>Next Round</p></div>
+				<div class="mapRotationButtons" onclick="restart()"><p>Restart</p></div>
+				<div class="mapRotationButtons" onclick="showClientSettings()"><p>Back</p></div>
+			</div>
+		</div>
+		<div id="serverSetupSettings">
+			<div class="serverSetupLeft">
+				<div id="serverSetupConfiguration">
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Preset</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plusPreset()"></i><span id="serverSetupCurrentPreset">Normal</span><i class="arrow left" onclick="minusPreset()"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Map Rotation</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="mapRotationPlus()"></i><span id="serverSetupCurrentMapRotation">Startup</span><i class="arrow left" onclick="mapRotationMinus()"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Overwrite on start</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="overwritePresetAndMapRotationToggle()"></i><span id="serverSetupOverwritePresetAndMapRotationOnStartup">No</span><i class="arrow left" onclick="overwritePresetAndMapRotationToggle()"></i></p></div>
+					</div>
+				</div>
+				<div id="serverSetupNameDescEtc">
+					<div class="serverSetupNameDescEtcSetting">
+						<div class="serverSetupNameDescEtcHeader"><p>Server Name</p></div>
+						<div class="serverSetupNameDescEtcBody"><input id="serverSetupServerName" type="textfield" value="Name"></div>
+					</div>
+					<div class="serverSetupNameDescEtcSetting">
+						<div class="serverSetupNameDescEtcHeader"><p>Server Description</p></div>
+						<div class="serverSetupNameDescEtcBody"><input id="serverSetupServerDescription" type="textfield" value="Description"></div>
+					</div>
+					<div class="serverSetupNameDescEtcSetting">
+						<div class="serverSetupNameDescEtcHeader"><p>Server Message</p></div>
+						<div class="serverSetupNameDescEtcBody"><input id="serverSetupServerMessage" type="textfield" value="Message"></div>
+					</div>
+					<div class="serverSetupNameDescEtcSetting">
+						<div class="serverSetupNameDescEtcHeader"><p>Password</p></div>
+						<div class="serverSetupNameDescEtcBody"><input id="serverSetupServerPassword" type="textfield" value=""></div></div>
+					</div>
+				</div>
+				<div class="serverSetupRight">
+					<div id="serverSetupTextDescription">
+						<p>Normal mode uses the standard Battlefield rules with all HUD elements visible, friendly fire off and regenerative health. Normal mode is both for the novice and pro players that want to have plain simple fun!</p>
+					</div>
+					<div class="serverSetupManageButtons" onclick="managePresets()"><p>Manage Presets</p></div>
+					<div class="serverSetupManageButtons" onclick="manageMapRotations()"><p>Manage Map Rotations</p></div>
+					<div class="serverSetupButtons" onclick="showClientSettings()"><p>Back</p></div>
+					<div class="serverSetupButtons" onclick="saveServerSetup()"><p>Save</p></div>
+				</div>
+		</div>
+		<div id="managePresetsSettings">
+			<div class="managePresetsSettingsLeft">
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>Preset</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plusPreset()"></i><span id="currentPresetInManagePresets">Normal</span><i class="arrow left" onclick="minusPreset()"></i></p></div>
+				</div>
+				<div class="mapRotationHeader"><p>Settings</p></div>
+				<div class="presetsConfiguration" id="presetNormal">
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Friendly Fire</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Kick IDLE Player after seconds</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>300</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Team Balance</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p># of TK before player is kicked</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>5</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Ban player after # of kicks</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>3</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Vehicles</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Regenerative Health</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Only Squad Leader Spawn</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show Minimap</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show HUD</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Use Minimap Spotting</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Use 3D Spotting</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Kill Cam</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>3P Vehicle Cam</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show enemy name tags</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Gun Master Weapons Preset</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Normal</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>CTF timelimit</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<!-- Unranked Settings -->
+					<div class="serverInfoConfigurationElementVeniceUnleashed"><p>Unranked Settings</p></div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Respawn Time in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Man Down Time in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Health in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Bullet Damage Modifier in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<!-- Vanilla Settings Tab from console would end now -->
+					<div class="serverInfoConfigurationElementVeniceUnleashed"><p>Venice Unleashed Settings</p></div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Bluetint</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Sun Flare</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Suppression Multiplier in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Time Scale in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Allow Deserting</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Destruction Enabled</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Vehicle Disabling</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Squad Size</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>4</p></div>
+					</div>
+				</div>
+				<div class="presetsConfiguration" id="presetHardcore">
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Friendly Fire</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Kick IDLE Player after seconds</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>300</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Team Balance</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p># of TK before player is kicked</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>5</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Ban player after # of kicks</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>3</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Vehicles</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Regenerative Health</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Only Squad Leader Spawn</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show Minimap</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show HUD</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Use Minimap Spotting</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Use 3D Spotting</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Kill Cam</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>3P Vehicle Cam</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show enemy name tags</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Gun Master Weapons Preset</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Normal</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>CTF timelimit</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<!-- Unranked Settings -->
+					<div class="serverInfoConfigurationElementVeniceUnleashed"><p>Unranked Settings</p></div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Respawn Time in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Man Down Time in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Health in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>60</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Bullet Damage Modifier in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<!-- Vanilla Settings Tab from console would end now -->
+					<div class="serverInfoConfigurationElementVeniceUnleashed"><p>Venice Unleashed Settings</p></div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Bluetint</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Sun Flare</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Suppression Multiplier in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Time Scale in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Allow Deserting</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Destruction Enabled</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Vehicle Disabling</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Squad Size</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>4</p></div>
+					</div>
+				</div>
+				<div class="presetsConfiguration" id="presetInfantry">
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Friendly Fire</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Kick IDLE Player after seconds</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>300</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Team Balance</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p># of TK before player is kicked</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>5</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Ban player after # of kicks</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>3</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Vehicles</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Regenerative Health</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Only Squad Leader Spawn</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show Minimap</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show HUD</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Use Minimap Spotting</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Use 3D Spotting</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Kill Cam</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>3P Vehicle Cam</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show enemy name tags</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Gun Master Weapons Preset</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Normal</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>CTF timelimit</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<!-- Unranked Settings -->
+					<div class="serverInfoConfigurationElementVeniceUnleashed"><p>Unranked Settings</p></div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Respawn Time in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Man Down Time in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Health in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Bullet Damage Modifier in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<!-- Vanilla Settings Tab from console would end now -->
+					<div class="serverInfoConfigurationElementVeniceUnleashed"><p>Venice Unleashed Settings</p></div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Bluetint</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Sun Flare</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Suppression Multiplier in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Time Scale in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Allow Deserting</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Destruction Enabled</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Vehicle Disabling</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Squad Size</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>4</p></div>
+					</div>
+				</div>
+				<div class="presetsConfiguration" id="presetHardcoreNoMap">
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Friendly Fire</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Kick IDLE Player after seconds</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>300</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Team Balance</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p># of TK before player is kicked</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>5</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Ban player after # of kicks</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>3</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Vehicles</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Regenerative Health</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Only Squad Leader Spawn</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show Minimap</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show HUD</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Use Minimap Spotting</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Use 3D Spotting</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Kill Cam</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>3P Vehicle Cam</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Show enemy name tags</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Gun Master Weapons Preset</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Normal</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>CTF timelimit</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<!-- Unranked Settings -->
+					<div class="serverInfoConfigurationElementVeniceUnleashed"><p>Unranked Settings</p></div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Respawn Time in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Man Down Time in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Player Health in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>60</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Bullet Damage Modifier in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<!-- Vanilla Settings Tab from console would end now -->
+					<div class="serverInfoConfigurationElementVeniceUnleashed"><p>Venice Unleashed Settings</p></div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Bluetint</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Sun Flare</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Suppression Multiplier in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Time Scale in %</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>100</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Allow Deserting</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>No</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Destruction Enabled</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Vehicle Disabling</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>Yes</p></div>
+					</div>
+					<div id="serverInfoConfigurationElement">
+						<div class="serverInfoConfigurationElementLeft"><p>Squad Size</p></div>
+						<div class="serverInfoConfigurationElementRight"><p>4</p></div>
+					</div>
+				</div>
+				<div class="presetsConfiguration" id="presetCustom">
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Friendly Fire</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetFriendlyFire')"></i><span id="customPresetFriendlyFire">No</span><i class="arrow left" onclick="yesNoPreset('customPresetFriendlyFire')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Kick IDLE Player after seconds</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="valuePresetPlus('customPresetIdleTimeout')"></i><span id="customPresetIdleTimeout">300</span><i class="arrow left" onclick="valuePresetMinus('customPresetIdleTimeout')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Team Balance</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetAutobalance')"></i><span id="customPresetAutobalance">Yes</span><i class="arrow left" onclick="yesNoPreset('customPresetAutobalance')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p># of TK before player is kicked</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="numberPresetPlus('customPresetTeamKillCountForKick')"></i><span id="customPresetTeamKillCountForKick">5</span><i class="arrow left" onclick="numberPresetMinus('customPresetTeamKillCountForKick')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Ban player after # of kicks</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="numberPresetPlus('customPresetTeamKillKicksForBan')"></i><span id="customPresetTeamKillKicksForBan">3</span><i class="arrow left" onclick="numberPresetMinus('customPresetTeamKillKicksForBan')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Vehicles</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetVehicleSpawn')"></i><span id="customPresetVehicleSpawn">Yes</span><i class="arrow left" onclick="yesNoPreset('customPresetVehicleSpawn')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Regenerative Health</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetRegenerateHealth')"></i><span id="customPresetRegenerateHealth">Yes</span><i class="arrow left" onclick="yesNoPreset('customPresetRegenerateHealth')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Only Squad Leader Spawn</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetOnlySquadLeaderSpawn')"></i><span id="customPresetOnlySquadLeaderSpawn">No</span><i class="arrow left" onclick="yesNoPreset('customPresetOnlySquadLeaderSpawn')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Show Minimap</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetMiniMap')"></i><span id="customPresetMiniMap">Yes</span><i class="arrow left" onclick="yesNoPreset('customPresetMiniMap')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Show HUD</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetHUD')"></i><span id="customPresetHUD">Yes</span><i class="arrow left" onclick="yesNoPreset('customPresetHUD')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Use Minimap Spotting</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetMinimapSpotting')"></i><span id="customPresetMinimapSpotting">Yes</span><i class="arrow left" onclick="yesNoPreset('customPresetMinimapSpotting')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Use 3D Spotting</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPreset3dSpotting')"></i><span id="customPreset3dSpotting">Yes</span><i class="arrow left" onclick="yesNoPreset('customPreset3dSpotting')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Kill Cam</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetKillCam')"></i><span id="customPresetKillCam">Yes</span><i class="arrow left" onclick="yesNoPreset('customPresetKillCam')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>3P Vehicle Cam</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPreset3rdPersonCam')"></i><span id="customPreset3rdPersonCam">Yes</span><i class="arrow left" onclick="yesNoPreset('customPreset3rdPersonCam')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Show enemy name tags</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetNameTag')"></i><span id="customPresetNameTag">Yes</span><i class="arrow left" onclick="yesNoPreset('customPresetNameTag')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Gun Master Weapons Preset</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="gunmasterWeaponsPlus()"></i><span id="customPresetGunmasterWeaponsPreset">Normal</span><i class="arrow left" onclick="gunmasterWeaponsMinus()"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>CTF timelimit</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="valuePresetPlus('customPresetCtfRoundTimeModifier')"></i><span id="customPresetCtfRoundTimeModifier">100</span><i class="arrow left" onclick="valuePresetMinus('customPresetCtfRoundTimeModifier')"></i></p></div>
+					</div>
+					<!-- Unranked Settings -->
+					<div class="serverInfoConfigurationElementVeniceUnleashed"><p>Unranked Settings</p></div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Player Respawn Time in %</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="valuePresetPlus('customPresetPlayerRespawnTime')"></i><span id="customPresetPlayerRespawnTime">100</span><i class="arrow left" onclick="valuePresetMinus('customPresetPlayerRespawnTime')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Player Man Down Time in %</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="valuePresetPlus('customPresetPlayerManDownTime')"></i><span id="customPresetPlayerManDownTime">100</span><i class="arrow left" onclick="valuePresetMinus('customPresetPlayerManDownTime')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Player Health in %</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="valuePresetPlus('customPresetPlayerHealth')"></i><span id="customPresetPlayerHealth">100</span><i class="arrow left" onclick="valuePresetMinus('customPresetPlayerHealth')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Bullet Damage Modifier in %</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="valuePresetPlus('customPresetBulletDamage')"></i><span id="customPresetBulletDamage">100</span><i class="arrow left" onclick="valuePresetMinus('customPresetBulletDamage')"></i></p></div>
+					</div>
+					<!-- Vanilla Settings Tab from console would end now -->
+					<div class="serverInfoConfigurationElementVeniceUnleashed"><p>Venice Unleashed Settings</p></div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Bluetint</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetBluetint')"></i><span id="customPresetBluetint">Yes</span><i class="arrow left" onclick="yesNoPreset('customPresetBluetint')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Sun Flare</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetSunFlare')"></i><span id="customPresetSunFlare">Yes</span><i class="arrow left" onclick="yesNoPreset('customPresetSunFlare')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Suppression Multiplier in %</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="valuePresetPlus('customPresetSuppressionMultiplier')"></i><span id="customPresetSuppressionMultiplier">100</span><i class="arrow left" onclick="valuePresetMinus('customPresetSuppressionMultiplier')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Time Scale in %</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="valuePresetPlus('customPresetTimeScale')"></i><span id="customPresetTimeScale">100</span><i class="arrow left" onclick="valuePresetMinus('customPresetTimeScale')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Allow Deserting</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetAllowDeserting')"></i><span id="customPresetAllowDeserting">No</span><i class="arrow left" onclick="yesNoPreset('customPresetAllowDeserting')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Destruction Enabled</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetDestructionEnabled')"></i><span id="customPresetDestructionEnabled">Yes</span><i class="arrow left" onclick="yesNoPreset('customPresetDestructionEnabled')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Vehicle Disabling</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="yesNoPreset('customPresetVehicleDisabling')"></i><span id="customPresetVehicleDisabling">Yes</span><i class="arrow left" onclick="yesNoPreset('customPresetVehicleDisabling')"></i></p></div>
+					</div>
+					<div id="generalClientSettingsElement">
+						<div class="generalClientSettingsElementLeft"><p>Squad Size</p></div>
+						<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="numberPresetPlus('customPresetSquadSize')"></i><span id="customPresetSquadSize">4</span><i class="arrow left" onclick="numberPresetMinus('customPresetSquadSize')"></i></p></div>
+					</div>
+				</div>
+			</div>
+			<div class="managePresetsSettingsRight">
+				<div class="mapRotationButtons" onclick="showClientSettings()"><p>Back</p></div>
+				<div class="mapRotationButtons" onclick="applyManagePresets()"><p>Apply</p></div>
+			</div>
+		</div>
+	</div>
+		<div id="tables">
+			<table id="table1">
+				<tbody id="table1tbody">
+					<tr id="firstrow">
+						<th id="team1">US</th>
+						<th id="tickets1">50</th>
+						<th id="killsHeader1">K</th>
+						<th id="deathsHeader1">D</th>
+						<th id="scoreHeader1">SCORE</th>
+						<th id="pingHeader1">PING</th>
+					</tr>
+				<!--	<tr>
+						<td id="place1">32</td>
+						<td id="name1">Flash_Hit</td>
+						<td id="kills1">50</td>
+						<td id="deaths1">5</td>
+						<td id="points1">5000</td>
+						<td id="ping1">20</td>
+					</tr> -->
+				</tbody>
+			</table>
+			<table id="table2">
+				<tbody id="table2tbody">
+				<tr id="firstrow">
+					<th id="team2">RU</th>
+					<th id="tickets2">50</th>
+					<th id="killsHeader2">K</th>
+					<th id="deathsHeader2">D</th>
+					<th id="scoreHeader2">SCORE</th>
+					<th id="pingHeader2">PING</th>
+				</tr>
+			<!--	<tr>
+					<td id="place2">9</td>
+					<td id="name2">Flash_Hit</td>
+					<td id="kills2">50</td>
+					<td id="deaths2">5</td>
+					<td id="points2">5000</td>
+					<td id="ping2">20</td>
+				</tr> -->
+				</tbody>
+			</table>
+			<table id="table3">
+				<tbody id="table3tbody">
+				<tr id="firstrow">
+					<th id="team3">RU</th>
+					<th id="tickets3">50</th>
+					<th id="killsHeader3">K</th>
+					<th id="deathsHeader3">D</th>
+					<th id="scoreHeader3">SCORE</th>
+					<th id="pingHeader3">PING</th>
+				</tr>
+			<!--	<tr>
+					<td id="place3">9</td>
+					<td id="name3">Flash_Hit</td>
+					<td id="kills3">50</td>
+					<td id="deaths3">50</td>
+					<td id="points3">50</td>
+					<td id="ping3">50</td>
+				</tr> -->
+				</tbody>
+			</table>
+			<table id="table4">
+				<tbody id="table4tbody">
+				<tr id="firstrow">
+					<th id="team4">RU</th>
+					<th id="tickets4">50</th>
+					<th id="killsHeader4">K</th>
+					<th id="deathsHeader4">D</th>
+					<th id="scoreHeader4">SCORE</th>
+					<th id="pingHeader4">PING</th>
+				</tr>
+			<!--	<tr>
+					<td id="place4">9</td>
+					<td id="name4">Flash_Hit</td>
+					<td id="kills4">50</td>
+					<td id="deaths4">50</td>
+					<td id="points4">50</td>
+					<td id="ping4">50</td>
+				</tr> -->
+				</tbody>
+			</table>
+		</div>
+		<div id="popup">
+		</div>
+	</div>
+	<div id="adminpanelpopup"></div>
+	<div id="showLocalPing"><p>Ping: <span>999 ms</span></p></div>
+	<div id="banner">
+		<div id="bannerContainer">
+			<div id="bannerHeader">
+				<p>Server Name</p>
+			</div>
+			<div id="bannerImg">
+				<div id="bannerImgSrc"></div>
+			</div>
+			<div id="bannerDescription">
+				<p>Server Description</p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
