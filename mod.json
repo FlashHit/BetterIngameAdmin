@@ -5,5 +5,8 @@
 	"URL": "none",
 	"Version": "0.0.1",
 	"HasWebUI": true,
-	"HasVeniceEXT": true
+	"HasVeniceEXT": true,
+	"Dependencies": {
+        "veniceext": "^1.0.1"
+    }
 }
