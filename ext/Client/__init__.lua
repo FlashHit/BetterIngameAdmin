@@ -906,7 +906,7 @@ function BetterIngameAdmin:UpdateUI(player)
 			playerListTeam1 = PlayerManager:GetPlayersByTeam(TeamId.Team4)
 		end
 	end
-	local scoreboardHeader = {team1, tickets1, team2, tickets2, player.name, player.squadId, player.isSquadLeader}
+	local scoreboardHeader = {team1, tickets1, team2, tickets2, player.name, player.squadId, player.isSquadLeader, player.isSquadPrivate}
 	WebUI:ExecuteJS(string.format("updateScoreboardHeader(%s)", json.encode(scoreboardHeader)))
 	
 	if gameMode == "SquadDeathMatch0" then
