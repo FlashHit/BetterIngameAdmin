@@ -600,7 +600,7 @@ end
 function BetterIngameAdmin:OnJoinSquad(player, playerName)
 	local targetPlayer = PlayerManager:GetPlayerByName(playerName)
 	if targetPlayer ~= nil then
-		if targetPlayer.isSquadPrivate == false and self.serverConfig[43] < TeamSquadManager:GetSquadPlayerCount(targetPlayer.teamId, targetPlayer.squadId) then
+		if targetPlayer.isSquadPrivate == false and self.serverConfig[43] > TeamSquadManager:GetSquadPlayerCount(targetPlayer.teamId, targetPlayer.squadId) then
 			player.squadId = targetPlayer.squadId
 		else
 			NetEvents:SendTo('ErrorJoiningSquad', player) -- Not Implemented yet
