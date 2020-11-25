@@ -28,6 +28,7 @@ place4 = 0;
 localPlayer = "";
 localPlayerSquad = 9999;
 localPlayerIsSquadLeader = false;
+localPlayerIsSquadPrivate = false;
 localPing = 123
 /* Endregion */
 
@@ -275,7 +276,13 @@ function localSquad() {
 	document.getElementById("popup").innerHTML = '<div id="titlepopup">Actions for your squad<div id="close" onclick="closepopup()"></div></div>';
 	document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
 	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="leaveSquad()">Leave Squad</div>';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="privateSquad()">Toggle Private Squad</div>';
+	if(localPlayerIsSquadPrivate == true){
+		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="privateSquad()">Open Squad</div>';
+		localPlayerIsSquadPrivate = false;
+	}else{
+		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="privateSquad()">Close Squad</div>';
+		localPlayerIsSquadPrivate = true;
+	}
 	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
 	{
 		document.getElementById("popupelements").style.height = "100%";	
@@ -1657,6 +1664,7 @@ function updateScoreboardHeader(scoreboardHeader)
 	localPlayer = scoreboardHeader[4];
 	localPlayerSquad = scoreboardHeader[5];
 	localPlayerIsSquadLeader = scoreboardHeader[6];
+	localPlayerIsSquadPrivate = scoreboardHeader[7];
 }
 
 function updateScoreboardHeader2(scoreboardHeader)
