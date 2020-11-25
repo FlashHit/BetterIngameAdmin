@@ -1298,17 +1298,83 @@ function resetFieldOfView() {
 function saveFieldOfView() {
 	WebUI.Call('ResetKeyboard');
 	const args = [];
-	args.push(document.getElementById("actualFov").value);
-	args.push(document.getElementById("ironSightsFov").value);
-	args.push(document.getElementById("holoFov").value);
-	args.push(document.getElementById("3xFov").value);
-	args.push(document.getElementById("4xFov").value);
-	args.push(document.getElementById("6xFov").value);
-	args.push(document.getElementById("7xFov").value);
-	args.push(document.getElementById("8xFov").value);
-	args.push(document.getElementById("10xFov").value);
-	args.push(document.getElementById("12xFov").value);
-	args.push(document.getElementById("20xFov").value);
+	if(document.getElementById("actualFov").value > 160){
+		args.push(160);
+	}else if(document.getElementById("actualFov").value < 60){
+		args.push(60);
+	}else{
+		args.push(document.getElementById("actualFov").value);
+	}
+	if(document.getElementById("ironSightsFov").value > 160){
+		args.push(160);
+	}else if(document.getElementById("ironSightsFov").value < 51.774){
+		args.push(51.774);
+	}else{
+		args.push(document.getElementById("ironSightsFov").value);
+	}
+	if(document.getElementById("holoFov").value > 51.774){
+		args.push(51.774);
+	}else if(document.getElementById("holoFov").value < 41.846){
+		args.push(41.846);
+	}else{
+		args.push(document.getElementById("holoFov").value);
+	}
+	if(document.getElementById("3xFov").value > 41.846){
+		args.push(41.846);
+	}else if(document.getElementById("3xFov").value < 26.46){
+		args.push(26.46);
+	}else{
+		args.push(document.getElementById("3xFov").value);
+	}
+	if(document.getElementById("4xFov").value > 26.46){
+		args.push(26.46);
+	}else if(document.getElementById("4xFov").value < 22.801){
+		args.push(22.801);
+	}else{
+		args.push(document.getElementById("4xFov").value);
+	}
+	if(document.getElementById("6xFov").value > 22.801){
+		args.push(22.801);
+	}else if(document.getElementById("6xFov").value < 15.425){
+		args.push(15.425);
+	}else{
+		args.push(document.getElementById("6xFov").value);
+	}
+	if(document.getElementById("7xFov").value > 15.425){
+		args.push(15.425);
+	}else if(document.getElementById("7xFov").value < 13.174){
+		args.push(13.174);
+	}else{
+		args.push(document.getElementById("7xFov").value);
+	}
+	if(document.getElementById("8xFov").value > 13.174){
+		args.push(13.174);
+	}else if(document.getElementById("8xFov").value < 11.582){
+		args.push(11.582);
+	}else{
+		args.push(document.getElementById("8xFov").value);
+	}
+	if(document.getElementById("10xFov").value > 11.582){
+		args.push(11.582);
+	}else if(document.getElementById("10xFov").value < 9.324){
+		args.push(9.324);
+	}else{
+		args.push(document.getElementById("10xFov").value);
+	}
+	if(document.getElementById("12xFov").value > 9.324){
+		args.push(9.324);
+	}else if(document.getElementById("12xFov").value < 7.728){
+		args.push(7.728);
+	}else{
+		args.push(document.getElementById("12xFov").value);
+	}
+	if(document.getElementById("20xFov").value > 7.728){
+		args.push(7.728);
+	}else if(document.getElementById("20xFov").value < 4.665){
+		args.push(4.665);
+	}else{
+		args.push(document.getElementById("20xFov").value);
+	}
 	WebUI.Call('DispatchEvent', 'WebUI:SetFieldOfView', JSON.stringify(args));
 	closeSmart();
 }
