@@ -934,7 +934,9 @@ function BetterIngameAdmin:UpdateUI(player)
 		if self.pingTable[player.name] ~= nil and self.pingTable[player.name] >= 0 and self.pingTable[player.name] < 999 then
 			ping = self.pingTable[player.name]
 		end
-		local sendThis1 = {index, player.name, player.kills, player.deaths, player.score, player.squadId, player.alive, kit, ping}
+		print(player.name)
+		print(player.isSquadPrivate)
+		local sendThis1 = {index, player.name, player.kills, player.deaths, player.score, player.squadId, player.alive, kit, ping, player.isSquadPrivate}
 		WebUI:ExecuteJS(string.format("updateScoreboardBody1(%s)", json.encode(sendThis1)))
 	end
 	
