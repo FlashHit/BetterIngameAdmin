@@ -1276,30 +1276,6 @@ function saveMouseSensitivityMultipliers() {
 	closeSmart();
 }
 
-function fieldOfView() {
-	WebUI.Call('DispatchEvent', 'WebUI:GetFieldOfView');
-	document.getElementById("popup").innerHTML = '<div id="titlepopup">Field Of View<div id="close" onclick="keyboardResetAndClosepopup()"></div></div>';
-	document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
-	document.getElementById("popupelements").innerHTML += '<label id="labelFirstMarginTop">Default FOV</label><input id="defaultBaseFieldOfView" type="number" step="0.01" min="55" max="160" value="55">';
-	document.getElementById("popupelements").innerHTML += '<label>Iron Sights, Kobra, RDS FOV</label><input id="defaultIronSightsFieldOfView" type="number" step="0.01" min="40" max="160" value="40">';
-	document.getElementById("popupelements").innerHTML += '<label>HOLO FOV</label><input id="x2_0xZoomFieldOfView" type="number" step="0.01" min="32" max="160" value="32">';
-	document.getElementById("popupelements").innerHTML += '<label>3.4x FOV</label><input id="x3_4xZoomFieldOfView" type="number" step="0.01" min="20" max="160" value="20">';
-	document.getElementById("popupelements").innerHTML += '<label>4x FOV</label><input id="x4_0xZoomFieldOfView" type="number" step="0.01" min="17.2" max="160" value="17.2">';
-	document.getElementById("popupelements").innerHTML += '<label>6x FOV</label><input id="x6_0xZoomFieldOfView" type="number" step="0.01" min="11.6" max="160" value="11.6">';
-	document.getElementById("popupelements").innerHTML += '<label>7x FOV</label><input id="x7_0xZoomFieldOfView" type="number" step="0.01" min="9.899999" max="160" value="9.899999">';
-	document.getElementById("popupelements").innerHTML += '<label>8x FOV</label><input id="x8_0xZoomFieldOfView" type="number" step="0.01" min="8.699999" max="160" value="8.699999">';
-	document.getElementById("popupelements").innerHTML += '<label>10x FOV</label><input id="x10_0xZoomFieldOfView" type="number" step="0.01" min="7" max="160" value="7">';
-	document.getElementById("popupelements").innerHTML += '<label>12x FOV</label><input id="x12_0xZoomFieldOfView" type="number" step="0.01" min="5.8" max="160" value="5.8">';
-	document.getElementById("popupelements").innerHTML += '<label>20x FOV</label><input id="x20xZoomFieldOfView" type="number" step="0.01" min="3.5" max="160" value="3.5">';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="saveFieldOfView()">Save</div>';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="resetFieldOfView()">Reset</div>';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="keyboardResetAndClosepopup()">Cancel</div>';
-	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
-	{
-		document.getElementById("popupelements").style.height = "100%";	
-	}
-}
-
 function getFieldOfView(args) {
 	document.getElementById("actualFov").value = Number((args[0]).toFixed(4));
 	document.getElementById("ironSightsFov").value = Number((args[1]).toFixed(4));
