@@ -24,6 +24,11 @@ place3 = 0;
 place4 = 0;
 /* Endregion */
 
+/* Region SquadCount */
+const squadCount = [];
+maxSquadSize = 4;
+/* Endregion */
+
 /* Region Local Player */
 localPlayer = "";
 localPlayerSquad = 9999;
@@ -60,7 +65,7 @@ varsPresetHardcoreNoMap = true;
 /* Endregion */
 
 /* Region PopUp (gets triggered on click on playerName on scoreboard */
-function action(playerName ,squadId)
+function action(playerName ,squadId, isSquadPrivate)
 {
 	WebUI.Call('DispatchEvent', 'WebUI:IgnoreReleaseTab');
 	document.getElementById("popup").style.display = "inline";
@@ -88,7 +93,7 @@ function action(playerName ,squadId)
 		}
 		if(squadId == localPlayerSquad && localPlayerIsSquadLeader == true) {
 			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="squad(&apos;'+playerName+'&apos;)">Squad</div>';
-		}else if(squadId != localPlayerSquad && squadId != 0) {
+		}else if(squadId != localPlayerSquad && squadId != 0 && squadCount[squadId] < maxSquadSize && isSquadPrivate == false) {
 			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="joinSquad(&apos;'+playerName+'&apos;)">Join Squad</div>';
 		}
 		if(admin == true){
@@ -496,6 +501,7 @@ function getGeneralSettings(args) {
 	document.getElementById("suppressionMultiplier").value = args[40];
 	document.getElementById("timeScale").value = args[41];
 	document.getElementById("squadSize").value = args[42];
+	maxSquadSize = args[42];
 	document.getElementById("serverBannerURL").value = args[43];
 }
 function getMapSettings(args) {
@@ -1694,6 +1700,7 @@ function assist()
 /* Region Scoreboard */
 function updateScoreboardHeader(scoreboardHeader)
 {
+	squadCount.length = 0
 	place1 = 0;
 	place2 = 0;
 	document.getElementById("table1").innerHTML = '<tbody id="table1tbody"><tr id="firstrow"><th id="team1">US</th><th id="tickets1"></th><th id="killsHeader1">K</th><th id="deathsHeader1">D</th><th id="scoreHeader1">SCORE</th><th id="pingHeader1">PING</th></tr></tbody>';
@@ -1726,26 +1733,31 @@ function updateScoreboardHeader2(scoreboardHeader)
 
 function updateScoreboardBody1(sendThis1) 
 {
+	if(squadCount[sendThis1[5]] == null){
+		squadCount[sendThis1[5]] = 1;
+	}else{
+		squadCount[sendThis1[5]] += 1;
+	}
 	place1 += 1;
 	if(localPlayer == sendThis1[1]) {
 		localPing = sendThis1[8];
 		document.getElementById("showLocalPing").innerHTML = '<p>Ping: <span>'+localPing+' ms</span></p>';
 		if(sendThis1[6] == true){
-			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+')" id="localPlayerScoreboard" class="'+sendThis1[7]+'"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
+			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+', '+sendThis1[9]+')" id="localPlayerScoreboard" class="'+sendThis1[7]+'"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
 		}else{
-			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+')" id="localPlayerScoreboard" class="'+sendThis1[7]+' isDead"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
+			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+', '+sendThis1[9]+')" id="localPlayerScoreboard" class="'+sendThis1[7]+' isDead"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
 		}
 	}else if(localPlayerSquad == sendThis1[5] && localPlayerSquad != 0) {
 		if(sendThis1[6] == true){
-			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+')" id="squadMates" class="'+sendThis1[7]+'"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
+			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+', '+sendThis1[9]+')" id="squadMates" class="'+sendThis1[7]+'"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
 		}else{
-			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+')" id="squadMates" class="'+sendThis1[7]+' isDead"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
+			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+', '+sendThis1[9]+')" id="squadMates" class="'+sendThis1[7]+' isDead"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
 		}
 	}else{
 		if(sendThis1[6] == true){
-			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+')" class="squad'+sendThis1[5]+' '+sendThis1[7]+'" onmouseover="showWholeSquad(&apos;squad'+sendThis1[5]+'&apos;)" onmouseout="hideWholeSquad(&apos;squad'+sendThis1[5]+'&apos;)"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
+			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+', '+sendThis1[9]+')" class="squad'+sendThis1[5]+' '+sendThis1[7]+'" onmouseover="showWholeSquad(&apos;squad'+sendThis1[5]+'&apos;)" onmouseout="hideWholeSquad(&apos;squad'+sendThis1[5]+'&apos;)"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
 		}else{
-			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+')" class="squad'+sendThis1[5]+' '+sendThis1[7]+' isDead" onmouseover="showWholeSquad(&apos;squad'+sendThis1[5]+'&apos;)" onmouseout="hideWholeSquad(&apos;squad'+sendThis1[5]+'&apos;)"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
+			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+', '+sendThis1[9]+')" class="squad'+sendThis1[5]+' '+sendThis1[7]+' isDead" onmouseover="showWholeSquad(&apos;squad'+sendThis1[5]+'&apos;)" onmouseout="hideWholeSquad(&apos;squad'+sendThis1[5]+'&apos;)"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
 		}
 	}
 }
@@ -1753,9 +1765,9 @@ function updateScoreboardBody2(sendThis2)
 {
 	place2 += 1;
 	if(sendThis2[5] == true){
-		document.getElementById("table2tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis2[1]+'&apos;, '+0+')"><td id="place2">'+place2+'</td><td id="name2">'+sendThis2[1]+'</td><td id="kills2">'+sendThis2[2]+'</td><td id="deaths2">'+sendThis2[3]+'</td><td id="points2">'+sendThis2[4]+'</td><td id="ping2">'+sendThis2[6]+'</td></tr>';
+		document.getElementById("table2tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis2[1]+'&apos;, '+0+', '+true+')"><td id="place2">'+place2+'</td><td id="name2">'+sendThis2[1]+'</td><td id="kills2">'+sendThis2[2]+'</td><td id="deaths2">'+sendThis2[3]+'</td><td id="points2">'+sendThis2[4]+'</td><td id="ping2">'+sendThis2[6]+'</td></tr>';
 	}else{
-		document.getElementById("table2tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis2[1]+'&apos;, '+0+')" class="isDead"><td id="place2">'+place2+'</td><td id="name2">'+sendThis2[1]+'</td><td id="kills2">'+sendThis2[2]+'</td><td id="deaths2">'+sendThis2[3]+'</td><td id="points2">'+sendThis2[4]+'</td><td id="ping2">'+sendThis2[6]+'</td></tr>';
+		document.getElementById("table2tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis2[1]+'&apos;, '+0+', '+true+')" class="isDead"><td id="place2">'+place2+'</td><td id="name2">'+sendThis2[1]+'</td><td id="kills2">'+sendThis2[2]+'</td><td id="deaths2">'+sendThis2[3]+'</td><td id="points2">'+sendThis2[4]+'</td><td id="ping2">'+sendThis2[6]+'</td></tr>';
 	}
 }
 function updateScoreboardBody3(size) 
