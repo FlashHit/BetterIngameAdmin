@@ -501,7 +501,6 @@ function BetterIngameAdmin:OnWebUIGetMouseSensitivityMultipliers()
 					self.x12_0xZoom.lookSpeedMultiplier,
 					self.x20xZoom.lookSpeedMultiplier
 				 }
-	print(args)
 	WebUI:ExecuteJS(string.format("getMouseSensitivityMultipliers(%s)", json.encode(args)))
 end
 
@@ -564,7 +563,6 @@ function BetterIngameAdmin:OnWebUIGetFieldOfView()
 					VDEGtoHDEG(self.x12_0xZoom.fieldOfView),
 					VDEGtoHDEG(self.x20xZoom.fieldOfView)
 				 }
-	print(args)
 	WebUI:ExecuteJS(string.format("getFieldOfView(%s)", json.encode(args)))
 end
 
@@ -934,8 +932,6 @@ function BetterIngameAdmin:UpdateUI(player)
 		if self.pingTable[player.name] ~= nil and self.pingTable[player.name] >= 0 and self.pingTable[player.name] < 999 then
 			ping = self.pingTable[player.name]
 		end
-		print(player.name)
-		print(player.isSquadPrivate)
 		local sendThis1 = {index, player.name, player.kills, player.deaths, player.score, player.squadId, player.alive, kit, ping, player.isSquadPrivate}
 		WebUI:ExecuteJS(string.format("updateScoreboardBody1(%s)", json.encode(sendThis1)))
 	end
@@ -1032,7 +1028,6 @@ end
 
 function BetterIngameAdmin:OnUIPushScreen(hook, screen, graphPriority, parentGraph)
     local screen = UIGraphAsset(screen)
-	print(screen.name)
 	if screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardTwoTeamsScreen' then
 		local screenClone = UIScreenAsset(ResourceManager:SearchForDataContainer("UI/Flow/Screen/ScoreboardBackScreen"))
 		screenClone:MakeWritable()
@@ -1131,7 +1126,6 @@ function BetterIngameAdmin:OnWebUIGetMapSettings()
 end
 
 function BetterIngameAdmin:OnMapSettings(args)
-	print(args)
 	WebUI:ExecuteJS(string.format("getMapSettings(%s)", json.encode(args)))
 end
 
