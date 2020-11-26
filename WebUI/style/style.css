@@ -503,11 +503,12 @@ input[type="checkbox"]:checked + label:after {
 #labelFirstMarginTop {
 	margin-top: 15px;
 }
-	/* I use this for EditAdminRights I think */
+	/* I use this for EditAdminRights I think  -- Yep. */
 #checkBoxSwitches {
+	margin-top: 50px;
     width: 200px;
     text-align: left;
-    margin-left: 150px;
+    margin-left: 110px;
 }
 /* Endregion */
 
