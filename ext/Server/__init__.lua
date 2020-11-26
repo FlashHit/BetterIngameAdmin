@@ -330,15 +330,29 @@ end
 -- Endregion
 
 -- Region Vote stuff
+	-- use reservedSlotsList for admin protection as soon as this get implemented
 function BetterIngameAdmin:OnVotekickPlayer(player, votekickPlayer)
 	if self.voteInProgress == false then
 		self.playerToVote = PlayerManager:GetPlayerByName(votekickPlayer)
 		if self.playerToVote ~= nil then
+			for _,admin in pairs(self.adminList) do
+				local privileges = admin:split(" ")
+				if self.playerToVote.name == privileges[1] then
+					for _,privilege in pairs(privileges) do
+						if privilege == "canKick" then	
+							NetEvents:SendTo('ThisPlayerIsProtected', player)	
+							return
+						end
+					end
+					break
+				end
+			end
 			NetEvents:Broadcast('Start:VotekickPlayer', votekickPlayer)
 			table.insert(self.playersVotedYes, player.name)
 			self.playersVotedYesCount = self.playersVotedYesCount + 1
 			self.voteInProgress = true
 			self.typeOfVote = "votekick"
+			return
 		end
 	else
 		NetEvents:SendTo('VoteInProgress', player)
@@ -349,11 +363,24 @@ function BetterIngameAdmin:OnVotebanPlayer(player, votebanPlayer)
 	if self.voteInProgress == false then
 		self.playerToVote = PlayerManager:GetPlayerByName(votebanPlayer)
 		if self.playerToVote ~= nil then
+			for _,admin in pairs(self.adminList) do
+				local privileges = admin:split(" ")
+				if self.playerToVote.name == privileges[1] then
+					for _,privilege in pairs(privileges) do
+						if privilege == "canKick" then	
+							NetEvents:SendTo('ThisPlayerIsProtected', player)
+							return
+						end
+					end
+					break
+				end
+			end
 			NetEvents:Broadcast('Start:VotebanPlayer', votebanPlayer)
 			table.insert(self.playersVotedYes, player.name)
 			self.playersVotedYesCount = self.playersVotedYesCount + 1
 			self.voteInProgress = true
 			self.typeOfVote = "voteban"
+			return
 		end
 	else
 		NetEvents:SendTo('VoteInProgress', player)
