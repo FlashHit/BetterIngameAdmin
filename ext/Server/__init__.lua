@@ -22,7 +22,8 @@ function BetterIngameAdmin:RegisterVars()
 	-- Endregion
 	
 	-- Region AdminList
-	self.adminList = {"voteban_flash canMove canKill canKick canTban canBan canEditAdminRights"} --
+	self.adminList = {"voteban_flash canMove canKill canKick canTban canBan canEditAdminRights canEditBanList canEditMapList canUseMapFunctions canAlterServerSettings canEditReservedSlotsList canEditTextChatModerationList canShutdownServer"} --
+		-- self.adminList = {voteban_flash = {true, true, true, true, true, true, true, true, true, true, true, true, true}}
 	-- Endregion
 	
 	-- Region ServerBanner LoadingScreen
@@ -459,93 +460,153 @@ end
 
 -- Region Admin actions for players
 function BetterIngameAdmin:OnMovePlayer(player, args)
-	local t_Player = PlayerManager:GetPlayerByName(args[1])
-	if t_Player ~= nil then
-		RCON:SendCommand('admin.movePlayer', {t_Player.name, args[2], args[3], "true"})
-		RCON:SendCommand('squad.private', {tostring(t_Player.teamId), tostring(t_Player.squadId), "false"})
-		if args[4] ~= nil and args[4] ~= "" then
-			RCON:SendCommand('admin.say', {"Reason for move: "..args[4], "player", t_Player.name})
-			-- better send a net event to him
-			-- NetEvents:SendTo('MovedByAdminMessage', t_Player, {args[4]})
+	for _,admin in pairs(self.adminList) do
+		local privileges = admin:split(" ")
+		if player.name == privileges[1] then
+			for _,privilege in pairs(privileges) do
+				if privilege == "canMove" then
+					local t_Player = PlayerManager:GetPlayerByName(args[1])
+					if t_Player ~= nil then
+						RCON:SendCommand('admin.movePlayer', {t_Player.name, args[2], args[3], "true"})
+						RCON:SendCommand('squad.private', {tostring(t_Player.teamId), tostring(t_Player.squadId), "false"})
+						if args[4] ~= nil and args[4] ~= "" then
+							RCON:SendCommand('admin.say', {"Reason for move: "..args[4], "player", t_Player.name})
+							-- better send a net event to him
+							-- NetEvents:SendTo('MovedByAdminMessage', t_Player, {args[4]})
+						end
+						-- send confirm to player and message to target
+						-- NetEvents:SendTo('MovedByAdminMessage', t_Player, {"Admin decision"})
+						-- NetEvents:SendTo('ConfirmMovedPlayer', player)
+					else
+						--send error to player
+						-- NetEvents:SendTo('RejectMovedPlayer', player) -- Player not found
+					end
+					return
+				end
+			end
 		end
-		-- send confirm to player and message to target
-		-- NetEvents:SendTo('MovedByAdminMessage', t_Player, {"Admin decision"})
-		-- NetEvents:SendTo('ConfirmMovedPlayer', player)
-	else
-		--send error to player
-		-- NetEvents:SendTo('RejectMovedPlayer', player) -- Player not found
 	end
 end
 
 function BetterIngameAdmin:OnKillPlayer(player, args)
-	local t_Player = PlayerManager:GetPlayerByName(args[1])
-	if t_Player ~= nil then
-		if t_Player.alive == true then
-			RCON:SendCommand('admin.killPlayer', {t_Player.name})
-			RCON:SendCommand('admin.say', {"Reason for kill: "..args[2], "player", t_Player.name})
-		elseif player.corpse ~= nil and player.corpse.isDead == false then
-			t_Player.corpse:ForceDead()
-			RCON:SendCommand('admin.say', {"Reason for kill: "..args[2], "player", t_Player.name})
-		else
-			-- send error to player
+	for _,admin in pairs(self.adminList) do
+		local privileges = admin:split(" ")
+		if player.name == privileges[1] then
+			for _,privilege in pairs(privileges) do
+				if privilege == "canKill" then
+					local t_Player = PlayerManager:GetPlayerByName(args[1])
+					if t_Player ~= nil then
+						if t_Player.alive == true then
+							RCON:SendCommand('admin.killPlayer', {t_Player.name})
+							RCON:SendCommand('admin.say', {"Reason for kill: "..args[2], "player", t_Player.name})
+						elseif player.corpse ~= nil and player.corpse.isDead == false then
+							t_Player.corpse:ForceDead()
+							RCON:SendCommand('admin.say', {"Reason for kill: "..args[2], "player", t_Player.name})
+						else
+							-- send error to player
+						end
+					end
+					return
+				end
+			end
 		end
 	end
 end
 
 function BetterIngameAdmin:OnKickPlayer(player, args)
-	local t_Player = PlayerManager:GetPlayerByName(args[1])
-	if t_Player ~= nil then
-		if args[2]~= nil and args[2] ~= "" then
-			t_Player:Kick(""..args[2].." (".. player.name..")")
-		else
-			t_Player:Kick("Kicked by ".. player.name.."")
+	for _,admin in pairs(self.adminList) do
+		local privileges = admin:split(" ")
+		if player.name == privileges[1] then
+			for _,privilege in pairs(privileges) do
+				if privilege == "canKick" then
+					local t_Player = PlayerManager:GetPlayerByName(args[1])
+					if t_Player ~= nil then
+						if args[2]~= nil and args[2] ~= "" then
+							t_Player:Kick(""..args[2].." (".. player.name..")")
+						else
+							t_Player:Kick("Kicked by ".. player.name.."")
+						end
+					end
+					return
+				end
+			end
 		end
 	end
 end
 
 function BetterIngameAdmin:OnTBanPlayer(player, args)
-	local t_Player = PlayerManager:GetPlayerByName(args[1])
-	if t_Player ~= nil then
-		if args[3]~= nil and args[3] ~= "" then
-			t_Player:BanTemporarily(args[2]*60, ""..args[3].." (".. player.name..") "..args[2].." minutes")
-		else
-			t_Player:BanTemporarily(args[2]*60, "Temporarily banned by ".. player.name.." for "..args[2].." minutes")
+	for _,admin in pairs(self.adminList) do
+		local privileges = admin:split(" ")
+		if player.name == privileges[1] then
+			for _,privilege in pairs(privileges) do
+				if privilege == "canTban" then
+					local t_Player = PlayerManager:GetPlayerByName(args[1])
+					if t_Player ~= nil then
+						if args[3]~= nil and args[3] ~= "" then
+							t_Player:BanTemporarily(args[2]*60, ""..args[3].." (".. player.name..") "..args[2].." minutes")
+						else
+							t_Player:BanTemporarily(args[2]*60, "Temporarily banned by ".. player.name.." for "..args[2].." minutes")
+						end
+					end
+					return
+				end
+			end
 		end
 	end
 end
 
 function BetterIngameAdmin:OnBanPlayer(player, args)
-	local t_Player = PlayerManager:GetPlayerByName(args[1])
-	if t_Player ~= nil then
-		if args[2]~= nil and args[2] ~= "" then
-			t_Player:Ban(""..args[2].." (".. player.name..")")
-		else
-			t_Player:Ban("Banned by ".. player.name.."")
+	for _,admin in pairs(self.adminList) do
+		local privileges = admin:split(" ")
+		if player.name == privileges[1] then
+			for _,privilege in pairs(privileges) do
+				if privilege == "canBan" then
+					local t_Player = PlayerManager:GetPlayerByName(args[1])
+					if t_Player ~= nil then
+						if args[2]~= nil and args[2] ~= "" then
+							t_Player:Ban(""..args[2].." (".. player.name..")")
+						else
+							t_Player:Ban("Banned by ".. player.name.."")
+						end
+						
+					end
+					return
+				end
+			end
 		end
-		
 	end
 end
 
 function BetterIngameAdmin:OnUpdateAdminRights(player, args)
-	local t_Player = PlayerManager:GetPlayerByName(args[1])
-	if t_Player ~= nil then
-		for i,admin in pairs(self.adminList) do
-			local parts = admin:split(' ')
-			if t_Player.name == parts[1] then
-				table.remove(self.adminList, i)
+	for _,admin in pairs(self.adminList) do
+		local privileges = admin:split(" ")
+		if player.name == privileges[1] then
+			for _,privilege in pairs(privileges) do
+				if privilege == "canEditAdminRights" then
+					local t_Player = PlayerManager:GetPlayerByName(args[1])
+					if t_Player ~= nil then
+						for i,admin in pairs(self.adminList) do
+							local parts = admin:split(' ')
+							if t_Player.name == parts[1] then
+								table.remove(self.adminList, i)
+							end
+						end
+						NetEvents:SendTo('AdminPlayer', t_Player, args)
+						local insertThis = ""
+						for i,canThis in pairs(args) do
+							if i == 1 then
+								insertThis = canThis
+							else
+								insertThis = insertThis .. " " .. canThis
+							end
+						end
+						if args[2]~= nil then
+							table.insert(self.adminList, insertThis)
+						end
+					end
+					return
+				end
 			end
-		end
-		NetEvents:SendTo('AdminPlayer', t_Player, args)
-		local insertThis = ""
-		for i,canThis in pairs(args) do
-			if i == 1 then
-				insertThis = canThis
-			else
-				insertThis = insertThis .. " " .. canThis
-			end
-		end
-		if args[2]~= nil then
-			table.insert(self.adminList, insertThis)
 		end
 	end
 end
@@ -600,7 +661,7 @@ end
 function BetterIngameAdmin:OnJoinSquad(player, playerName)
 	local targetPlayer = PlayerManager:GetPlayerByName(playerName)
 	if targetPlayer ~= nil then
-		if targetPlayer.isSquadPrivate == false and self.serverConfig[43] > TeamSquadManager:GetSquadPlayerCount(targetPlayer.teamId, targetPlayer.squadId) then
+		if player.teamId == targetPlayer.teamId and targetPlayer.isSquadPrivate == false and tonumber(self.serverConfig[43]) > TeamSquadManager:GetSquadPlayerCount(targetPlayer.teamId, targetPlayer.squadId) then
 			player.squadId = targetPlayer.squadId
 		else
 			NetEvents:SendTo('ErrorJoiningSquad', player) -- Not Implemented yet
@@ -609,7 +670,7 @@ function BetterIngameAdmin:OnJoinSquad(player, playerName)
 end
 
 function BetterIngameAdmin:OnPrivateSquad(player)
-	if player.isSquadPrivate == false then
+	if player.isSquadPrivate == false and player.isSquadLeader == true then
 		RCON:SendCommand('squad.private', {tostring(player.teamId), tostring(player.squadId), "true"})
 	else
 		RCON:SendCommand('squad.private', {tostring(player.teamId), tostring(player.squadId), "false"})
@@ -618,14 +679,14 @@ end
 
 function BetterIngameAdmin:OnKickFromSquad(player, playerName)
 	local targetPlayer = PlayerManager:GetPlayerByName(playerName)
-	if targetPlayer ~= nil then
+	if targetPlayer ~= nil and player.isSquadLeader == true then
 		targetPlayer.squadId = SquadId.SquadNone
 	end
 end
 
 function BetterIngameAdmin:OnMakeSquadLeader(player, playerName)
 	local targetPlayer = PlayerManager:GetPlayerByName(playerName)
-	if targetPlayer ~= nil then
+	if targetPlayer ~= nil and player.isSquadLeader == true then
 		RCON:SendCommand('squad.leader', {tostring(targetPlayer.teamId), tostring(targetPlayer.squadId), playerName})
 	end
 end
@@ -654,18 +715,48 @@ function BetterIngameAdmin:OnGetMapRotation(player)
 end
 
 function BetterIngameAdmin:OnSetNextMap(player, mapIndex)
-	mapIndex = tonumber(mapIndex) - 1
-	RCON:SendCommand('mapList.setNextMapIndex', {tostring(mapIndex)})
-	self:OnGetMapRotation(player)
-	--TODO Broadcast update maplist
+	for _,admin in pairs(self.adminList) do
+		local privileges = admin:split(" ")
+		if player.name == privileges[1] then
+			for _,privilege in pairs(privileges) do
+				if privilege == "canUseMapFunctions" then	
+					mapIndex = tonumber(mapIndex) - 1
+					RCON:SendCommand('mapList.setNextMapIndex', {tostring(mapIndex)})
+					self:OnGetMapRotation(player)
+					--TODO Broadcast update maplist
+					return
+				end
+			end
+		end
+	end
 end
 
 function BetterIngameAdmin:OnRunNextRound(player)
-	RCON:SendCommand('mapList.runNextRound')
+	for _,admin in pairs(self.adminList) do
+		local privileges = admin:split(" ")
+		if player.name == privileges[1] then
+			for _,privilege in pairs(privileges) do
+				if privilege == "canUseMapFunctions" then	
+					RCON:SendCommand('mapList.runNextRound')
+					return
+				end
+			end
+		end
+	end
 end
 
 function BetterIngameAdmin:OnRestartRound(player)
-	RCON:SendCommand('mapList.restartRound')
+	for _,admin in pairs(self.adminList) do
+		local privileges = admin:split(" ")
+		if player.name == privileges[1] then
+			for _,privilege in pairs(privileges) do
+				if privilege == "canUseMapFunctions" then	
+					RCON:SendCommand('mapList.restartRound')
+					return
+				end
+			end
+		end
+	end
 end
 -- Enregion
 
@@ -708,25 +799,45 @@ function BetterIngameAdmin:OnGetServerSetupSettings(player)
 end
 
 function BetterIngameAdmin:OnSaveServerSetupSettings(player, args)
-	RCON:SendCommand('vars.serverName', {args[1]})
-	RCON:SendCommand('vars.serverDescription', {args[2]})
-	RCON:SendCommand('vars.serverMessage', {args[3]})
-	RCON:SendCommand('vars.gamePassword', {args[4]})
+	for _,admin in pairs(self.adminList) do
+		local privileges = admin:split(" ")
+		if player.name == privileges[1] then
+			for _,privilege in pairs(privileges) do
+				if privilege == "canAlterServerSettings" then	
+					RCON:SendCommand('vars.serverName', {args[1]})
+					RCON:SendCommand('vars.serverDescription', {args[2]})
+					RCON:SendCommand('vars.serverMessage', {args[3]})
+					RCON:SendCommand('vars.gamePassword', {args[4]})
+					return
+				end
+			end
+		end
+	end
 end
 -- Endregion
 
 -- Region Manage Presets
 function BetterIngameAdmin:OnManagePresets(player, args)
-	if args[1] == "normal" then
-		self:PresetNormal()
-	elseif args[1] == "hardcore" then
-		self:PresetHardcore()
-	elseif args[1] == "infantry" then
-		self:PresetInfantry()
-	elseif args[1] == "hardcoreNoMap" then
-		self:PresetHardcoreNoMap()
-	elseif args[1] == "custom" then
-		--self:PresetCustom(args)
+	for _,admin in pairs(self.adminList) do
+		local privileges = admin:split(" ")
+		if player.name == privileges[1] then
+			for _,privilege in pairs(privileges) do
+				if privilege == "canAlterServerSettings" then	
+					if args[1] == "normal" then
+						self:PresetNormal()
+					elseif args[1] == "hardcore" then
+						self:PresetHardcore()
+					elseif args[1] == "infantry" then
+						self:PresetInfantry()
+					elseif args[1] == "hardcoreNoMap" then
+						self:PresetHardcoreNoMap()
+					elseif args[1] == "custom" then
+						--self:PresetCustom(args)
+					end
+					return
+				end
+			end
+		end
 	end
 end
 function BetterIngameAdmin:PresetNormal()
