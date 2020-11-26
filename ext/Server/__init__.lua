@@ -26,6 +26,13 @@ function BetterIngameAdmin:RegisterVars()
 		-- self.adminList = {voteban_flash = {true, true, true, true, true, true, true, true, true, true, true, true, true}}
 	-- Endregion
 	
+	-- Region Assist
+	self.queueAssistList1 = {}
+	self.queueAssistList2 = {}
+	self.queueAssistList3 = {}
+	self.queueAssistList4 = {}
+	-- Endregion
+	
 	-- Region ServerBanner LoadingScreen
 	self.bannerUrl = "fb://UI/Static/ServerBanner/BFServerBanner"
 	self.serverName = nil
@@ -267,6 +274,10 @@ function BetterIngameAdmin:RegisterEvents()
 	
 	-- Region Player Assist enemy team
 	NetEvents:Subscribe('AssistEnemyTeam', self, self.OnAssistEnemyTeam)
+	-- self:OnQueueAssistEnemyTeam(player)
+	Events:Subscribe('Player:Left', self, self.OnPlayerLeft)
+	-- self:CheckQueueAssist()
+	-- self:AssistTarget(player, isInQueueList)
 	-- Endregion
 	
 	-- Region Squad stuff
@@ -309,6 +320,7 @@ function BetterIngameAdmin:RegisterEvents()
 	
 	-- Region Send information to joining player (send serverInfo, send ServerBanner, if player is admin then send adminrights, 
 		-- and check if we have an server owner)
+		-- and check the assist queue
     Events:Subscribe('Player:Authenticated', self, self.OnAuthenticated)
 	-- Endregion
 	
@@ -659,26 +671,429 @@ end
 
 -- Region Player Assist enemy team
 function BetterIngameAdmin:OnAssistEnemyTeam(player)
-	if player.alive == true then
-		RCON:SendCommand('admin.killPlayer', {player.name})
+	print("OnAssistEnemyTeam")
+	self:AssistTarget(player, 0)
+end
+
+function BetterIngameAdmin:OnQueueAssistEnemyTeam(player)
+	if player.teamId == TeamId.Team1 then
+		table.insert(self.queueAssistList1, player.name)
+	elseif player.teamId == TeamId.Team2 then
+		table.insert(self.queueAssistList2, player.name)
+	elseif player.teamId == TeamId.Team3 then
+		table.insert(self.queueAssistList3, player.name)
+	else
+		table.insert(self.queueAssistList4, player.name)
 	end
+end
+
+function BetterIngameAdmin:OnPlayerLeft(player)
+	self:CheckQueueAssist()
+end
+
+function BetterIngameAdmin:CheckQueueAssist()
+	::continue1::
+	if self.queueAssistList1[1] ~= nil then
+		local player = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
+		if player == nil then
+			table.remove(self.queueAssistList1, 1)
+			goto continue1
+		end
+		self:AssistTarget(player, 1)
+	end
+	::continue2::
+	if self.queueAssistList2[1] ~= nil then
+		local player = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
+		if player == nil then
+			table.remove(self.queueAssistList2, 1)
+			goto continue2
+		end
+		self:AssistTarget(player, 2)
+	end
+	::continue3::
+	if self.queueAssistList3[1] ~= nil then
+		local player = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
+		if player == nil then
+			table.remove(self.queueAssistList3, 1)
+			goto continue3
+		end
+		self:AssistTarget(player, 3)
+	end
+	::continue4::
+	if self.queueAssistList4[1] ~= nil then
+		local player = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
+		if player == nil then
+			table.remove(self.queueAssistList4, 1)
+			goto continue4
+		end
+		self:AssistTarget(player, 4)
+	end
+end
+
+function BetterIngameAdmin:AssistTarget(player, isInQueueList)
+	local currentTeamCount = 0
+	local enemyTeamCount = 0
+	local currentTeamTickets = 0
+	local enemyTeamTickets = 0
+	local enemyTeam1Count = 0
+	local enemyTeam2Count = 0
+	local enemyTeam3Count = 0
+	local enemyTeam1Tickets = 0
+	local enemyTeam2Tickets = 0
+	local enemyTeam3Tickets = 0
+	local currentTeam = 0
+	local enemyTeam1 = 0
+	local enemyTeam2 = 0
+	local enemyTeam3 = 0
 	local gameMode = SharedUtils:GetCurrentGameMode()
-	if gameMode ~= "SquadDeathMatch0" then
+	if gameMode ~= "SquadDeathMatch0" then		
 		if player.teamId == TeamId.Team1 then
-			player.teamId = TeamId.Team2
+			currentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
+			enemyTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
+			currentTeamTickets = TicketManager:GetTicketCount(TeamId.Team1)
+			enemyTeamTickets = TicketManager:GetTicketCount(TeamId.Team2)
 		else
-			player.teamId = TeamId.Team1
+			currentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
+			enemyTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
+			currentTeamTickets = TicketManager:GetTicketCount(TeamId.Team2)
+			enemyTeamTickets = TicketManager:GetTicketCount(TeamId.Team1)
+		end
+		if currentTeamCount > (enemyTeamCount + 1) or currentTeamTickets >= enemyTeamTickets then
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			if player.teamId == TeamId.Team1 then
+				player.teamId = TeamId.Team2
+			else
+				player.teamId = TeamId.Team1
+			end
+			if isInQueueList == 1 then
+				table.remove(self.queueAssistList1, 1)
+			elseif isInQueueList == 2 then
+				table.remove(self.queueAssistList2, 1)
+			end
+		else
+			if isInQueueList == 0 then
+				self:QuickSwitch(player)
+			end
 		end
 	else
 		if player.teamId == TeamId.Team1 then
-			player.teamId = TeamId.Team2
+			currentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
+			enemyTeam1Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
+			enemyTeam2Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team3)
+			enemyTeam3Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team4)
+			currentTeamTickets = TicketManager:GetTicketCount(TeamId.Team1)
+			enemyTeam1Tickets = TicketManager:GetTicketCount(TeamId.Team2)
+			enemyTeam2Tickets = TicketManager:GetTicketCount(TeamId.Team3)
+			enemyTeam3Tickets = TicketManager:GetTicketCount(TeamId.Team4)
+			currentTeam = TeamId.Team1
+			enemyTeam1 = TeamId.Team2
+			enemyTeam2 = TeamId.Team3
+			enemyTeam3 = TeamId.Team4
 		elseif player.teamId == TeamId.Team2 then
-			player.teamId = TeamId.Team3
+			currentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
+			enemyTeam1Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
+			enemyTeam2Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team3)
+			enemyTeam3Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team4)
+			currentTeamTickets = TicketManager:GetTicketCount(TeamId.Team2)
+			enemyTeam1Tickets = TicketManager:GetTicketCount(TeamId.Team1)
+			enemyTeam2Tickets = TicketManager:GetTicketCount(TeamId.Team3)
+			enemyTeam3Tickets = TicketManager:GetTicketCount(TeamId.Team4)
+			currentTeam = TeamId.Team2
+			enemyTeam1 = TeamId.Team1
+			enemyTeam2 = TeamId.Team3
+			enemyTeam3 = TeamId.Team4
 		elseif player.teamId == TeamId.Team3 then
-			player.teamId = TeamId.Team4
+			currentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team3)
+			enemyTeam1Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
+			enemyTeam2Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
+			enemyTeam3Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team4)
+			currentTeamTickets = TicketManager:GetTicketCount(TeamId.Team3)
+			enemyTeam1Tickets = TicketManager:GetTicketCount(TeamId.Team1)
+			enemyTeam2Tickets = TicketManager:GetTicketCount(TeamId.Team2)
+			enemyTeam3Tickets = TicketManager:GetTicketCount(TeamId.Team4)
+			currentTeam = TeamId.Team3
+			enemyTeam1 = TeamId.Team1
+			enemyTeam2 = TeamId.Team2
+			enemyTeam3 = TeamId.Team4
 		else
-			player.teamId = TeamId.Team1
+			currentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team4)
+			enemyTeam1Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
+			enemyTeam2Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
+			enemyTeam3Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team3)
+			currentTeamTickets = TicketManager:GetTicketCount(TeamId.Team4)
+			enemyTeam1Tickets = TicketManager:GetTicketCount(TeamId.Team1)
+			enemyTeam2Tickets = TicketManager:GetTicketCount(TeamId.Team2)
+			enemyTeam3Tickets = TicketManager:GetTicketCount(TeamId.Team3)
+			currentTeam = TeamId.Team4
+			enemyTeam1 = TeamId.Team1
+			enemyTeam2 = TeamId.Team2
+			enemyTeam3 = TeamId.Team3
 		end
+		if currentTeamCount > (enemyTeam1Count + 1) then
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			player.teamId = enemyTeam1
+			if isInQueueList == 1 then
+				table.remove(self.queueAssistList1, 1)
+			elseif isInQueueList == 2 then
+				table.remove(self.queueAssistList2, 1)
+			elseif isInQueueList == 3 then
+				table.remove(self.queueAssistList3, 1)
+			elseif isInQueueList == 4 then
+				table.remove(self.queueAssistList4, 1)
+			end
+		elseif currentTeamCount > (enemyTeam2Count + 1) then
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			player.teamId = enemyTeam2
+			if isInQueueList == 1 then
+				table.remove(self.queueAssistList1, 1)
+			elseif isInQueueList == 2 then
+				table.remove(self.queueAssistList2, 1)
+			elseif isInQueueList == 3 then
+				table.remove(self.queueAssistList3, 1)
+			elseif isInQueueList == 4 then
+				table.remove(self.queueAssistList4, 1)
+			end
+		elseif currentTeamCount > (enemyTeam3Count + 1) then
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			player.teamId = enemyTeam3
+			if isInQueueList == 1 then
+				table.remove(self.queueAssistList1, 1)
+			elseif isInQueueList == 2 then
+				table.remove(self.queueAssistList2, 1)
+			elseif isInQueueList == 3 then
+				table.remove(self.queueAssistList3, 1)
+			elseif isInQueueList == 4 then
+				table.remove(self.queueAssistList4, 1)
+			end
+		else
+			if isInQueueList == 0 then
+				self:QuickSwitch(player)
+			end
+		end
+	end
+end
+
+function BetterIngameAdmin:QuickSwitch(player)
+	local playerTeamId = player.teamId
+	if player.teamId == TeamId.Team1 then
+		::continue2::
+		if self.queueAssistList2[1] ~= nil then
+			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
+			if listPlayer == nil then
+				table.remove(self.queueAssistList2, 1)
+				goto continue2
+			end
+			if listPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			end
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			listPlayer.teamId = TeamId.Team1
+			player.teamId = TeamId.Team2
+			table.remove(self.queueAssistList2, 1)
+		end
+		::continue3::
+		if self.queueAssistList3[1] ~= nil then
+			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
+			if listPlayer == nil then
+				table.remove(self.queueAssistList3, 1)
+				goto continue3
+			end
+			if listPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			end
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			listPlayer.teamId = TeamId.Team1
+			player.teamId = TeamId.Team3
+			table.remove(self.queueAssistList3, 1)
+		end
+		::continue4::
+		if self.queueAssistList4[1] ~= nil then
+			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
+			if listPlayer == nil then
+				table.remove(self.queueAssistList4, 1)
+				goto continue4
+			end
+			if listPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			end
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			listPlayer.teamId = TeamId.Team1
+			player.teamId = TeamId.Team4
+			table.remove(self.queueAssistList4, 1)
+		end
+	elseif player.teamId == TeamId.Team2 then
+		::continue1::
+		if self.queueAssistList1[1] ~= nil then
+			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
+			if listPlayer == nil then
+				table.remove(self.queueAssistList1, 1)
+				goto continue1
+			end
+			if listPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			end
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			listPlayer.teamId = TeamId.Team2
+			player.teamId = TeamId.Team1
+			table.remove(self.queueAssistList1, 1)
+		end
+		::continue3::
+		if self.queueAssistList3[1] ~= nil then
+			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
+			if listPlayer == nil then
+				table.remove(self.queueAssistList3, 1)
+				goto continue3
+			end
+			if listPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			end
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			listPlayer.teamId = TeamId.Team2
+			player.teamId = TeamId.Team3
+			table.remove(self.queueAssistList3, 1)
+		end
+		::continue4::
+		if self.queueAssistList4[1] ~= nil then
+			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
+			if listPlayer == nil then
+				table.remove(self.queueAssistList4, 1)
+				goto continue4
+			end
+			if listPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			end
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			listPlayer.teamId = TeamId.Team2
+			player.teamId = TeamId.Team4
+			table.remove(self.queueAssistList4, 1)
+		end
+	elseif player.teamId == TeamId.Team3 then
+		::continue1::
+		if self.queueAssistList1[1] ~= nil then
+			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
+			if listPlayer == nil then
+				table.remove(self.queueAssistList1, 1)
+				goto continue1
+			end
+			if listPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			end
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			listPlayer.teamId = TeamId.Team3
+			player.teamId = TeamId.Team1
+			table.remove(self.queueAssistList1, 1)
+		end
+		::continue2::
+		if self.queueAssistList2[1] ~= nil then
+			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
+			if listPlayer == nil then
+				table.remove(self.queueAssistList2, 1)
+				goto continue2
+			end
+			if listPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			end
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			listPlayer.teamId = TeamId.Team3
+			player.teamId = TeamId.Team2
+			table.remove(self.queueAssistList2, 1)
+		end
+		::continue4::
+		if self.queueAssistList4[1] ~= nil then
+			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
+			if listPlayer == nil then
+				table.remove(self.queueAssistList4, 1)
+				goto continue4
+			end
+			if listPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			end
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			listPlayer.teamId = TeamId.Team3
+			player.teamId = TeamId.Team4
+			table.remove(self.queueAssistList4, 1)
+		end
+	else
+		::continue1::
+		if self.queueAssistList1[1] ~= nil then
+			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
+			if listPlayer == nil then
+				table.remove(self.queueAssistList1, 1)
+				goto continue1
+			end
+			if listPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			end
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			listPlayer.teamId = TeamId.Team4
+			player.teamId = TeamId.Team1
+			table.remove(self.queueAssistList1, 1)
+		end
+		::continue2::
+		if self.queueAssistList2[1] ~= nil then
+			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
+			if listPlayer == nil then
+				table.remove(self.queueAssistList2, 1)
+				goto continue2
+			end
+			if listPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			end
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			listPlayer.teamId = TeamId.Team4
+			player.teamId = TeamId.Team2
+			table.remove(self.queueAssistList2, 1)
+		end
+		::continue3::
+		if self.queueAssistList3[1] ~= nil then
+			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
+			if listPlayer == nil then
+				table.remove(self.queueAssistList3, 1)
+				goto continue3
+			end
+			if listPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			end
+			if player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {player.name})
+			end
+			listPlayer.teamId = TeamId.Team4
+			player.teamId = TeamId.Team3
+			table.remove(self.queueAssistList3, 1)
+		end
+	end
+	if playerTeamId == player.TeamId then
+		self:OnQueueAssistEnemyTeam(player)
 	end
 end
 -- Endregion
@@ -1072,6 +1487,7 @@ function BetterIngameAdmin:OnAuthenticated(player)
 		end
 	end
 	NetEvents:SendTo('ServerInfo', player, self.serverConfig)
+	self:CheckQueueAssist()
 end
 -- Endregion
 
