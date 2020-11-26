@@ -758,7 +758,7 @@ function BetterIngameAdmin:AssistTarget(player, isInQueueList)
 			currentTeamTickets = TicketManager:GetTicketCount(TeamId.Team2)
 			enemyTeamTickets = TicketManager:GetTicketCount(TeamId.Team1)
 		end
-		if currentTeamCount > (enemyTeamCount + 1) or currentTeamTickets >= enemyTeamTickets then
+		if currentTeamCount > (enemyTeamCount + 1) or (currentTeamTickets >= enemyTeamTickets and currentTeamCount > (enemyTeamCount - 2)) then
 			if player.alive == true then
 				RCON:SendCommand('admin.killPlayer', {player.name})
 			end
@@ -831,7 +831,7 @@ function BetterIngameAdmin:AssistTarget(player, isInQueueList)
 			enemyTeam2 = TeamId.Team2
 			enemyTeam3 = TeamId.Team3
 		end
-		if currentTeamCount > (enemyTeam1Count + 1) then
+		if currentTeamCount > (enemyTeam1Count + 1) or (currentTeamTickets >= enemyTeam1Tickets and currentTeamCount > (enemyTeam1Count - 2)) then
 			if player.alive == true then
 				RCON:SendCommand('admin.killPlayer', {player.name})
 			end
@@ -845,7 +845,7 @@ function BetterIngameAdmin:AssistTarget(player, isInQueueList)
 			elseif isInQueueList == 4 then
 				table.remove(self.queueAssistList4, 1)
 			end
-		elseif currentTeamCount > (enemyTeam2Count + 1) then
+		elseif currentTeamCount > (enemyTeam2Count + 1) or (currentTeamTickets >= enemyTeam2Tickets and currentTeamCount > (enemyTeam2Count - 2)) then
 			if player.alive == true then
 				RCON:SendCommand('admin.killPlayer', {player.name})
 			end
@@ -859,7 +859,7 @@ function BetterIngameAdmin:AssistTarget(player, isInQueueList)
 			elseif isInQueueList == 4 then
 				table.remove(self.queueAssistList4, 1)
 			end
-		elseif currentTeamCount > (enemyTeam3Count + 1) then
+		elseif currentTeamCount > (enemyTeam3Count + 1) or (currentTeamTickets >= enemyTeam3Tickets and currentTeamCount > (enemyTeam3Count - 2)) then
 			if player.alive == true then
 				RCON:SendCommand('admin.killPlayer', {player.name})
 			end
