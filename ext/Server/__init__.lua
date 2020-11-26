@@ -266,7 +266,7 @@ function BetterIngameAdmin:RegisterEvents()
 	
 	
 	-- Region Player Assist enemy team
-	NetEvents:Subscribe('AssistEnemyTeam', self, self.OnAssistEnemyTeam) -- add support for SQDM or remove completely
+	NetEvents:Subscribe('AssistEnemyTeam', self, self.OnAssistEnemyTeam)
 	-- Endregion
 	
 	-- Region Squad stuff
@@ -662,10 +662,23 @@ function BetterIngameAdmin:OnAssistEnemyTeam(player)
 	if player.alive == true then
 		RCON:SendCommand('admin.killPlayer', {player.name})
 	end
-	if player.teamId == TeamId.Team1 then
-		player.teamId = TeamId.Team2
+	local gameMode = SharedUtils:GetCurrentGameMode()
+	if gameMode ~= "SquadDeathMatch0" then
+		if player.teamId == TeamId.Team1 then
+			player.teamId = TeamId.Team2
+		else
+			player.teamId = TeamId.Team1
+		end
 	else
-		player.teamId = TeamId.Team1
+		if player.teamId == TeamId.Team1 then
+			player.teamId = TeamId.Team2
+		elseif player.teamId == TeamId.Team2 then
+			player.teamId = TeamId.Team3
+		elseif player.teamId == TeamId.Team3 then
+			player.teamId = TeamId.Team4
+		else
+			player.teamId = TeamId.Team1
+		end
 	end
 end
 -- Endregion
