@@ -6,6 +6,13 @@ canKick = false;
 canTban = false;
 canBan = false;
 canEditAdminRights = false;
+canEditBanList = false;
+canEditMapList = false;
+canUseMapFunctions = false;
+canAlterServerSettings = false;
+canEditReservedSlotsList = false;
+canEditTextChatModerationList = false;
+canShutdownServer = false;
 /* Endregion */
 
 /* Region Mute */
@@ -55,6 +62,13 @@ playerCanKick = false;
 playerCanTban = false;
 playerCanBan = false;
 playerCanEditAdminRights = false;
+playerCanEditBanList = false;
+playerCanEditMapList = false;
+playerCanUseMapFunctions = false;
+playerCanAlterServerSettings = false;
+playerCanEditReservedSlotsList = false;
+playerCanEditTextChatModerationList = false;
+playerCanShutdownServer = false;
 /* Endregion */
 
 /* Region presets */
@@ -1538,12 +1552,10 @@ function banNow(playerName)
 }
 function getAdminRightsOfPlayer(playerName)
 {
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement">COMEON1</div>';
 	WebUI.Call('DispatchEvent', 'WebUI:GetAdminRightsOfPlayer', playerName);
 }
 function getAdminRightsOfPlayerDone(args)
 {
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement">COMEON2</div>';
 	args.forEach(setAdminRightsOfPlayer);
 	adminrights(args[0]);
 }
@@ -1567,6 +1579,27 @@ function setAdminRightsOfPlayer(canThis, index)
 	}
 	if(canThis == "canEditAdminRights"){
 		playerCanEditAdminRights = true;
+	}
+	if(canThis == "canEditBanList"){
+		playerCanEditBanList = true;
+	}
+	if(canThis == "canEditMapList"){
+		playerCanEditMapList = true;
+	}
+	if(canThis == "canUseMapFunctions"){
+		playerCanUseMapFunctions = true;
+	}
+	if(canThis == "canAlterServerSettings"){
+		playerCanAlterServerSettings = true;
+	}
+	if(canThis == "canEditReservedSlotsList"){
+		playerCanEditReservedSlotsList = true;
+	}
+	if(canThis == "canEditTextChatModerationList"){
+		playerCanEditTextChatModerationList = true;
+	}
+	if(canThis == "canShutdownServer"){
+		playerCanShutdownServer = true;
 	}
 }
 
@@ -1604,6 +1637,41 @@ function adminrights(playerName)
 	}else{
 		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditAdminRights" id="pCanEdit" checked><label for="pCanEdit">Can Edit Rights</label>';
 	}
+	if(playerCanEditBanList == false) {
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditBanList" id="pCanEditBanList"><label for="pCanEditBanList">Can Edit Ban List</label>';
+	}else{
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditBanList" id="pCanEditBanList" checked><label for="pCanEditBanList">Can Edit Ban List</label>';
+	}
+	if(playerCanEditMapList == false) {
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditMapList" id="pCanEditMapList"><label for="pCanEditMapList">Can Edit Map List</label>';
+	}else{
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditMapList" id="pCanEditMapList" checked><label for="pCanEditMapList">Can Edit Map List</label>';
+	}
+	if(playerCanUseMapFunctions == false) {
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canUseMapFunctions" id="pCanUseMapFunctions"><label for="pCanUseMapFunctions">Can Use Map Functions</label>';
+	}else{
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canUseMapFunctions" id="pCanUseMapFunctions" checked><label for="pCanUseMapFunctions">Can Use Map Functions</label>';
+	}
+	if(playerCanAlterServerSettings == false) {
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canAlterServerSettings" id="pCanAlterServerSettings"><label for="pCanAlterServerSettings">Can Alter Server Settings</label>';
+	}else{
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canAlterServerSettings" id="pCanAlterServerSettings" checked><label for="pCanAlterServerSettings">Can Alter Server Settings</label>';
+	}
+	if(playerCanEditReservedSlotsList == false) {
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditReservedSlotsList" id="pCanEditReservedSlotsList"><label for="pCanEditReservedSlotsList">Can Edit Reserved Slot List</label>';
+	}else{
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditReservedSlotsList" id="pCanEditReservedSlotsList" checked><label for="pCanEditReservedSlotsList">Can Edit Reserved Slot List</label>';
+	}
+	if(playerCanEditTextChatModerationList == false) {
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditTextChatModerationList" id="pCanEditTextChatModerationList"><label for="pCanEditTextChatModerationList">Can Edit Text Chat Moderation List</label>';
+	}else{
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditTextChatModerationList" id="pCanEditTextChatModerationList" checked><label for="pCanEditTextChatModerationList">Can Edit Text Chat Moderation List</label>';
+	}
+	if(playerCanShutdownServer == false) {
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canShutdownServer" id="pCanShutdownServer"><label for="pCanShutdownServer">Can Shutdown Server</label>';
+	}else{
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canShutdownServer" id="pCanShutdownServer" checked><label for="pCanShutdownServer">Can Shutdown Server</label>';
+	}
 	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="saveAdminRights(&apos;'+playerName+'&apos;)">Save</div>';
 	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
 	{
@@ -1629,6 +1697,20 @@ function saveAdminRights(playerName)
 				args.push("canBan");
 			}else if(checkboxes[i].value == "canEditAdminRights") {
 				args.push("canEditAdminRights");
+			}else if(checkboxes[i].value == "canEditBanList") {
+				args.push("canEditBanList");
+			}else if(checkboxes[i].value == "canEditMapList") {
+				args.push("canEditMapList");
+			}else if(checkboxes[i].value == "canUseMapFunctions") {
+				args.push("canUseMapFunctions");
+			}else if(checkboxes[i].value == "canAlterServerSettings") {
+				args.push("canAlterServerSettings");
+			}else if(checkboxes[i].value == "canEditReservedSlotsList") {
+				args.push("canEditReservedSlotsList");
+			}else if(checkboxes[i].value == "canEditTextChatModerationList") {
+				args.push("canEditTextChatModerationList");
+			}else if(checkboxes[i].value == "canShutdownServer") {
+				args.push("canShutdownServer");
 			}
 		}
 	}
@@ -1644,6 +1726,13 @@ function closeEditAdminpopup()
 	playerCanTban = false;
 	playerCanBan = false;
 	playerCanEditAdminRights = false;
+	playerCanEditBanList = false;
+	playerCanEditMapList = false;
+	playerCanUseMapFunctions = false;
+	playerCanAlterServerSettings = false;
+	playerCanEditReservedSlotsList = false;
+	playerCanEditTextChatModerationList = false;
+	playerCanShutdownServer = false;
 	closepopup();
 }
 // for the target Player:
@@ -1656,6 +1745,13 @@ function getAdminRights(admins)
 	canTban = false;
 	canBan = false;
 	canEditAdminRights = false;
+	canEditBanList = false;
+	canEditMapList = false;
+	canUseMapFunctions = false;
+	canAlterServerSettings = false;
+	canEditReservedSlotsList = false;
+	canEditTextChatModerationList = false;
+	canShutdownServer = false;
 	localPlayer = admins[0];
 	admins.forEach(setAdminRights);
 }
@@ -1684,6 +1780,34 @@ function setAdminRights(canThis, index)
 	}
 	if(canThis == "canEditAdminRights"){
 		canEditAdminRights = true;
+		admin = true;
+	}
+	if(canThis == "canEditBanList"){
+		canEditBanList = true;
+		admin = true;
+	}
+	if(canThis == "canEditMapList"){
+		canEditMapList = true;
+		admin = true;
+	}
+	if(canThis == "canUseMapFunctions"){
+		canUseMapFunctions = true;
+		admin = true;
+	}
+	if(canThis == "canAlterServerSettings"){
+		canAlterServerSettings = true;
+		admin = true;
+	}
+	if(canThis == "canEditReservedSlotsList"){
+		canEditReservedSlotsList = true;
+		admin = true;
+	}
+	if(canThis == "canEditTextChatModerationList"){
+		canEditTextChatModerationList = true;
+		admin = true;
+	}
+	if(canThis == "canShutdownServer"){
+		canShutdownServer = true;
 		admin = true;
 	}
 }	
@@ -2037,11 +2161,14 @@ function showGeneralClientSettings()
 	{
 		document.getElementById("fovClientSettingsTab").classList.remove('active');
 	}
-	if ( canEditAdminRights == true ) {
+	if ( canAlterServerSettings == true || canEditMapList == true ) {
 		document.getElementById("serverSetup").style.display = "block";
-		document.getElementById("mapRotationSetup").style.display = "block";
 	}else{
 		document.getElementById("serverSetup").style.display = null;
+	}
+	if ( canUseMapFunctions == true ) {
+		document.getElementById("mapRotationSetup").style.display = "block";
+	}else{
 		document.getElementById("mapRotationSetup").style.display = null;
 	}
 	document.getElementById("generalClientSettings").style.display = "block";
