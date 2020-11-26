@@ -26,6 +26,8 @@ function BetterIngameAdmin:RegisterVars()
 		-- use local if delete Assist function
 	self.playerTeam1Count = 0
 	self.playerTeam2Count = 0
+	self.playerTeam3Count = 0
+	self.playerTeam4Count = 0
 	-- Endregion
 	
 	-- Region Local Ping
@@ -112,7 +114,6 @@ function BetterIngameAdmin:RegisterEvents()
 	-- Endregion
 	
 	-- Region Assist
-		-- add SQDM support or remove this feature
 	Events:Subscribe('WebUI:AssistEnemyTeam', self, self.OnWebUIAssistEnemyTeam)
 		-- missing: WebUI:CancelAssist after getting in Queue (Queue is also missing at this point)
 	-- Endregion
@@ -327,13 +328,7 @@ end
 
 -- Region Assist enemy team
 function BetterIngameAdmin:OnWebUIAssistEnemyTeam()
-	
-	if tickets1 >= tickets2 or self.playerTeam1Count > (self.playerTeam2Count + 1) then
-		NetEvents:Send('AssistEnemyTeam')
-	else
-		--WebUI:ExecuteJS(string.format("quereForAssist()"))
-		--NetEvents:Send('QueueAssistEnemyTeam')
-	end
+	NetEvents:Send('AssistEnemyTeam')
 end
 -- Endregion
 
@@ -959,7 +954,7 @@ function BetterIngameAdmin:UpdateUI(player)
 		local playerListTeams2 = {playerListTeam3, playerListTeam4}
 	
 		for index,player in pairs(playerListTeam3) do
-			--self.playerTeam3Count = index
+			self.playerTeam3Count = index
 			local ping = "–"
 			if self.pingTable[player.name] ~= nil and self.pingTable[player.name] >= 0 and self.pingTable[player.name] < 999 then
 				ping = self.pingTable[player.name]
@@ -969,7 +964,7 @@ function BetterIngameAdmin:UpdateUI(player)
 		end
 		
 		for index,player in pairs(playerListTeam4) do
-			--self.playerTeam4Count = index
+			self.playerTeam4Count = index
 			local ping = "–"
 			if self.pingTable[player.name] ~= nil and self.pingTable[player.name] >= 0 and self.pingTable[player.name] < 999 then
 				ping = self.pingTable[player.name]
