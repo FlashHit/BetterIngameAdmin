@@ -346,7 +346,7 @@ function makeSquadLeader(playerName) {
 }
 /* Endregion */
 
-/* Region OLD Delete this */
+/* Region OLD Delete this 
 function clientSettings() {
 	document.getElementById("popup").innerHTML = '<div id="titlepopup">Settings<div id="close" onclick="closepopup()"></div></div></div>';
 	document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
@@ -586,7 +586,7 @@ function applyGeneralSettings(){
 	args.push(document.getElementById("serverBannerURL").value);
 	WebUI.Call('DispatchEvent', 'WebUI:ApplyGeneralSettings', JSON.stringify(args));
 	closeAdminPanelPopup();
-}
+}*/
 /* Endregion */
 
 /* Region ServerInfo */
@@ -602,135 +602,135 @@ function getServerInfo(args) {
 	//document.getElementById("gamePassword").innerHTML = args[3];
 	if(args[4] == "true"){
 		document.getElementById("autobalance").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetAutobalance").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetAutobalance").innerHTML = 'Yes';
 	}else if(args[4] == "false"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("autobalance").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetAutobalance").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetAutobalance").innerHTML = 'No';
 	}
 	if(args[5] == "true"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		document.getElementById("friendlyFire").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetFriendlyFire").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetFriendlyFire").innerHTML = 'Yes';
 	}else if(args[5] == "false"){
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("friendlyFire").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetFriendlyFire").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetFriendlyFire").innerHTML = 'No';
 	}
 	if(args[6] == "true"){
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("killCam").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetKillCam").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetKillCam").innerHTML = 'Yes';
 	}else if(args[6] == "false"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		document.getElementById("killCam").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetKillCam").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetKillCam").innerHTML = 'No';
 	}
 	if(args[7] == "true"){
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("miniMap").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetMiniMap").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetMiniMap").innerHTML = 'Yes';
 	}else if(args[7] == "false"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		varsPresetHardcore = false;
 		document.getElementById("miniMap").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetMiniMap").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetMiniMap").innerHTML = 'No';
 	}
 	if(args[8] == "true"){
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("hud").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetHUD").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetHUD").innerHTML = 'Yes';
 	}else if(args[8] == "false"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		document.getElementById("hud").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetHUD").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetHUD").innerHTML = 'No';
 	}
 	if(args[9] == "true"){
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("3dSpotting").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPreset3dSpotting").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPreset3dSpotting").innerHTML = 'Yes';
 	}else if(args[9] == "false"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		document.getElementById("3dSpotting").innerHTML = '<p>No</p>';
-		document.getElementById("customPreset3dSpotting").innerHTML = '<p>No</p>';
+		document.getElementById("customPreset3dSpotting").innerHTML = 'No';
 	}
 	if(args[10] == "true"){
 		document.getElementById("minimapSpotting").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetMinimapSpotting").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetMinimapSpotting").innerHTML = 'Yes';
 	}else if(args[10] == "false"){
 		varsPresetHardcoreNoMap = false;
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		varsPresetHardcore = false;
 		document.getElementById("minimapSpotting").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetMinimapSpotting").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetMinimapSpotting").innerHTML = 'No>';
 	}
 	if(args[11] == "true"){
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("nameTag").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetNameTag").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetNameTag").innerHTML = 'Yes';
 	}else if(args[11] == "false"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		document.getElementById("nameTag").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetNameTag").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetNameTag").innerHTML = 'No';
 	}
 	if(args[12] == "true"){
 		varsPresetInfantry = false;
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("3rdPersonCam").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPreset3rdPersonCam").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPreset3rdPersonCam").innerHTML = 'Yes';
 	}else if(args[12] == "false"){
 		varsPresetNormal = false;
 		document.getElementById("3rdPersonCam").innerHTML = '<p>No</p>';
-		document.getElementById("customPreset3rdPersonCam").innerHTML = '<p>No</p>';
+		document.getElementById("customPreset3rdPersonCam").innerHTML = 'No';
 	}
 	if(args[13] == "true"){
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("regenerateHealth").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetRegenerateHealth").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetRegenerateHealth").innerHTML = 'Yes';
 	}else if(args[13] == "false"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		document.getElementById("regenerateHealth").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetRegenerateHealth").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetRegenerateHealth").innerHTML = 'No';
 	}
 	if(args[14] == "true"){
 		varsPresetInfantry = false;
 		document.getElementById("vehicleSpawn").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetVehicleSpawn").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetVehicleSpawn").innerHTML = 'Yes';
 	}else if(args[14] == "false"){
 		varsPresetNormal = false;
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("vehicleSpawn").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetVehicleSpawn").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetVehicleSpawn").innerHTML = 'No';
 	}
 	if(args[15] == "true"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		document.getElementById("onlySquadLeaderSpawn").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetOnlySquadLeaderSpawn").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetOnlySquadLeaderSpawn").innerHTML = 'Yes';
 	}else if(args[15] == "false"){
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("onlySquadLeaderSpawn").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetOnlySquadLeaderSpawn").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetOnlySquadLeaderSpawn").innerHTML = 'No';
 	}
 	/*
 	if(args[19] == "true"){
@@ -754,58 +754,59 @@ function getServerInfo(args) {
 		varsPresetInfantry = false;
 	}
 	document.getElementById("teamKillCountForKick").innerHTML = '<p>'+args[23]+'</p>';
-	document.getElementById("customPresetTeamKillCountForKick").innerHTML = '<p>'+args[23]+'</p>';
+	document.getElementById("customPresetTeamKillCountForKick").innerHTML = args[23];
 	//document.getElementById("teamKillValueForKick").innerHTML = '<p>'+args[24]+'</p>';
 	//document.getElementById("teamKillValueIncrease").innerHTML = '<p>'+args[25]+'</p>';
 	//document.getElementById("teamKillValueDecrease").innerHTML = '<p>'+args[26]+'</p>';
 	document.getElementById("teamKillKicksForBan").innerHTML = '<p>'+args[27]+'</p>';
-	document.getElementById("customPresetTeamKillKicksForBan").innerHTML = '<p>'+args[27]+'</p>';
+	document.getElementById("customPresetTeamKillKicksForBan").innerHTML = args[27];
 	document.getElementById("idleTimeout").innerHTML = '<p>'+args[28]+'</p>';
-	document.getElementById("customPresetIdleTimeout").innerHTML = '<p>'+args[28]+'</p>';
+	document.getElementById("customPresetIdleTimeout").innerHTML = args[28];
 	//document.getElementById("idleBanRounds").innerHTML = '<p>'+args[29]+'</p>';
 	document.getElementById("roundStartPlayerCount").innerHTML = '<p>'+args[30]+'</p>';
 	//document.getElementById("roundRestartPlayerCount").innerHTML = '<p>'+args[31]+'</p>';
 	//document.getElementById("roundLockdownCountdown").innerHTML = '<p>'+args[32]+'</p>';
 	//document.getElementById("vehicleSpawnDelay").innerHTML = '<p>'+args[33]+'</p>';
 	document.getElementById("soldierHealth").innerHTML = '<p>'+args[34]+'</p>';
-	document.getElementById("customPresetPlayerHealth").innerHTML = '<p>'+args[34]+'</p>';
+	document.getElementById("customPresetPlayerHealth").innerHTML = args[34];
 	document.getElementById("playerRespawnTime").innerHTML = '<p>'+args[35]+'</p>';
-	document.getElementById("customPresetPlayerRespawnTime").innerHTML = '<p>'+args[35]+'</p>';
+	document.getElementById("customPresetPlayerRespawnTime").innerHTML = args[35];
 	document.getElementById("playerManDownTime").innerHTML = '<p>'+args[36]+'</p>';
-	document.getElementById("customPresetPlayerManDownTime").innerHTML = '<p>'+args[36]+'</p>';
+	document.getElementById("customPresetPlayerManDownTime").innerHTML = args[36];
 	document.getElementById("bulletDamage").innerHTML = '<p>'+args[37]+'</p>';
-	document.getElementById("customPresetBulletDamage").innerHTML = '<p>'+args[37]+'</p>';
+	document.getElementById("customPresetBulletDamage").innerHTML = args[37];
 	document.getElementById("tickets").innerHTML = '<p>'+args[38]+'</p>';
-	if(args[39] == 0){
+	if(args[39] == "0"){
 		document.getElementById("gunmasterWeaponsPreset").innerHTML = '<p>Normal</p>';
 		document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML = 'Normal';
-	}else if(args[39] != 0){
+	}else if(args[39] != "0"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
-	}else if(args[39] == 1){
+	}
+	if(args[39] == "1"){
 		document.getElementById("gunmasterWeaponsPreset").innerHTML = '<p>Normal Reversed</p>';
 		document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML = 'Normal Reversed';
-	}else if(args[39] == 2){
+	}else if(args[39] == "2"){
 		document.getElementById("gunmasterWeaponsPreset").innerHTML = '<p>Light Weight</p>';
 		document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML = 'Light Weight';
-	}else if(args[39] == 3){
+	}else if(args[39] == "3"){
 		document.getElementById("gunmasterWeaponsPreset").innerHTML = '<p>Heavy Gear</p>';
 		document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML = 'Heavy Gear';
-	}else if(args[39] == 4){
+	}else if(args[39] == "4"){
 		document.getElementById("gunmasterWeaponsPreset").innerHTML = '<p>Pistols Only</p>';
 		document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML = 'Pistols Only';
-	}else if(args[39] == 5){
+	}else if(args[39] == "5"){
 		document.getElementById("gunmasterWeaponsPreset").innerHTML = '<p>Snipers Heaven</p>';
 		document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML = 'Snipers Heaven';
-	}else if(args[39] == 6){
+	}else if(args[39] == "6"){
 		document.getElementById("gunmasterWeaponsPreset").innerHTML = '<p>US Arms Race</p>';
 		document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML = 'US Arms Race';
-	}else if(args[39] == 7){
+	}else if(args[39] == "7"){
 		document.getElementById("gunmasterWeaponsPreset").innerHTML = '<p>RU Arms Race</p>';
 		document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML = '<p>RU Arms Race';
-	}else if(args[39] == 8){
+	}else if(args[39] == "8"){
 		document.getElementById("gunmasterWeaponsPreset").innerHTML = '<p>EU Arms Race</p>';
 		document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML = 'EU Arms Race';
 	} 
@@ -863,66 +864,66 @@ function getServerInfo(args) {
 	document.getElementById("rounds").innerHTML = '<p>'+args[46][1]+'</p>';
 	document.getElementById("region").innerHTML = args[47];
 	document.getElementById("ctfRoundTimeModifier").innerHTML = '<p>'+args[48]+'</p>';
-	document.getElementById("customPresetCtfRoundTimeModifier").innerHTML = '<p>'+args[48]+'</p>';
+	document.getElementById("customPresetCtfRoundTimeModifier").innerHTML = args[48];
 	if(args[21] == "true"){
 		document.getElementById("colorCorrectionEnabled").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetBluetint").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetBluetint").innerHTML = 'Yes';
 	}else if(args[21] == "false"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("colorCorrectionEnabled").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetBluetint").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetBluetint").innerHTML = 'No';
 	}
 	if(args[20] == "true"){
 		document.getElementById("sunFlare").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetSunFlare").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetSunFlare").innerHTML = 'Yes';
 	}else if(args[20] == "false"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("sunFlare").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetSunFlare").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetSunFlare").innerHTML = 'No';
 	}
 	document.getElementById("suppressionMultiplier").innerHTML = '<p>'+args[40]+'</p>';
-	document.getElementById("customPresetSuppressionMultiplier").innerHTML = '<p>'+args[40]+'</p>';
+	document.getElementById("customPresetSuppressionMultiplier").innerHTML = args[40];
 	let timeScaling = args[41] * 100;
 	document.getElementById("timeScale").innerHTML = '<p>'+timeScaling+'</p>';
-	document.getElementById("customPresetTimeScale").innerHTML = '<p>'+timeScaling+'</p>';
+	document.getElementById("customPresetTimeScale").innerHTML = timeScaling;
 	if(args[17] == "true"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("desertingAllowed").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetAllowDeserting").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetAllowDeserting").innerHTML = 'Yes';
 	}else if(args[17] == "false"){
 		document.getElementById("desertingAllowed").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetAllowDeserting").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetAllowDeserting").innerHTML = 'No';
 	}
 	if(args[16] == "true"){
 		document.getElementById("destructionEnabled").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetDestructionEnabled").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetDestructionEnabled").innerHTML = 'Yes';
 	}else if(args[16] == "false"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("destructionEnabled").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetDestructionEnabled").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetDestructionEnabled").innerHTML = 'No';
 	}
 	if(args[18] == "true"){
 		document.getElementById("vehicleDisablingEnabled").innerHTML = '<p>Yes</p>';
-		document.getElementById("customPresetVehicleDisabling").innerHTML = '<p>Yes</p>';
+		document.getElementById("customPresetVehicleDisabling").innerHTML = 'Yes';
 	}else if(args[18] == "false"){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
 		varsPresetHardcore = false;
 		varsPresetHardcoreNoMap = false;
 		document.getElementById("vehicleDisablingEnabled").innerHTML = '<p>No</p>';
-		document.getElementById("customPresetVehicleDisabling").innerHTML = '<p>No</p>';
+		document.getElementById("customPresetVehicleDisabling").innerHTML = 'No';
 	}
 	if(args[49] == "regular"){
 		document.getElementById("frequencyMode").innerHTML = '<p>30 Hz</p>';
@@ -932,7 +933,7 @@ function getServerInfo(args) {
 		document.getElementById("frequencyMode").innerHTML = '<p>120 Hz</p>';
 	}
 	document.getElementById("squadSize").innerHTML = '<p>'+args[42]+'</p>';
-	document.getElementById("customPresetSquadSize").innerHTML = '<p>'+args[42]+'</p>';
+	document.getElementById("customPresetSquadSize").innerHTML = args[42];
 	if(args[42] != 4){
 		varsPresetNormal = false;
 		varsPresetInfantry = false;
@@ -2534,6 +2535,122 @@ function applyManagePresets()
 	}else if(document.getElementById("currentPresetInManagePresets").innerHTML == "Custom")
 	{
 		applyManagePresetsArray.push("custom");
+		if(document.getElementById("customPresetFriendlyFire").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		applyManagePresetsArray.push(document.getElementById("customPresetIdleTimeout").innerHTML);
+		if(document.getElementById("customPresetAutobalance").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		applyManagePresetsArray.push(document.getElementById("customPresetTeamKillCountForKick").innerHTML);
+		applyManagePresetsArray.push(document.getElementById("customPresetTeamKillKicksForBan").innerHTML);
+		if(document.getElementById("customPresetVehicleSpawn").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		if(document.getElementById("customPresetRegenerateHealth").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		if(document.getElementById("customPresetOnlySquadLeaderSpawn").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		if(document.getElementById("customPresetMiniMap").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		if(document.getElementById("customPresetHUD").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		if(document.getElementById("customPresetMinimapSpotting").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		if(document.getElementById("customPreset3dSpotting").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		if(document.getElementById("customPresetKillCam").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		if(document.getElementById("customPreset3rdPersonCam").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		if(document.getElementById("customPresetNameTag").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		if(document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML == "Normal"){
+			applyManagePresetsArray.push("0");
+		}else if(document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML == "EU Arms Race"){
+			applyManagePresetsArray.push("8");
+		}else if(document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML == "RU Arms Race"){
+			applyManagePresetsArray.push("7");
+		}else if(document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML == "US Arms Race"){
+			applyManagePresetsArray.push("6");
+		}else if(document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML == "Snipers Heaven"){
+			applyManagePresetsArray.push("5");
+		}else if(document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML == "Pistols Only"){
+			applyManagePresetsArray.push("4");
+		}else if(document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML == "Heavy Gear"){
+			applyManagePresetsArray.push("3");
+		}else if(document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML == "Light Weight"){
+			applyManagePresetsArray.push("2");
+		}else if(document.getElementById("customPresetGunmasterWeaponsPreset").innerHTML == "Normal Reversed"){
+			applyManagePresetsArray.push("1");
+		}
+		applyManagePresetsArray.push(document.getElementById("customPresetCtfRoundTimeModifier").innerHTML);
+		applyManagePresetsArray.push(document.getElementById("customPresetPlayerRespawnTime").innerHTML);
+		applyManagePresetsArray.push(document.getElementById("customPresetPlayerManDownTime").innerHTML);
+		applyManagePresetsArray.push(document.getElementById("customPresetPlayerHealth").innerHTML);
+		applyManagePresetsArray.push(document.getElementById("customPresetBulletDamage").innerHTML);
+		if(document.getElementById("customPresetBluetint").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		if(document.getElementById("customPresetSunFlare").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		applyManagePresetsArray.push(document.getElementById("customPresetSuppressionMultiplier").innerHTML);
+		let timeScaling = document.getElementById("customPresetTimeScale").innerHTML / 100
+		applyManagePresetsArray.push(timeScaling);
+		if(document.getElementById("customPresetAllowDeserting").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		if(document.getElementById("customPresetDestructionEnabled").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		if(document.getElementById("customPresetVehicleDisabling").innerHTML == "Yes"){
+			applyManagePresetsArray.push("true");
+		}else{
+			applyManagePresetsArray.push("false");
+		}
+		applyManagePresetsArray.push(document.getElementById("customPresetSquadSize").innerHTML);
 	}
 	WebUI.Call('DispatchEvent', 'WebUI:ApplyManagePresets', JSON.stringify(applyManagePresetsArray));
 	closeSmart();
