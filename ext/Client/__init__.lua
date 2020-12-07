@@ -109,7 +109,10 @@ function BetterIngameAdmin:RegisterEvents()
 	Events:Subscribe('WebUI:BanPlayer', self, self.OnWebUIBanPlayer)
 	Events:Subscribe('WebUI:GetAdminRightsOfPlayer', self, self.OnWebUIGetAdminRightsOfPlayer)
 	NetEvents:Subscribe('AdminRightsOfPlayer', self, self.OnAdminRightsOfPlayer)
+	Events:Subscribe('WebUI:DeleteAdminRights', self, self.OnWebUIDeleteAdminRights)
+	Events:Subscribe('WebUI:DeleteAndSaveAdminRights', self, self.OnWebUIDeleteAndSaveAdminRights)
 	Events:Subscribe('WebUI:UpdateAdminRights', self, self.OnWebUIUpdateAdminRights)
+	Events:Subscribe('WebUI:UpdateAndSaveAdminRights', self, self.OnWebUIUpdateAndSaveAdminRights)
 		-- missing admin responses: "Successful action on player", "Action on player failed cuz left/ or not found)"
 	-- Endregion
 	
@@ -187,6 +190,7 @@ function BetterIngameAdmin:RegisterEvents()
 	-- Endregion
 	
 	-- Region Get Admin Rights
+	NetEvents:Subscribe('ServerOwnerRights', self, self.OnServerOwnerRights)
 	NetEvents:Subscribe('AdminPlayer', self, self.OnAdminPlayer)
 	-- Endregion
 	
@@ -321,8 +325,20 @@ function BetterIngameAdmin:OnAdminRightsOfPlayer(args)
 	WebUI:ExecuteJS(string.format("getAdminRightsOfPlayerDone(%s)", json.encode(args)))
 end
 
+function BetterIngameAdmin:OnWebUIDeleteAdminRights(args)
+	NetEvents:Send('DeleteAdminRights', json.decode(args))
+end
+
+function BetterIngameAdmin:OnWebUIDeleteAndSaveAdminRights(args)
+	NetEvents:Send('DeleteAndSaveAdminRights', json.decode(args))
+end
+
 function BetterIngameAdmin:OnWebUIUpdateAdminRights(args)
 	NetEvents:Send('UpdateAdminRights', json.decode(args))
+end
+
+function BetterIngameAdmin:OnWebUIUpdateAndSaveAdminRights(args)
+	NetEvents:Send('UpdateAndSaveAdminRights', json.decode(args))
 end
 -- Endregion
 
@@ -1064,6 +1080,10 @@ end
 -- Endregion
 
 -- Region Get Admin Rights
+function BetterIngameAdmin:OnServerOwnerRights()
+	WebUI:ExecuteJS(string.format("setOwnerRights()"))
+end
+
 function BetterIngameAdmin:OnAdminPlayer(args)
 	WebUI:ExecuteJS(string.format("getAdminRights(%s)", json.encode(args)))
 end
