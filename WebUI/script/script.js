@@ -1,11 +1,12 @@
 /* Region IsAdmin */
+isOwner = true;
 admin = false;
-canMove = false;
-canKill = false;
-canKick = false;
-canTban = false;
-canBan = false;
-canEditAdminRights = false;
+canMovePlayers = false;
+canKillPlayers = false;
+canKickPlayers = false;
+canTemporaryBanPlayers = false;
+canPermanentlyBanPlayers = false;
+canEditGameAdminList = false;
 canEditBanList = false;
 canEditMapList = false;
 canUseMapFunctions = false;
@@ -56,12 +57,12 @@ teamIdToSwitch = "1";
 teamNameToSwitch = "Team US";
 squadIdToSwitch = "0";
 squadNameToSwitch = "No Squad";
-playerCanMove = false;
-playerCanKill = false;
-playerCanKick = false;
-playerCanTban = false;
-playerCanBan = false;
-playerCanEditAdminRights = false;
+playerCanMovePlayers = false;
+playerCanKillPlayers = false;
+playerCanKickPlayers = false;
+playerCanTemporaryBanPlayers  = false;
+playerCanPermanentlyBanPlayers = false;
+playerCanEditGameAdminList = false;
 playerCanEditBanList = false;
 playerCanEditMapList = false;
 playerCanUseMapFunctions = false;
@@ -123,22 +124,22 @@ function action(playerName ,squadId, isSquadPrivate)
 function adminpopup(playerName) {
 	document.getElementById("popup").innerHTML = '<div id="titlepopup">Actions for the player: '+playerName+'<div id="close" onclick="closepopup()"></div></div></div>';
 	document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
-		if(canMove == true){
+		if(canMovePlayers == true || isOwner == true ){
 		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="move(&apos;'+playerName+'&apos;)">Move</div>';
 	}
-	if(canKill == true){
+	if(canKillPlayers == true || isOwner == true ){
 		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="kill(&apos;'+playerName+'&apos;)">Kill</div>';
 	}	
-	if(canKick == true){
+	if(canKickPlayers == true || isOwner == true ){
 		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="kick(&apos;'+playerName+'&apos;)">Kick</div>';
 	}
-	if(canTban == true){
+	if(canTemporaryBanPlayers == true || isOwner == true ){
 		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="tban(&apos;'+playerName+'&apos;)">TBan</div>';
 	}
-	if(canBan == true){
+	if(canPermanentlyBanPlayers == true || isOwner == true ){
 		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="ban(&apos;'+playerName+'&apos;)">Ban</div>';
 	}
-	if(canEditAdminRights == true) {
+	if(canEditGameAdminList == true || isOwner == true ) {
 		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="getAdminRightsOfPlayer(&apos;'+playerName+'&apos;)">Edit rights</div>';
 	}
 	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
@@ -350,7 +351,7 @@ function makeSquadLeader(playerName) {
 function clientSettings() {
 	document.getElementById("popup").innerHTML = '<div id="titlepopup">Settings<div id="close" onclick="closepopup()"></div></div></div>';
 	document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
-	if(canEditAdminRights == true) {
+	if(canEditGameAdminList == true) {
 		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="adminPanel()">Admin Panel</div>';
 	}
 	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
@@ -1553,90 +1554,121 @@ function banNow(playerName)
 }
 function getAdminRightsOfPlayer(playerName)
 {
+	adminrights(playerName);
 	WebUI.Call('DispatchEvent', 'WebUI:GetAdminRightsOfPlayer', playerName);
 }
-function getAdminRightsOfPlayerDone(args)
+function getAdminRightsOfPlayerDone(abilities)
 {
-	args.forEach(setAdminRightsOfPlayer);
-	adminrights(args[0]);
-}
-
-function setAdminRightsOfPlayer(canThis, index)
-{		
-	if(canThis == "canMove"){
-		playerCanMove = true;
-	}
-	if(canThis == "canKill"){
-		playerCanKill = true;
-	}
-	if(canThis == "canKick"){
-		playerCanKick = true;
-	}
-	if(canThis == "canTban"){
-		playerCanTban = true;
-	}
-	if(canThis == "canBan"){
-		playerCanBan = true;
-	}
-	if(canThis == "canEditAdminRights"){
-		playerCanEditAdminRights = true;
-	}
-	if(canThis == "canEditBanList"){
-		playerCanEditBanList = true;
-	}
-	if(canThis == "canEditMapList"){
-		playerCanEditMapList = true;
-	}
-	if(canThis == "canUseMapFunctions"){
-		playerCanUseMapFunctions = true;
-	}
-	if(canThis == "canAlterServerSettings"){
-		playerCanAlterServerSettings = true;
-	}
-	if(canThis == "canEditReservedSlotsList"){
-		playerCanEditReservedSlotsList = true;
-	}
-	if(canThis == "canEditTextChatModerationList"){
-		playerCanEditTextChatModerationList = true;
-	}
-	if(canThis == "canShutdownServer"){
-		playerCanShutdownServer = true;
-	}
-}
-
-function adminrights(playerName)
-{
-	document.getElementById("popup").innerHTML = '<div id="titlepopup">Edit Admin Rights: '+playerName+'<div id="close" onclick="closeEditAdminpopup()"></div></div>';
-	document.getElementById("popup").innerHTML += '<div id="popupelements"><div id="checkBoxSwitches"></div></div>';
-	if(playerCanMove == false) {
-		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canMove" id="pCanMove"><label for="pCanMove">Can Move</label>';
+	if(abilities == null) {
+		playerCanMovePlayers = false;
+		playerCanKillPlayers = false;
+		playerCanKickPlayers = false;
+		playerCanTemporaryBanPlayers = false;
+		playerCanPermanentlyBanPlayers = false;
+		playerCanEditGameAdminList = false;
+		playerCanEditBanList = false;
+		playerCanEditMapList = false;
+		playerCanUseMapFunctions = false;
+		playerCanAlterServerSettings = false;
+		playerCanEditReservedSlotsList = false;
+		playerCanEditTextChatModerationList = false;
+		playerCanShutdownServer = false;
 	}else{
-		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canMove" id="pCanMove" checked><label for="pCanMove">Can Move</label>';
+		if(abilities.canMovePlayers == true){
+			playerCanMovePlayers = true;
+		}else{
+			playerCanMovePlayers = false;
+		}
+		if(abilities.canKillPlayers == true){
+			playerCanKillPlayers = true;
+		}else{
+			playerCanKillPlayers = false;
+		}
+		if(abilities.canKickPlayers == true){
+			playerCanKickPlayers = true;
+		}else{
+			playerCanKickPlayers = false;
+		}
+		if(abilities.canTemporaryBanPlayers == true){
+			playerCanTemporaryBanPlayers = true;
+		}else{
+			playerCanTemporaryBanPlayers = false;
+		}
+		if(abilities.canPermanentlyBanPlayers == true){
+			playerCanPermanentlyBanPlayers = true;
+		}else{
+			playerCanPermanentlyBanPlayers = false;
+		}
+		if(abilities.canEditGameAdminList == true){
+			playerCanEditGameAdminList = true;
+		}else{
+			playerCanEditGameAdminList = false;
+		}
+		if(abilities.canEditBanList == true){
+			playerCanEditBanList = true;
+		}else{
+			playerCanEditBanList = false;
+		}
+		if(abilities.canEditMapList == true){
+			playerCanEditMapList = true;
+		}else{
+			playerCanEditMapList = false;
+		}
+		if(abilities.canUseMapFunctions == true){
+			playerCanUseMapFunctions = true;
+		}else{
+			playerCanUseMapFunctions = false;
+		}
+		if(abilities.canAlterServerSettings == true){
+			playerCanAlterServerSettings = true;
+		}else{
+			playerCanAlterServerSettings = false;
+		}
+		if(abilities.canEditReservedSlotsList == true){
+			playerCanEditReservedSlotsList = true;
+		}else{
+			playerCanEditReservedSlotsList = false;
+		}
+		if(abilities.canEditTextChatModerationList == true){
+			playerCanEditTextChatModerationList = true;
+		}else{
+			playerCanEditTextChatModerationList = false;
+		}
+		if(abilities.canShutdownServer == true){
+			playerCanShutdownServer = true;
+		}else{
+			playerCanShutdownServer = false;
+		}
 	}
-	if(playerCanKill == false) {
-		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canKill" id="pCanKill"><label for="pCanKill">Can Kill</label>';
+	if(playerCanMovePlayers == false) {
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canMovePlayers" id="pCanMove"><label for="pCanMove">Can Move</label>';
 	}else{
-		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canKill" id="pCanKill" checked><label for="pCanKill">Can Kill</label>';
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canMovePlayers" id="pCanMove" checked><label for="pCanMove">Can Move</label>';
 	}
-	if(playerCanKick == false) {
-		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canKick" id="pCanKick"><label for="pCanKick">Can Kick</label>';
+	if(playerCanKillPlayers == false) {
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canKillPlayers" id="pCanKill"><label for="pCanKill">Can Kill</label>';
 	}else{
-		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canKick" id="pCanKick" checked><label for="pCanKick">Can Kick</label>';
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canKillPlayers" id="pCanKill" checked><label for="pCanKill">Can Kill</label>';
 	}
-	if(playerCanTban == false) {
-		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canTban" id="pCanTban"><label for="pCanTban">Can Tban</label>';
+	if(playerCanKickPlayers == false) {
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canKickPlayers" id="pCanKick"><label for="pCanKick">Can Kick</label>';
 	}else{
-		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canTban" id="pCanTban" checked><label for="pCanTban">Can Tban</label>';
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canKickPlayers" id="pCanKick" checked><label for="pCanKick">Can Kick</label>';
 	}
-	if(playerCanBan == false) {
-		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canBan" id="pCanBan"><label for="pCanBan">Can Ban</label>';
+	if(playerCanTemporaryBanPlayers  == false) {
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canTemporaryBanPlayers" id="pCanTban"><label for="pCanTban">Can Tban</label>';
 	}else{
-		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canBan" id="pCanBan" checked><label for="pCanBan">Can Ban</label>';
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canTemporaryBanPlayers" id="pCanTban" checked><label for="pCanTban">Can Tban</label>';
 	}
-	if(playerCanEditAdminRights == false) {
-		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditAdminRights" id="pCanEdit"><label for="pCanEdit">Can Edit Rights</label>';
+	if(playerCanPermanentlyBanPlayers == false) {
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canPermanentlyBanPlayers" id="pCanBan"><label for="pCanBan">Can Ban</label>';
 	}else{
-		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditAdminRights" id="pCanEdit" checked><label for="pCanEdit">Can Edit Rights</label>';
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canPermanentlyBanPlayers" id="pCanBan" checked><label for="pCanBan">Can Ban</label>';
+	}
+	if(playerCanEditGameAdminList == false) {
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditGameAdminList" id="pCanEdit"><label for="pCanEdit">Can Edit Rights</label>';
+	}else{
+		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditGameAdminList" id="pCanEdit" checked><label for="pCanEdit">Can Edit Rights</label>';
 	}
 	if(playerCanEditBanList == false) {
 		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canEditBanList" id="pCanEditBanList"><label for="pCanEditBanList">Can Edit Ban List</label>';
@@ -1673,12 +1705,55 @@ function adminrights(playerName)
 	}else{
 		document.getElementById("checkBoxSwitches").innerHTML += '<input type="checkbox" name="editRightsInput" value="canShutdownServer" id="pCanShutdownServer" checked><label for="pCanShutdownServer">Can Shutdown Server</label>';
 	}
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="saveAdminRights(&apos;'+playerName+'&apos;)">Save</div>';
+	
 	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
 	{
 		document.getElementById("popupelements").style.height = "100%";	
 	}
 }
+
+function adminrights(playerName)
+{
+	document.getElementById("popup").innerHTML = '<div id="titlepopup">Edit Admin Rights: '+playerName+'<div id="close" onclick="closeEditAdminpopup()"></div></div>';
+	document.getElementById("popup").innerHTML += '<div id="popupelements"><div id="checkBoxSwitches"></div></div>';
+	
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="deleteAdminRights(&apos;'+playerName+'&apos;)">Delete</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="deleteAndSaveAdminRights(&apos;'+playerName+'&apos;)">Delete & Save</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="applyAdminRights(&apos;'+playerName+'&apos;)">Apply</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="saveAdminRights(&apos;'+playerName+'&apos;)">Save</div>';
+	
+}
+
+function deleteAdminRights(playerName)
+{
+	const args = [playerName];
+	WebUI.Call('DispatchEvent', 'WebUI:DeleteAdminRights', JSON.stringify(args));
+	closeEditAdminpopup();
+}
+
+function deleteAndSaveAdminRights(playerName)
+{
+	const args = [playerName];
+	WebUI.Call('DispatchEvent', 'WebUI:DeleteAndSaveAdminRights', JSON.stringify(args));
+	closeEditAdminpopup();
+}
+
+function applyAdminRights(playerName)
+{
+	const checkboxes = document.querySelectorAll('input[name="editRightsInput"]');
+	const num = checkboxes.length;
+	const args = [playerName];
+	for (let i=0; i < num; i++) {
+		if (checkboxes[i].checked === true) {
+			args.push("true");
+		}else{
+			args.push("false");
+		}
+	}
+	WebUI.Call('DispatchEvent', 'WebUI:UpdateAdminRights', JSON.stringify(args));
+	closeEditAdminpopup();
+}
+
 function saveAdminRights(playerName)
 {
 	const checkboxes = document.querySelectorAll('input[name="editRightsInput"]');
@@ -1686,47 +1761,23 @@ function saveAdminRights(playerName)
 	const args = [playerName];
 	for (let i=0; i < num; i++) {
 		if (checkboxes[i].checked === true) {
-			if(checkboxes[i].value == "canMove") {
-				args.push("canMove");
-			}else if(checkboxes[i].value == "canKill") {
-				args.push("canKill");
-			}else if(checkboxes[i].value == "canKick") {
-				args.push("canKick");
-			}else if(checkboxes[i].value == "canTban") {
-				args.push("canTban");
-			}else if(checkboxes[i].value == "canBan") {
-				args.push("canBan");
-			}else if(checkboxes[i].value == "canEditAdminRights") {
-				args.push("canEditAdminRights");
-			}else if(checkboxes[i].value == "canEditBanList") {
-				args.push("canEditBanList");
-			}else if(checkboxes[i].value == "canEditMapList") {
-				args.push("canEditMapList");
-			}else if(checkboxes[i].value == "canUseMapFunctions") {
-				args.push("canUseMapFunctions");
-			}else if(checkboxes[i].value == "canAlterServerSettings") {
-				args.push("canAlterServerSettings");
-			}else if(checkboxes[i].value == "canEditReservedSlotsList") {
-				args.push("canEditReservedSlotsList");
-			}else if(checkboxes[i].value == "canEditTextChatModerationList") {
-				args.push("canEditTextChatModerationList");
-			}else if(checkboxes[i].value == "canShutdownServer") {
-				args.push("canShutdownServer");
-			}
+			args.push("true");
+		}else{
+			args.push("false");
 		}
 	}
-	WebUI.Call('DispatchEvent', 'WebUI:UpdateAdminRights', JSON.stringify(args));
+	WebUI.Call('DispatchEvent', 'WebUI:UpdateAndSaveAdminRights', JSON.stringify(args));
 	closeEditAdminpopup();
 }
 
 function closeEditAdminpopup()
 {
-	playerCanMove = false;
-	playerCanKill = false;
-	playerCanKick = false;
-	playerCanTban = false;
-	playerCanBan = false;
-	playerCanEditAdminRights = false;
+	playerCanMovePlayers = false;
+	playerCanKillPlayers = false;
+	playerCanKickPlayers = false;
+	playerCanTemporaryBanPlayers  = false;
+	playerCanPermanentlyBanPlayers = false;
+	playerCanEditGameAdminList = false;
 	playerCanEditBanList = false;
 	playerCanEditMapList = false;
 	playerCanUseMapFunctions = false;
@@ -1736,82 +1787,85 @@ function closeEditAdminpopup()
 	playerCanShutdownServer = false;
 	closepopup();
 }
-// for the target Player:
-function getAdminRights(admins)
-{
-	admin = false;
-	canMove = false;
-	canKill = false;
-	canKick = false;
-	canTban = false;
-	canBan = false;
-	canEditAdminRights = false;
-	canEditBanList = false;
-	canEditMapList = false;
-	canUseMapFunctions = false;
-	canAlterServerSettings = false;
-	canEditReservedSlotsList = false;
-	canEditTextChatModerationList = false;
-	canShutdownServer = false;
-	localPlayer = admins[0];
-	admins.forEach(setAdminRights);
-}
 
-function setAdminRights(canThis, index)
-{		
-	if(canThis == "canMove"){
-		canMove = true;
+function setOwnerRights(){
+	isOwner = true;
+}
+// for the local Player:
+function getAdminRights(abilities)
+{
+	if(abilities == null) {
+		admin = false;
+		return
+	}else{
 		admin = true;
 	}
-	if(canThis == "canKill"){
-		canKill = true;
-		admin = true;
+	if(abilities.canMovePlayers == true){
+		canMovePlayers = true;
+	}else{
+		canMovePlayers = false;
 	}
-	if(canThis == "canKick"){
-		canKick = true;
-		admin = true;
+	if(abilities.canKillPlayers == true){
+		canKillPlayers = true;
+	}else{
+		canKillPlayers = false;
 	}
-	if(canThis == "canTban"){
-		canTban = true;
-		admin = true;
+	if(abilities.canKickPlayers == true){
+		canKickPlayers = true;
+	}else{
+		canKickPlayers = false;
 	}
-	if(canThis == "canBan"){
-		canBan = true;
-		admin = true;
+	if(abilities.canTemporaryBanPlayers == true){
+		canTemporaryBanPlayers = true;
+	}else{
+		canTemporaryBanPlayers = false;
 	}
-	if(canThis == "canEditAdminRights"){
-		canEditAdminRights = true;
-		admin = true;
+	if(abilities.canPermanentlyBanPlayers == true){
+		canPermanentlyBanPlayers = true;
+	}else{
+		canPermanentlyBanPlayers = false;
 	}
-	if(canThis == "canEditBanList"){
+	if(abilities.canEditGameAdminList == true){
+		canEditGameAdminList = true;
+	}else{
+		canEditGameAdminList = false;
+	}
+	if(abilities.canEditBanList == true){
 		canEditBanList = true;
-		admin = true;
+	}else{
+		canEditBanList = false;
 	}
-	if(canThis == "canEditMapList"){
+	if(abilities.canEditMapList == true){
 		canEditMapList = true;
-		admin = true;
+	}else{
+		canEditMapList = false;
 	}
-	if(canThis == "canUseMapFunctions"){
+	if(abilities.canUseMapFunctions == true){
 		canUseMapFunctions = true;
-		admin = true;
+	}else{
+		canUseMapFunctions = false;
 	}
-	if(canThis == "canAlterServerSettings"){
+	if(abilities.canAlterServerSettings == true){
 		canAlterServerSettings = true;
-		admin = true;
+	}else{
+		canAlterServerSettings = false;
 	}
-	if(canThis == "canEditReservedSlotsList"){
+	if(abilities.canEditReservedSlotsList == true){
 		canEditReservedSlotsList = true;
-		admin = true;
+	}else{
+		canEditReservedSlotsList = false;
 	}
-	if(canThis == "canEditTextChatModerationList"){
+	if(abilities.canEditTextChatModerationList == true){
 		canEditTextChatModerationList = true;
-		admin = true;
+	}else{
+		canEditTextChatModerationList = false;
 	}
-	if(canThis == "canShutdownServer"){
+	if(abilities.canShutdownServer == true){
 		canShutdownServer = true;
-		admin = true;
+	}else{
+		canShutdownServer = false;
 	}
-}	
+}
 /* Endregion */
 
 /* Region Assist */
@@ -2162,12 +2216,12 @@ function showGeneralClientSettings()
 	{
 		document.getElementById("fovClientSettingsTab").classList.remove('active');
 	}
-	if ( canAlterServerSettings == true || canEditMapList == true ) {
+	if ( canAlterServerSettings == true || canEditMapList == true || isOwner == true ) {
 		document.getElementById("serverSetup").style.display = "block";
 	}else{
 		document.getElementById("serverSetup").style.display = null;
 	}
-	if ( canUseMapFunctions == true ) {
+	if ( canUseMapFunctions == true || isOwner == true ) {
 		document.getElementById("mapRotationSetup").style.display = "block";
 	}else{
 		document.getElementById("mapRotationSetup").style.display = null;
