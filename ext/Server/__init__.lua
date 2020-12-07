@@ -1287,7 +1287,7 @@ function BetterIngameAdmin:OnManagePresets(player, args)
 					elseif args[1] == "hardcoreNoMap" then
 						self:PresetHardcoreNoMap()
 					elseif args[1] == "custom" then
-						--self:PresetCustom(args)
+						self:PresetCustom(args)
 					end
 					return
 				end
@@ -1418,6 +1418,37 @@ function BetterIngameAdmin:PresetHardcoreNoMap()
 	RCON:SendCommand('vu.DestructionEnabled', {"true"})
 	RCON:SendCommand('vu.VehicleDisablingEnabled', {"true"})
 	RCON:SendCommand('vu.SquadSize', {"4"})
+end
+function BetterIngameAdmin:PresetCustom(args)
+	RCON:SendCommand('vars.friendlyFire', {args[2]})
+	RCON:SendCommand('vars.idleTimeout', {args[3]})
+	RCON:SendCommand('vars.autoBalance', {args[4]})
+	RCON:SendCommand('vars.teamKillCountForKick', {args[5]})
+	RCON:SendCommand('vars.teamKillKickForBan', {args[6]})
+	RCON:SendCommand('vars.vehicleSpawnAllowed', {args[7]})
+	RCON:SendCommand('vars.regenerateHealth', {args[8]})
+	RCON:SendCommand('vars.onlySquadLeaderSpawn', {args[9]})
+	RCON:SendCommand('vars.minimap', {args[10]})
+	RCON:SendCommand('vars.hud', {args[11]})
+	RCON:SendCommand('vars.miniMapSpotting', {args[12]})
+	RCON:SendCommand('vars.3dSpotting', {args[13]})
+	RCON:SendCommand('vars.killCam', {args[14]})
+	RCON:SendCommand('vars.3pCam', {args[15]})
+	RCON:SendCommand('vars.nameTag', {args[16]})
+	RCON:SendCommand('vars.gunMasterWeaponsPreset', {args[17]})
+	RCON:SendCommand('vars.ctfRoundTimeModifier', {args[18]})
+	RCON:SendCommand('vars.playerRespawnTime', {args[19]})
+	RCON:SendCommand('vars.playerManDownTime', {args[20]})
+	RCON:SendCommand('vars.soldierHealth', {args[21]})
+	RCON:SendCommand('vars.bulletDamage', {args[22]})
+	RCON:SendCommand('vu.ColorCorrectionEnabled', {args[23]})
+	RCON:SendCommand('vu.SunFlareEnabled', {args[24]})
+	RCON:SendCommand('vu.SuppressionMultiplier', {args[25]})
+	RCON:SendCommand('vu.TimeScale', {args[26]})
+	RCON:SendCommand('vu.DesertingAllowed', {args[27]})
+	RCON:SendCommand('vu.DestructionEnabled', {args[28]})
+	RCON:SendCommand('vu.VehicleDisablingEnabled', {args[29]})
+	RCON:SendCommand('vu.SquadSize', {args[30]})
 end
 -- Endregion
 
