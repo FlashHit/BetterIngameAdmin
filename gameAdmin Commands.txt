@@ -1,6 +1,5 @@
-gameAdmin.add <playerName> <canMove, canKill, canKick, canTban, canBan, canEditAdminRights>	- adds the player with the given abilities
-gameAdmin.list 											- returns a full list
-gameAdmin.load											- loads the saved gameAdmin.list from db if available
-gameAdmin.clear											- clears the list
-gameAdmin.remove <playerName> 									- removes the player
-gameAdmin.save											- saves the curren gameAdmin.list to db
+ gameAdmin.add <playerName> <bool canMovePlayers> <bool canKillPlayers> <bool canKickPlayers> <bool canTemporaryBanPlayers> <bool canPermanentlyBanPlayers> <bool canEditGameAdminList> <bool canEditBanList> <bool canEditMapList> <bool canUseMapFunctions> <bool canAlterServerSettings> <bool canEditReservedSlotsList> <bool canEditTextChatModerationList> <bool canShutdownServer>
+ gameAdmin.clear
+ gameAdmin.load
+ gameAdmin.remove <playerName>
+ gameAdmin.save
