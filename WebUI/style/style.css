@@ -204,6 +204,62 @@ tr:hover td #action:hover, #localPlayerScoreboard td #action:hover {
 }
 /* Endregion */
 
+/* Region Popup Response */
+#popupResponse {
+	width: 610px;
+	height: 37%;
+	position: absolute;
+	left: calc(50vw - 305px);
+	background-color: rgba(0, 0, 0, 0.9);
+	text-align: left;
+	box-sizing: border-box;
+	text-transform: uppercase;
+	display: none;
+	overflow-y: auto;
+	overflow-x: hidden;
+	top: 36.2%;
+	box-shadow: 0px 0px 0px 16000px #00000087;
+}
+#titlepopupResponse {
+	color: #000;
+	font-weight: 600;
+	background: linear-gradient(rgba(255, 156, 55, 0.96), rgba(181,109,35,0.96));
+	height: 34px;
+	font-size: 20px;
+	line-height: 30px;
+	margin-top: -34px;
+	width: inherit;
+	position: fixed;
+	text-shadow: 0px 0px 7px #000406a3;
+}
+#titlepopupResponse span {
+	padding-left: 18px;
+}
+#popupelementResponse {
+	padding: 20px 18px;
+	font-size: 20px;
+	text-transform: none;
+	text-shadow: 0px 0px 7px #55b5ff;
+	color: #fff;
+}
+#popupResponseButton {
+	padding: 5.5px 20px;
+	font-size: 17px;
+	font-weight: 900;
+	text-transform: none;
+	text-shadow: 0px 0px 7px #040404;
+	background: linear-gradient(rgba(255, 255, 255, 0.96), rgba(174, 174, 174, 0.96));
+	width: 22px;
+	left: calc(50% - 34px);
+	bottom: 13px;
+	position:absolute;
+	color: #000;
+}
+#popupResponseButton:hover {
+	background: linear-gradient(rgba(234, 234, 234, 0.96), rgba(174, 174, 174, 0.96));
+}
+/* Endregion */
+
 /* Region Vote stuff */
 #votepopup {
 	margin: auto;
