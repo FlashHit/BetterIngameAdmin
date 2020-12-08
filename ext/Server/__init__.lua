@@ -16,6 +16,7 @@ function BetterIngameAdmin:RegisterVars()
 	self.playersVotedYesCount = 0
 	self.playersVotedNoCount = 0
 	self.playerToVote = nil
+	self.playerStartedVoteCounter = {}
 		
 	self.cumulatedTime = 0
 	self.secondsToVote = 30
@@ -224,12 +225,28 @@ function BetterIngameAdmin:OnVotekickPlayer(player, votekickPlayer)
 				NetEvents:SendTo('ThisPlayerIsProtected', player)
 				return
 			end
-			NetEvents:Broadcast('Start:VotekickPlayer', votekickPlayer)
-			table.insert(self.playersVotedYes, player.name)
-			self.playersVotedYesCount = self.playersVotedYesCount + 1
-			self.voteInProgress = true
-			self.typeOfVote = "votekick"
-			return
+			if self.playerStartedVoteCounter[player.name] == nil then
+				self.playerStartedVoteCounter[player.name] = 1
+				NetEvents:Broadcast('Start:VotekickPlayer', votekickPlayer)
+				table.insert(self.playersVotedYes, player.name)
+				self.playersVotedYesCount = self.playersVotedYesCount + 1
+				self.voteInProgress = true
+				self.typeOfVote = "votekick"
+				return
+			end
+			if self.playerStartedVoteCounter[player.name] < 3 then
+				self.playerStartedVoteCounter[player.name] = self.playerStartedVoteCounter[player.name] + 1
+				NetEvents:Broadcast('Start:VotekickPlayer', votekickPlayer)
+				table.insert(self.playersVotedYes, player.name)
+				self.playersVotedYesCount = self.playersVotedYesCount + 1
+				self.voteInProgress = true
+				self.typeOfVote = "votekick"
+				if self.playerStartedVoteCounter[player.name] == 3 then	
+					NetEvents:SendTo('HideVoteButtons', player)
+				end
+			else
+				NetEvents:SendTo('VotelimitReached', player)
+			end
 		end
 	else
 		NetEvents:SendTo('VoteInProgress', player)
@@ -249,12 +266,28 @@ function BetterIngameAdmin:OnVotebanPlayer(player, votebanPlayer)
 				NetEvents:SendTo('ThisPlayerIsProtected', player)
 				return
 			end
-			NetEvents:Broadcast('Start:VotebanPlayer', votebanPlayer)
-			table.insert(self.playersVotedYes, player.name)
-			self.playersVotedYesCount = self.playersVotedYesCount + 1
-			self.voteInProgress = true
-			self.typeOfVote = "voteban"
-			return
+			if self.playerStartedVoteCounter[player.name] == nil then
+				self.playerStartedVoteCounter[player.name] = 1
+				NetEvents:Broadcast('Start:VotebanPlayer', votebanPlayer)
+				table.insert(self.playersVotedYes, player.name)
+				self.playersVotedYesCount = self.playersVotedYesCount + 1
+				self.voteInProgress = true
+				self.typeOfVote = "voteban"
+				return
+			end
+			if self.playerStartedVoteCounter[player.name] < 3 then
+				self.playerStartedVoteCounter[player.name] = self.playerStartedVoteCounter[player.name] + 1
+				NetEvents:Broadcast('Start:VotebanPlayer', votebanPlayer)
+				table.insert(self.playersVotedYes, player.name)
+				self.playersVotedYesCount = self.playersVotedYesCount + 1
+				self.voteInProgress = true
+				self.typeOfVote = "voteban"
+				if self.playerStartedVoteCounter[player.name] == 3 then	
+					NetEvents:SendTo('HideVoteButtons', player)
+				end
+			else
+				NetEvents:SendTo('VotelimitReached', player)
+			end
 		end
 	else
 		NetEvents:SendTo('VoteInProgress', player)
@@ -1431,6 +1464,7 @@ function BetterIngameAdmin:OnLevelLoaded(levelName, gameMode, round, roundsPerMa
 end
 
 function BetterIngameAdmin:OnLevelDestroy()
+	self.playerStartedVoteCounter = {}
 	local args = RCON:SendCommand('vars.serverName')
 	self.serverName = args[2]
 	args = RCON:SendCommand('vars.serverDescription')
