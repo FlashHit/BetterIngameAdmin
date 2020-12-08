@@ -156,6 +156,19 @@ function closepopup() {
 }
 /* Endregion */
 
+/* Region Popup Response */
+function showPopupResponse(message) {
+	document.getElementById("popupResponse").style.display = "block";
+	document.getElementById("titlepopupResponse").innerHTML = '<span>'+message[0]+'</span>';
+	document.getElementById("popupelementResponse").innerHTML = message[1];
+	WebUI.Call('EnableMouse');
+}
+
+function closePopupResponse() {
+	document.getElementById("popupResponse").style.display = null;
+	WebUI.Call('ResetMouse');
+}
+/* Endregion */
 
 /* Region vote stuff */
 function votekick(playerName) {
