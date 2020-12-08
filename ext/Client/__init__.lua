@@ -85,6 +85,10 @@ function BetterIngameAdmin:RegisterEvents()
 	Events:Subscribe('Extension:Loaded', self, self.OnExtensionLoaded) 
 	-- Endregion
 	
+	-- Region PopupResponse
+	NetEvents:Subscribe('PopupResponse', self, self.OnPopupResponse)
+	-- Endregion
+	
 	-- Region vote stuff
 	Events:Subscribe('WebUI:VotekickPlayer', self, self.OnWebUIVotekickPlayer)
 	Events:Subscribe('WebUI:VotebanPlayer', self, self.OnWebUIVotebanPlayer)
@@ -234,6 +238,12 @@ end
 -- Region WebUI Init
 function BetterIngameAdmin:OnExtensionLoaded()
     WebUI:Init()
+end
+-- Endregion
+
+-- Region PopupResponse
+function BetterIngameAdmin:OnPopupResponse(message)
+    WebUI:ExecuteJS(string.format("showPopupResponse(%s)", json.encode(message)))
 end
 -- Endregion
 
