@@ -132,7 +132,6 @@ function BetterIngameAdmin:RegisterEvents()
 	-- Endregion
 	
 	-- Region Admin Map Rotation
-	Events:Subscribe('WebUI:GetCurrentMapRotation', self, self.OnWebUIGetCurrentMapRotation)
 	NetEvents:Subscribe('MapRotation', self, self.OnMapRotation)
 	Events:Subscribe('WebUI:SetNextMap', self, self.OnSetNextMap)
 	Events:Subscribe('WebUI:RunNextRound', self, self.OnWebUIRunNextRound)
@@ -375,10 +374,6 @@ end
 -- Endregion
 
 -- Region Admin Map Rotation
-function BetterIngameAdmin:OnWebUIGetCurrentMapRotation()
-	NetEvents:Send('GetMapRotation')
-end
-
 function BetterIngameAdmin:OnMapRotation(args)
 	WebUI:ExecuteJS(string.format("getCurrentMapRotation(%s)", json.encode(args)))
 end
