@@ -2435,7 +2435,6 @@ function mapRotationSetup()
 	document.getElementById("nextMap2").src = "fb://UI/Art/Menu/Icons/map_next";
 	document.getElementById("currentMap3").src = "fb://UI/Art/Menu/Icons/map_current";
 	document.getElementById("nextMap3").src = "fb://UI/Art/Menu/Icons/map_next";
-	//WebUI.Call('DispatchEvent', 'WebUI:GetCurrentMapRotation');	
 }
 
 function getCurrentMapRotation(args){
