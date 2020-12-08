@@ -814,6 +814,7 @@ function getServerInfo(args) {
 	//document.getElementById("serverBannerURL").innerHTML = '<p>'+args[43]+'</p>';
 	let currentMapIndex = args[45][0]
 	let nextMapIndex = args[45][1]
+	document.getElementById("mapRotationConfiguration").innerHTML = '';
 	document.getElementById("mapListConfiguration").innerHTML = '';
 	let o = 1;
 	let n = 1;
@@ -823,6 +824,8 @@ function getServerInfo(args) {
 		if(o == 1){
 			map = generateMapName(args[44][i])
 			let k = (i + 1) / 3
+			document.getElementById("mapRotationConfiguration").innerHTML += '<div onclick="setNextMap('+k+')" class="mapRotationFieldElement" id="mapRotationFieldElement'+k+'"></div>';
+			document.getElementById("mapRotationFieldElement"+k).innerHTML += '<div class="mapRotationFieldElementMap" id="mapRotationFieldElement'+k+'map">'+map+'</div>';
 			document.getElementById("mapListConfiguration").innerHTML += '<div class="mapListFieldElement" id="mapListFieldElement'+k+'"></div>';
 			document.getElementById("mapListFieldElement"+k).innerHTML += '<div class="mapListFieldElementMap" id="mapListFieldElement'+k+'map">'+map+'</div>';
 			
@@ -830,9 +833,13 @@ function getServerInfo(args) {
 			n = i - 1;
 			let k = (n + 1) / 3
 			let mode = generateModeName(args[44][i])
+			document.getElementById("mapRotationFieldElement"+k).innerHTML += '<div class="mapRotationFieldElementGameMode" id="mapRotationFieldElement'+k+'gameMode">'+mode+'</div>';
 			document.getElementById("mapListFieldElement"+k).innerHTML += '<div class="mapListFieldElementGameMode" id="mapListFieldElement'+k+'gameMode">'+mode+'</div>';
 			if(k - 1 == currentMapIndex && k - 1 == nextMapIndex){
 				let map = generateMapName(args[44][n])
+				document.getElementById('mapRotationCurrentMap').innerHTML = map+', '+mode;
+				document.getElementById('mapRotationNextMap').innerHTML = map+', '+mode;
+				document.getElementById('mapRotationFieldElement'+k+'gameMode').innerHTML = '<span style="vertical-align: top;">'+mode+'</span><img id="currentMap2" src=""/><img style="margin-left: 0;" id="nextMap2" src=""/>';
 				document.getElementById('serverInfoMapBody').innerHTML = map;
 				let mapUrl = generateMapUrl(args[44][n])
 				document.getElementById('serverInfoMapImg').style.backgroundImage = 'url(fb://'+mapUrl+')';
@@ -843,6 +850,8 @@ function getServerInfo(args) {
 				document.getElementById('mapListFieldElement'+k+'gameMode').innerHTML = '<span style="vertical-align: top;">'+mode+'</span><img id="currentMap" src=""/><img style="margin-left: 0;" id="nextMap" src=""/>';
 			}else if(k - 1 == currentMapIndex){
 				let map = generateMapName(args[44][n])
+				document.getElementById('mapRotationCurrentMap').innerHTML = map+', '+mode;
+				document.getElementById('mapRotationFieldElement'+k+'gameMode').innerHTML = '<span style="vertical-align: top;">'+mode+'</span><img id="currentMap2" src=""/>';
 				document.getElementById('serverInfoMapBody').innerHTML = map;
 				let mapUrl = generateMapUrl(args[44][n])
 				document.getElementById('serverInfoMapImg').style.backgroundImage = 'url(fb://'+mapUrl+')';
@@ -852,12 +861,14 @@ function getServerInfo(args) {
 				document.getElementById('serverInfoModeImg').style.backgroundImage = 'url(fb://'+modeImgUrl+')';
 				document.getElementById('mapListFieldElement'+k+'gameMode').innerHTML = '<span style="vertical-align: top;">'+mode+'</span><img id="currentMap" src=""/>';
 			}else if(k - 1 == nextMapIndex){
+				document.getElementById('mapRotationNextMap').innerHTML = map+', '+mode;
+				document.getElementById('mapRotationFieldElement'+k+'gameMode').innerHTML = '<span style="vertical-align: top;">'+mode+'</span><img id="nextMap2" src=""/>';
 				document.getElementById('mapListFieldElement'+k+'gameMode').innerHTML = '<span style="vertical-align: top;">'+mode+'</span><img id="nextMap" src=""/>';
 			}
 		}else if(o == 3){
 			n = i - 2;
 			let k = (n + 1) / 3
-			//document.getElementById("mapListFieldElement"+k).innerHTML += '<div class="mapListFieldElementRounds" id="mapListFieldElement'+k+'rounds">'+args[44][i]+'</div>';
+			//document.getElementById("mapRotationFieldElement"+k).innerHTML += '<div class="mapRotationFieldElementRounds" id="mapRotationFieldElement'+k+'rounds">'+args[44][i]+'</div>';
 			o = 0;
 		}
 		o++;
@@ -2419,13 +2430,19 @@ function mapRotationSetup()
 	document.getElementById("clientSettings").style.display = "none";
 	document.getElementById("mapRotationSettings").style.display = "block";
 	document.getElementById("managePresetsSettings").style.display = "none";
-	WebUI.Call('DispatchEvent', 'WebUI:GetCurrentMapRotation');	
+	
+	document.getElementById("currentMap2").src = "fb://UI/Art/Menu/Icons/map_current";
+	document.getElementById("nextMap2").src = "fb://UI/Art/Menu/Icons/map_next";
+	document.getElementById("currentMap3").src = "fb://UI/Art/Menu/Icons/map_current";
+	document.getElementById("nextMap3").src = "fb://UI/Art/Menu/Icons/map_next";
+	//WebUI.Call('DispatchEvent', 'WebUI:GetCurrentMapRotation');	
 }
 
 function getCurrentMapRotation(args){
 	let currentMapIndex = args[1][0]
 	let nextMapIndex = args[1][1]
 	document.getElementById("mapRotationConfiguration").innerHTML = '';
+	document.getElementById("mapListConfiguration").innerHTML = '';
 	let o = 1;
 	let n = 1;
 	let map = "UNDEFINED"
@@ -2436,24 +2453,44 @@ function getCurrentMapRotation(args){
 			let k = (i + 1) / 3
 			document.getElementById("mapRotationConfiguration").innerHTML += '<div onclick="setNextMap('+k+')" class="mapRotationFieldElement" id="mapRotationFieldElement'+k+'"></div>';
 			document.getElementById("mapRotationFieldElement"+k).innerHTML += '<div class="mapRotationFieldElementMap" id="mapRotationFieldElement'+k+'map">'+map+'</div>';
+			document.getElementById("mapListConfiguration").innerHTML += '<div class="mapListFieldElement" id="mapListFieldElement'+k+'"></div>';
+			document.getElementById("mapListFieldElement"+k).innerHTML += '<div class="mapListFieldElementMap" id="mapListFieldElement'+k+'map">'+map+'</div>';
 			
 		}else if(o == 2){
 			n = i - 1;
 			let k = (n + 1) / 3
 			let mode = generateModeName(args[0][i])
 			document.getElementById("mapRotationFieldElement"+k).innerHTML += '<div class="mapRotationFieldElementGameMode" id="mapRotationFieldElement'+k+'gameMode">'+mode+'</div>';
+			document.getElementById("mapListFieldElement"+k).innerHTML += '<div class="mapListFieldElementGameMode" id="mapListFieldElement'+k+'gameMode">'+mode+'</div>';
 			if(k - 1 == currentMapIndex && k - 1 == nextMapIndex){
 				let map = generateMapName(args[0][n])
 				document.getElementById('mapRotationCurrentMap').innerHTML = map+', '+mode;
 				document.getElementById('mapRotationNextMap').innerHTML = map+', '+mode;
 				document.getElementById('mapRotationFieldElement'+k+'gameMode').innerHTML = '<span style="vertical-align: top;">'+mode+'</span><img id="currentMap2" src="fb://UI/Art/Menu/Icons/map_current"/><img style="margin-left: 0;" id="nextMap2" src="fb://UI/Art/Menu/Icons/map_next"/>';
+				document.getElementById('serverInfoMapBody').innerHTML = map;
+				let mapUrl = generateMapUrl(args[0][n])
+				document.getElementById('serverInfoMapImg').style.backgroundImage = 'url(fb://'+mapUrl+')';
+				document.getElementById('serverInfoMapRotationBody').innerHTML = '<p id="checkModeName"><span class="textMove">'+mode+'</span></p>';
+				document.getElementById('serverInfoModeBody').innerHTML = mode;
+				let modeImgUrl = generateModeUrl(args[0][i])
+				document.getElementById('serverInfoModeImg').style.backgroundImage = 'url(fb://'+modeImgUrl+')';
+				document.getElementById('mapListFieldElement'+k+'gameMode').innerHTML = '<span style="vertical-align: top;">'+mode+'</span><img id="currentMap" src=""/><img style="margin-left: 0;" id="nextMap" src=""/>';
 			}else if(k - 1 == currentMapIndex){
 				let map = generateMapName(args[0][n])
 				document.getElementById('mapRotationCurrentMap').innerHTML = map+', '+mode;
 				document.getElementById('mapRotationFieldElement'+k+'gameMode').innerHTML = '<span style="vertical-align: top;">'+mode+'</span><img id="currentMap2" src="fb://UI/Art/Menu/Icons/map_current"/>';
+				document.getElementById('serverInfoMapBody').innerHTML = map;
+				let mapUrl = generateMapUrl(args[0][n])
+				document.getElementById('serverInfoMapImg').style.backgroundImage = 'url(fb://'+mapUrl+')';
+				document.getElementById('serverInfoMapRotationBody').innerHTML = '<p id="checkModeName"><span class="textMove">'+mode+'</span></p>';
+				document.getElementById('serverInfoModeBody').innerHTML = mode;
+				let modeImgUrl = generateModeUrl(args[0][i])
+				document.getElementById('serverInfoModeImg').style.backgroundImage = 'url(fb://'+modeImgUrl+')';
+				document.getElementById('mapListFieldElement'+k+'gameMode').innerHTML = '<span style="vertical-align: top;">'+mode+'</span><img id="currentMap" src=""/>';
 			}else if(k - 1 == nextMapIndex){
 				document.getElementById('mapRotationNextMap').innerHTML = map+', '+mode;
 				document.getElementById('mapRotationFieldElement'+k+'gameMode').innerHTML = '<span style="vertical-align: top;">'+mode+'</span><img id="nextMap2" src="fb://UI/Art/Menu/Icons/map_next"/>';
+				document.getElementById('mapListFieldElement'+k+'gameMode').innerHTML = '<span style="vertical-align: top;">'+mode+'</span><img id="nextMap" src=""/>';
 			}
 		}else if(o == 3){
 			n = i - 2;
@@ -2517,8 +2554,6 @@ function getServerSetupSettings(args)
 
 function saveServerSetup()
 {
-	applyManagePresets()
-	
 	serverSetupArray = [];
 	serverSetupArray.push(document.getElementById("serverSetupServerName").value);
 	serverSetupArray.push(document.getElementById("serverSetupServerDescription").value);
@@ -2526,6 +2561,7 @@ function saveServerSetup()
 	serverSetupArray.push(document.getElementById("serverSetupServerPassword").value);
 	
 	WebUI.Call('DispatchEvent', 'WebUI:SaveServerSetupSettings', JSON.stringify(serverSetupArray));
+	applyManagePresets()
 	closeSmart();
 }
 /* Endregion*/
