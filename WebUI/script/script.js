@@ -111,7 +111,7 @@ function action(playerName ,squadId, isSquadPrivate)
 		}else if(squadId != localPlayerSquad && squadId != 0 && squadCount[squadId] < maxSquadSize && isSquadPrivate == false) {
 			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="joinSquad(&apos;'+playerName+'&apos;)">Join Squad</div>';
 		}
-		if(admin == true){
+		if(admin == true || isOwner == true){
 			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="adminpopup(&apos;'+playerName+'&apos;)">Admin</div>';		
 		}
 	}
