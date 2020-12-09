@@ -816,7 +816,7 @@ end
 function BetterIngameAdmin:UpdateUI(player)
 	local gameMode = SharedUtils:GetCurrentGameMode()
 	local size = 16
-	if gameMode:match("Conquest") then
+	if gameMode:match("Conquest") or gameMode:match("Superiority") or gameMode == "Domination0" or gameMode == "Scavenger0" then
 		local clientTicketCounterIterator = EntityManager:GetIterator('ClientTicketCounterEntity')
 		local ticketCounterEntity = clientTicketCounterIterator:Next()
 		while ticketCounterEntity ~= nil do
@@ -838,11 +838,32 @@ function BetterIngameAdmin:UpdateUI(player)
 			end
 			lifeCounterEntity = lifeCounterEntityIterator:Next()
 		end
+	elseif gameMode:match("TeamDeathMatch") then
+		local killCounterEntityIterator = EntityManager:GetIterator('ClientKillCounterEntity')
+		local killCounterEntity = killCounterEntityIterator:Next()
+		while killCounterEntity ~= nil do
+			if KillCounterEntityData(killCounterEntity.data).teamId == TeamId.Team1 then
+				self.usTickets = KillCounterEntity(killCounterEntity).killCount
+			elseif KillCounterEntityData(killCounterEntity.data).teamId == TeamId.Team2 then
+				self.ruTickets = KillCounterEntity(killCounterEntity).killCount
+			end
+			killCounterEntity = killCounterEntityIterator:Next()
+		end
 	elseif gameMode == "SquadDeathMatch0" then
-		alphaTickets = 50
-		bravoTickets = 50
-		charlieTickets = 50
-		deltaTickets = 50
+		local killCounterEntityIterator = EntityManager:GetIterator('ClientKillCounterEntity')
+		local killCounterEntity = killCounterEntityIterator:Next()
+		while killCounterEntity ~= nil do
+			if KillCounterEntityData(killCounterEntity.data).teamId == TeamId.Team1 then
+				alphaTickets = KillCounterEntity(killCounterEntity).killCount
+			elseif KillCounterEntityData(killCounterEntity.data).teamId == TeamId.Team2 then
+				bravoTickets = KillCounterEntity(killCounterEntity).killCount
+			elseif KillCounterEntityData(killCounterEntity.data).teamId == TeamId.Team3 then
+				charlieTickets = KillCounterEntity(killCounterEntity).killCount
+			elseif KillCounterEntityData(killCounterEntity.data).teamId == TeamId.Team4 then
+				deltaTickets = KillCounterEntity(killCounterEntity).killCount
+			end
+			killCounterEntity = killCounterEntityIterator:Next()
+		end
 	elseif gameMode == "CaptureTheFlag0" or gameMode == "GunMaster0" then
 		self.usTickets = " "
 		self.ruTickets = " "
