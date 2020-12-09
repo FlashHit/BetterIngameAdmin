@@ -9,5 +9,5 @@
 	"Dependencies": {
        		"veniceext": "^1.0.3",
 		"gameAdmin": "^1.0.0"
-    }
+ 	}
 }
