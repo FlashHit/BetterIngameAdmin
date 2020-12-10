@@ -79,6 +79,10 @@ varsPresetHardcore = true;
 varsPresetHardcoreNoMap = true;
 /* Endregion */
 
+/* Region Assist */
+isInAssistQueue = false;
+/* Endregion */
+
 /* Region PopUp (gets triggered on click on playerName on scoreboard */
 function action(playerName ,squadId, isSquadPrivate)
 {
@@ -88,7 +92,11 @@ function action(playerName ,squadId, isSquadPrivate)
 		document.getElementById("popup").innerHTML = '<div id="titlepopup">Actions for yourself<div id="close" onclick="closepopup()"></div></div></div>';
 		document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
 		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="surrender()">Surrender</div>';
-		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="assist()">Assist</div>';
+		if(isInAssistQueue == false){
+			document.getElementById("popupelements").innerHTML += '<div id="popupelement"><div id="assistEnemy" onclick="assist()">Assist</div></div>';
+		}else{
+			document.getElementById("popupelements").innerHTML += '<div id="popupelement"><div id="cancelAssistEnemy" onclick="cancelAssist()">Cancel Assist</div></div>';
+		}
 		if(localPlayerIsSquadLeader == true) {
 			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="localSquad()">Squad</div>';
 		}else if(localPlayerSquad != 0) {
@@ -162,6 +170,12 @@ function showPopupResponse(message) {
 	document.getElementById("titlepopupResponse").innerHTML = '<span>'+message[0]+'</span>';
 	document.getElementById("popupelementResponse").innerHTML = message[1];
 	WebUI.Call('EnableMouse');
+	if(message[0] == "Assist Queue."){
+		isInAssistQueue = true;
+	}else if(message[0] == "Assist Enemy Team."){
+		isInAssistQueue = false;
+	}
+	
 }
 
 function closePopupResponse() {
@@ -1896,6 +1910,12 @@ function getAdminRights(abilities)
 function assist()
 {
 	WebUI.Call('DispatchEvent', 'WebUI:AssistEnemyTeam');
+	closepopup();
+}
+function cancelAssist()
+{
+	WebUI.Call('DispatchEvent', 'WebUI:CancelAssistEnemyTeam');
+	isInAssistQueue = false;
 	closepopup();
 }
 /* Endregion */
