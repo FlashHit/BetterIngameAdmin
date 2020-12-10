@@ -122,6 +122,7 @@ function BetterIngameAdmin:RegisterEvents()
 	
 	-- Region Assist
 	Events:Subscribe('WebUI:AssistEnemyTeam', self, self.OnWebUIAssistEnemyTeam)
+	Events:Subscribe('WebUI:CancelAssistEnemyTeam', self, self.OnWebUICancelAssistEnemyTeam)
 		-- missing: WebUI:CancelAssist after getting in Queue (Queue is also missing at this point)
 	-- Endregion
 	
@@ -354,6 +355,9 @@ end
 -- Region Assist enemy team
 function BetterIngameAdmin:OnWebUIAssistEnemyTeam()
 	NetEvents:Send('AssistEnemyTeam')
+end
+function BetterIngameAdmin:OnWebUICancelAssistEnemyTeam()
+	NetEvents:Send('CancelAssistEnemyTeam')
 end
 -- Endregion
 
