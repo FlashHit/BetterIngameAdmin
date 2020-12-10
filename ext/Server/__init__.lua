@@ -23,7 +23,6 @@ function BetterIngameAdmin:RegisterVars()
 	-- Endregion
 	
 	-- Region AdminList
-	-- self.adminList = {"voteban_flash canMove canKill canKick canTban canBan canEditAdminRights canEditBanList canEditMapList canUseMapFunctions canAlterServerSettings canEditReservedSlotsList canEditTextChatModerationList canShutdownServer"} --
 	self.adminList = {}
 	-- Endregion
 	
@@ -143,6 +142,8 @@ function BetterIngameAdmin:RegisterEvents()
 	
 	-- Region Player Assist enemy team
 	NetEvents:Subscribe('AssistEnemyTeam', self, self.OnAssistEnemyTeam)
+	NetEvents:Subscribe('CancelAssistEnemyTeam', self, self.OnCancelAssistEnemyTeam)
+	
 	-- self:OnQueueAssistEnemyTeam(player)
 	Events:Subscribe('Player:Left', self, self.OnPlayerLeft)
 	-- self:CheckQueueAssist()
@@ -686,7 +687,7 @@ function BetterIngameAdmin:OnQueueAssistEnemyTeam(player)
 	local messages = {}
 	messages[1] = "Assist Queue."
 	messages[2] = "Sorry, we couldn't switch you. We will switch you when it is possible. You are now in the Assist Queue."
-	NetEvents:SendTo('PopupResponse', targetPlayer, messages)
+	NetEvents:SendTo('PopupResponse', player, messages)
 	
 	if player.teamId == TeamId.Team1 then
 		table.insert(self.queueAssistList1, player.name)
@@ -784,8 +785,10 @@ function BetterIngameAdmin:AssistTarget(player, isInQueueList)
 			elseif isInQueueList == 2 then
 				table.remove(self.queueAssistList2, 1)
 			end
-			-- NetEvents removed from queue list
-			-- also NetEvents PopupResponse?
+			local messages = {}
+			messages[1] = "Assist Enemy Team."
+			messages[2] = "You have been switched due to your assist request."
+			NetEvents:SendTo('PopupResponse', player, messages)
 		else
 			if isInQueueList == 0 then
 				self:QuickSwitch(player)
@@ -859,6 +862,10 @@ function BetterIngameAdmin:AssistTarget(player, isInQueueList)
 			elseif isInQueueList == 4 then
 				table.remove(self.queueAssistList4, 1)
 			end
+			local messages = {}
+			messages[1] = "Assist Enemy Team."
+			messages[2] = "You have been switched due to your assist request."
+			NetEvents:SendTo('PopupResponse', player, messages)
 		elseif currentTeamCount > (enemyTeam2Count + 1) or (currentTeamTickets >= enemyTeam2Tickets and currentTeamCount > (enemyTeam2Count - 2)) then
 			if player.alive == true then
 				RCON:SendCommand('admin.killPlayer', {player.name})
@@ -873,6 +880,10 @@ function BetterIngameAdmin:AssistTarget(player, isInQueueList)
 			elseif isInQueueList == 4 then
 				table.remove(self.queueAssistList4, 1)
 			end
+			local messages = {}
+			messages[1] = "Assist Enemy Team."
+			messages[2] = "You have been switched due to your assist request."
+			NetEvents:SendTo('PopupResponse', player, messages)
 		elseif currentTeamCount > (enemyTeam3Count + 1) or (currentTeamTickets >= enemyTeam3Tickets and currentTeamCount > (enemyTeam3Count - 2)) then
 			if player.alive == true then
 				RCON:SendCommand('admin.killPlayer', {player.name})
@@ -887,6 +898,10 @@ function BetterIngameAdmin:AssistTarget(player, isInQueueList)
 			elseif isInQueueList == 4 then
 				table.remove(self.queueAssistList4, 1)
 			end
+			local messages = {}
+			messages[1] = "Assist Enemy Team."
+			messages[2] = "You have been switched due to your assist request."
+			NetEvents:SendTo('PopupResponse', player, messages)
 		else
 			if isInQueueList == 0 then
 				self:QuickSwitch(player)
@@ -897,10 +912,11 @@ end
 
 function BetterIngameAdmin:QuickSwitch(player)
 	local playerTeamId = player.teamId
+	local listPlayer = nil
 	if player.teamId == TeamId.Team1 then
 		::continue2::
 		if self.queueAssistList2[1] ~= nil then
-			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
+			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
 			if listPlayer == nil then
 				table.remove(self.queueAssistList2, 1)
 				goto continue2
@@ -917,7 +933,7 @@ function BetterIngameAdmin:QuickSwitch(player)
 		end
 		::continue3::
 		if self.queueAssistList3[1] ~= nil then
-			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
+			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
 			if listPlayer == nil then
 				table.remove(self.queueAssistList3, 1)
 				goto continue3
@@ -934,7 +950,7 @@ function BetterIngameAdmin:QuickSwitch(player)
 		end
 		::continue4::
 		if self.queueAssistList4[1] ~= nil then
-			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
+			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
 			if listPlayer == nil then
 				table.remove(self.queueAssistList4, 1)
 				goto continue4
@@ -952,7 +968,7 @@ function BetterIngameAdmin:QuickSwitch(player)
 	elseif player.teamId == TeamId.Team2 then
 		::continue1::
 		if self.queueAssistList1[1] ~= nil then
-			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
+			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
 			if listPlayer == nil then
 				table.remove(self.queueAssistList1, 1)
 				goto continue1
@@ -969,7 +985,7 @@ function BetterIngameAdmin:QuickSwitch(player)
 		end
 		::continue3::
 		if self.queueAssistList3[1] ~= nil then
-			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
+			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
 			if listPlayer == nil then
 				table.remove(self.queueAssistList3, 1)
 				goto continue3
@@ -986,7 +1002,7 @@ function BetterIngameAdmin:QuickSwitch(player)
 		end
 		::continue4::
 		if self.queueAssistList4[1] ~= nil then
-			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
+			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
 			if listPlayer == nil then
 				table.remove(self.queueAssistList4, 1)
 				goto continue4
@@ -1004,7 +1020,7 @@ function BetterIngameAdmin:QuickSwitch(player)
 	elseif player.teamId == TeamId.Team3 then
 		::continue1::
 		if self.queueAssistList1[1] ~= nil then
-			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
+			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
 			if listPlayer == nil then
 				table.remove(self.queueAssistList1, 1)
 				goto continue1
@@ -1021,7 +1037,7 @@ function BetterIngameAdmin:QuickSwitch(player)
 		end
 		::continue2::
 		if self.queueAssistList2[1] ~= nil then
-			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
+			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
 			if listPlayer == nil then
 				table.remove(self.queueAssistList2, 1)
 				goto continue2
@@ -1038,7 +1054,7 @@ function BetterIngameAdmin:QuickSwitch(player)
 		end
 		::continue4::
 		if self.queueAssistList4[1] ~= nil then
-			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
+			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
 			if listPlayer == nil then
 				table.remove(self.queueAssistList4, 1)
 				goto continue4
@@ -1056,7 +1072,7 @@ function BetterIngameAdmin:QuickSwitch(player)
 	else
 		::continue1::
 		if self.queueAssistList1[1] ~= nil then
-			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
+			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
 			if listPlayer == nil then
 				table.remove(self.queueAssistList1, 1)
 				goto continue1
@@ -1073,7 +1089,7 @@ function BetterIngameAdmin:QuickSwitch(player)
 		end
 		::continue2::
 		if self.queueAssistList2[1] ~= nil then
-			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
+			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
 			if listPlayer == nil then
 				table.remove(self.queueAssistList2, 1)
 				goto continue2
@@ -1090,7 +1106,7 @@ function BetterIngameAdmin:QuickSwitch(player)
 		end
 		::continue3::
 		if self.queueAssistList3[1] ~= nil then
-			local listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
+			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
 			if listPlayer == nil then
 				table.remove(self.queueAssistList3, 1)
 				goto continue3
@@ -1106,11 +1122,190 @@ function BetterIngameAdmin:QuickSwitch(player)
 			table.remove(self.queueAssistList3, 1)
 		end
 	end
-	if playerTeamId == player.TeamId then
+	if playerTeamId == player.teamId then
 		self:OnQueueAssistEnemyTeam(player)
+	else
+		local messages = {}
+		messages[1] = "Assist Enemy Team."
+		messages[2] = "You have been switched due to your assist request."
+		NetEvents:SendTo('PopupResponse', player, messages)
+		messages = {}
+		messages[1] = "Assist Enemy Team."
+		messages[2] = "You have been switched due to your assist request."
+		NetEvents:SendTo('PopupResponse', listPlayer, messages)	
 	end
-	-- else send NetEvents PopupResponse to listPlayer and player, also that listPlayer was removed from list
-	-- do local listPlayer earlier so we can do it here.
+end
+
+function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
+	if player.teamId == 1 then
+		for i,listPlayerName in pairs(self.queueAssistList1) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList1, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		for i,listPlayerName in pairs(self.queueAssistList2) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList2, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		for i,listPlayerName in pairs(self.queueAssistList3) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList3, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		for i,listPlayerName in pairs(self.queueAssistList4) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList4, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		-- Error you are in no queue
+	elseif player.teamId == 2 then
+		for i,listPlayerName in pairs(self.queueAssistList2) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList2, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		for i,listPlayerName in pairs(self.queueAssistList1) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList1, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		for i,listPlayerName in pairs(self.queueAssistList3) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList3, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		for i,listPlayerName in pairs(self.queueAssistList4) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList4, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		-- Error you are in no queue
+	elseif player.teamId == 3 then
+		for i,listPlayerName in pairs(self.queueAssistList3) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList3, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		for i,listPlayerName in pairs(self.queueAssistList1) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList1, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		for i,listPlayerName in pairs(self.queueAssistList2) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList2, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		for i,listPlayerName in pairs(self.queueAssistList4) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList4, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		-- Error you are in no queue
+	elseif player.teamId == 4 then
+		for i,listPlayerName in pairs(self.queueAssistList4) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList4, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		for i,listPlayerName in pairs(self.queueAssistList1) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList1, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		for i,listPlayerName in pairs(self.queueAssistList2) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList2, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		for i,listPlayerName in pairs(self.queueAssistList3) do
+			if player.name == listPlayerName then
+				table.remove(self.queueAssistList3, i)
+				local messages = {}
+				messages[1] = "Assist Queue Cancelled."
+				messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', player, messages)
+				return
+			end
+		end
+		-- Error you are in no queue
+	end
 end
 -- Endregion
 
