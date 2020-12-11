@@ -42,7 +42,7 @@ localPlayer = "";
 localPlayerSquad = 9999;
 localPlayerIsSquadLeader = false;
 localPlayerIsSquadPrivate = false;
-localPing = 123
+localPing = "–";
 /* Endregion */
 
 /* Region Client Settings */
