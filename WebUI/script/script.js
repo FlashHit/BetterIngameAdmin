@@ -2176,7 +2176,8 @@ function showServerInfo()
 }
 
 function getPlayerCount(count){
-	document.getElementById("playerCount").innerHTML = count;
+	document.getElementById("playerCount").innerHTML = count[0];
+	document.getElementById("spectatorCount").innerHTML = count[1];
 }
 
 function showScoreboard()
