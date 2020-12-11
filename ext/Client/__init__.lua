@@ -1102,7 +1102,7 @@ function BetterIngameAdmin:OnPlayerPing(pingTable)
 	self.pingTable = pingTable
 	if self.showPing == true then
 		local localPlayer = PlayerManager:GetLocalPlayer()
-		if localPlayer ~= nil and self.pingTable[localPlayer.name] ~= nil then
+		if localPlayer ~= nil and self.pingTable[localPlayer.name] ~= nil and self.pingTable[localPlayer.name] < 999 then
 			WebUI:ExecuteJS(string.format("updateLocalPlayerPing(%s)", json.encode(self.pingTable[localPlayer.name])))
 		end
 	end
