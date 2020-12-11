@@ -1126,7 +1126,9 @@ function BetterIngameAdmin:OnServerInfo(args)
 end
 
 function BetterIngameAdmin:OnGetPlayerCount()
-	local count = PlayerManager:GetPlayerCount()
+	local count = {}
+	count[1] = PlayerManager:GetPlayerCount() - PlayerManager:GetSpectatorCount()
+	count[2] = PlayerManager:GetSpectatorCount()
 	WebUI:ExecuteJS(string.format("getPlayerCount(%s)", json.encode(count)))
 end
 -- Endregion
