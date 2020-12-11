@@ -7,7 +7,7 @@
 	"HasWebUI": true,
 	"HasVeniceEXT": true,
 	"Dependencies": {
-       		"veniceext": "^1.0.3",
+       		"veniceext": "^1.0.4",
 		"gameAdmin": "^1.0.0"
  	}
 }
