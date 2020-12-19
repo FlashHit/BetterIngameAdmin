@@ -233,7 +233,7 @@ function BetterIngameAdmin:OnVotekickPlayer(player, votekickPlayer)
 				return
 			end
 			if self.playerStartedVoteCounter[player.name] == nil then
-				self.playerStartedVoteCounter[player.name] = 1
+				self.playerStartedVoteCounter[player.name] = 0
 				NetEvents:Broadcast('Start:VotekickPlayer', votekickPlayer)
 				table.insert(self.playersVotedYes, player.name)
 				self.playersVotedYesCount = self.playersVotedYesCount + 1
@@ -286,7 +286,7 @@ function BetterIngameAdmin:OnVotebanPlayer(player, votebanPlayer)
 				return
 			end
 			if self.playerStartedVoteCounter[player.name] == nil then
-				self.playerStartedVoteCounter[player.name] = 1
+				self.playerStartedVoteCounter[player.name] = 0
 				NetEvents:Broadcast('Start:VotebanPlayer', votebanPlayer)
 				table.insert(self.playersVotedYes, player.name)
 				self.playersVotedYesCount = self.playersVotedYesCount + 1
@@ -327,6 +327,7 @@ function BetterIngameAdmin:OnSurrender(player)
 			self.typeOfVote = "surrenderRU"
 		end
 		if self.playerStartedVoteCounter[player.name] == nil then
+			self.playerStartedVoteCounter[player.name] = 0
 			NetEvents:Broadcast('Start:Surrender', self.typeOfVote)
 			table.insert(self.playersVotedYes, player.name)
 			self.playersVotedYesCount = self.playersVotedYesCount + 1
@@ -475,8 +476,8 @@ function BetterIngameAdmin:OnMovePlayer(player, args)
 		NetEvents:SendTo('PopupResponse', player, messages)
 		return
 	end
-	RCON:SendCommand('admin.movePlayer', {t_Player.name, args[2], args[3], "true"})
-	RCON:SendCommand('squad.private', {tostring(t_Player.teamId), tostring(t_Player.squadId), "false"})
+	RCON:SendCommand('admin.movePlayer', {targetPlayer.name, args[2], args[3], "true"})
+	RCON:SendCommand('squad.private', {tostring(targetPlayer.teamId), tostring(targetPlayer.squadId), "false"})
 	if args[4] ~= nil and args[4] ~= "" then
 		messages = {}
 		messages[1] = "Moved by admin."
