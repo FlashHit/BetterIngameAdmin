@@ -412,7 +412,7 @@ end
 
 function BetterIngameAdmin:EndVote()
 	if self.playersVotedYesCount > self.playersVotedNoCount and (self.playersVotedYesCount + self.playersVotedNoCount) >= (PlayerManager:GetPlayerCount() / 2) then
-		if self.typeOfVote == "votekick" or self.typeOfVote == "voteban" and playerToVote ~= nil and PlayerManager:GetPlayerByName(self.playerToVote.name) ~= nil then
+		if (self.typeOfVote == "votekick" or self.typeOfVote == "voteban") and self.playerToVote ~= nil and PlayerManager:GetPlayerByName(self.playerToVote.name) ~= nil then
 			if self.typeOfVote == "votekick" then
 				self.playerToVote:Kick("Votekick")
 			elseif self.typeOfVote == "voteban" then
