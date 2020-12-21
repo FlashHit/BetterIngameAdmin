@@ -54,16 +54,18 @@ end
 
 function BetterIngameAdmin:RegisterCommands()
 	-- Region ServerBanner
-	RCON:RegisterCommand("vars.bannerUrl", RemoteCommandFlag.RequiresLogin, function(command, args, loggedIn)
+	RCON:RegisterCommand("vars.bannerUrl", RemoteCommandFlag.None, function(command, args, loggedIn)
 		if args ~= nil then
 			if args[1] == "delete" then
 				self.bannerUrl = "fb://UI/Static/ServerBanner/BFServerBanner"
 				NetEvents:Broadcast('Info', {self.serverName, self.serverDescription, self.bannerUrl})
 				return {'OK', self.bannerUrl}
-			else
+			elseif args[1] ~= nil then
 				self.bannerUrl = args[1]
 				NetEvents:Broadcast('Info', {self.serverName, self.serverDescription, self.bannerUrl})
 				return {'OK', args[1]}
+			else
+				return {'OK', self.bannerUrl}
 			end
 		else
 			return {'OK', self.bannerUrl}

@@ -219,9 +219,7 @@ function BetterIngameAdmin:RegisterEvents()
 	end)
 	-- Endregion
 	
-	-- Region TODOS
-		-- missing: WebUI:ShowHidePing when ClientUtils:GetPing() will be implemented; then update every 5 seconds via EngineUpdate
-		
+	-- Region TODOS		
 		-- level loaded event for fov and mouseSensitivity stuff and voteCount reset
 		--Events:Subscribe('Level:Loaded', self, self.OnLevelLoaded)
 	-- Endregion
