@@ -704,6 +704,9 @@ function BetterIngameAdmin:OnQueueAssistEnemyTeam(player)
 end
 
 function BetterIngameAdmin:OnPlayerLeft(player)
+	if self.playerToVote ~= nil then
+		self.playerToVote = nil
+	end
 	self:CheckQueueAssist()
 end
 
