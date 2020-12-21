@@ -1,5 +1,5 @@
 /* Region IsAdmin */
-isOwner = true;
+isOwner = false;
 admin = false;
 canMovePlayers = false;
 canKillPlayers = false;
@@ -3512,13 +3512,27 @@ function gunmasterWeaponsPlus()
 }
 /* Endregion */
 
+/* Region Manage Mod Settings */
+function manageModSettings()
+{
+	WebUI.Call('ResetKeyboard');
+	document.getElementById("serverInfo").style.display = "none";
+	document.getElementById("tables").style.display = "none";
+	document.getElementById("clientSettings").style.display = "none";
+	document.getElementById("serverSetupSettings").style.display = "none";
+	document.getElementById("managePresetsSettings").style.display = "none";
+	document.getElementById("manageModSettings").style.display = "block";
+	//WebUI.Call('DispatchEvent', 'WebUI:GetPresetsSettings');
+}
+/* Endregion */
+
 /* Region ServerBanner Loading Screen */
 function info(args){
 	document.getElementById("bannerHeader").innerHTML = '<p>'+args[0]+'</p>';
 	document.getElementById("bannerDescription").innerHTML = '<p>'+args[1]+'</p>';
 	if(args[2] != null) {
 		document.getElementById("bannerImgSrc").style.backgroundImage = 'url("'+args[2]+'")';
-		document.getElementById("serverInfoBannerImgSrc").src = args[2];
+		document.getElementById("serverInfoBannerImgSrc").style.backgroundImage = 'url("'+args[2]+'")';
 	}
 }
 function hideLoadingScreen()
