@@ -1295,6 +1295,11 @@ input[type="checkbox"]:checked + label:after {
     margin-left: 15px;
     width: 250px;
 }
+
+.tempHide {
+	display: none;
+}
+
 .serverSetupButtons p, .serverSetupManageButtons p {
 	margin: 0;
 }
