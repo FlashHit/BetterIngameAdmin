@@ -16,6 +16,7 @@ function BetterIngameAdmin:RegisterVars()
 	self.playersVotedYesCount = 0
 	self.playersVotedNoCount = 0
 	self.playerToVote = nil
+	self.playerToVoteAccountGuid = nil
 	self.playerStartedVoteCounter = {}
 		
 	self.cumulatedTime = 0
@@ -217,16 +218,17 @@ end
 	-- use reservedSlotsList for admin protection as soon as this get implemented
 function BetterIngameAdmin:OnVotekickPlayer(player, votekickPlayer)
 	if self.voteInProgress == false then
-		self.playerToVote = PlayerManager:GetPlayerByName(votekickPlayer)
-		if self.playerToVote ~= nil then
-			if self.adminList[self.playerToVote.name] ~= nil and self.adminList[self.playerToVote.name].canKick ~= nil then
+		self.playerToVote = nil
+		if PlayerManager:GetPlayerByName(votekickPlayer) ~= nil then
+			self.playerToVote = PlayerManager:GetPlayerByName(votekickPlayer).name 
+			if self.adminList[self.playerToVote] ~= nil and self.adminList[self.playerToVote].canKick ~= nil then
 				-- That guy is admin and can Kick. So he is protected.
 				local args = {}
 				args[1] = "This player is protected."
 				args[2] = "The player ".. votekickPlayer .." is protected and can not be voted off."
 				NetEvents:SendTo('PopupResponse', player, args)
 				return
-			elseif self.owner == self.playerToVote.name then
+			elseif self.owner == self.playerToVote then
 				-- That guy is the server owner. So he is protected.
 				local args = {}
 				args[1] = "This player is protected."
@@ -270,16 +272,17 @@ end
 
 function BetterIngameAdmin:OnVotebanPlayer(player, votebanPlayer)
 	if self.voteInProgress == false then
-		self.playerToVote = PlayerManager:GetPlayerByName(votebanPlayer)
-		if self.playerToVote ~= nil then
-			if self.adminList[self.playerToVote.name] ~= nil and self.adminList[self.playerToVote.name].canKick ~= nil then
+		if PlayerManager:GetPlayerByName(votebanPlayer) ~= nil then
+			self.playerToVote = PlayerManager:GetPlayerByName(votebanPlayer).name
+			self.playerToVoteAccountGuid = PlayerManager:GetPlayerByName(votebanPlayer).accountGuid
+			if self.adminList[self.playerToVote] ~= nil and self.adminList[self.playerToVote].canKick ~= nil then
 				-- That guy is admin and can Kick. So he is protected.
 				local args = {}
 				args[1] = "This player is protected."
 				args[2] = "The player ".. votebanPlayer .." is protected and can not be voted off."
 				NetEvents:SendTo('PopupResponse', player, args)
 				return
-			elseif self.owner == self.playerToVote.name then
+			elseif self.owner == self.playerToVote then
 				-- That guy is the server owner. So he is protected.
 				local args = {}
 				args[1] = "This player is protected."
@@ -414,11 +417,12 @@ end
 
 function BetterIngameAdmin:EndVote()
 	if self.playersVotedYesCount > self.playersVotedNoCount and (self.playersVotedYesCount + self.playersVotedNoCount) >= (PlayerManager:GetPlayerCount() / 2) then
-		if (self.typeOfVote == "votekick" or self.typeOfVote == "voteban") and self.playerToVote ~= nil and PlayerManager:GetPlayerByName(self.playerToVote.name) ~= nil then
-			if self.typeOfVote == "votekick" then
-				self.playerToVote:Kick("Votekick")
+		if (self.typeOfVote == "votekick" or self.typeOfVote == "voteban") and self.playerToVote ~= nil then
+			local votedPlayer = PlayerManager:GetPlayerByName(self.playerToVote)
+			if self.typeOfVote == "votekick" and votedPlayer ~= nil then
+				votedPlayer:Kick("Votekick")
 			elseif self.typeOfVote == "voteban" then
-				self.playerToVote:BanTemporarily(86400, "Voteban: 24 hours") -- 24 hours
+				RCON:SendCommand('banList.add', {"guid", tostring(self.playerToVoteAccountGuid), "seconds", "86400", "Voteban: 24 hours"})
 			end
 		elseif self.typeOfVote == "surrenderUS" then
 			args = {"2"}
@@ -433,6 +437,7 @@ function BetterIngameAdmin:EndVote()
 	self.playersVotedYes = {}
 	self.playersVotedNo = {}
 	self.playerToVote = nil
+	self.playerToVoteAccountGuid = nil
 	self.voteInProgress = false
 	self.cumulatedTime = 0
 	self.typeOfVote = ""
@@ -704,9 +709,6 @@ function BetterIngameAdmin:OnQueueAssistEnemyTeam(player)
 end
 
 function BetterIngameAdmin:OnPlayerLeft(player)
-	if self.playerToVote ~= nil then
-		self.playerToVote = nil
-	end
 	self:CheckQueueAssist()
 end
 
