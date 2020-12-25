@@ -1056,11 +1056,20 @@ end
 function BetterIngameAdmin:OnSoldierHealthAction(soldier, action)
 	if action == HealthStateAction.OnRevive then
 		local localPlayer = PlayerManager:GetLocalPlayer()
-		if soldier.player.name == localPlayer.name then
-			self.active = false
-			self.dontUpdate = false
-			localPlayer:EnableInput(11, true)
-			WebUI:ExecuteJS(string.format("clearScoreboardBody()"))
+		if localPlayer.soldier ~= nil then
+			if soldier == localPlayer.soldier then
+				self.active = false
+				self.dontUpdate = false
+				localPlayer:EnableInput(11, true)
+				WebUI:ExecuteJS(string.format("clearScoreboardBody()"))
+			end
+		elseif localPlayer.corpse ~= nil then
+			if soldier == localPlayer.corpse then
+				self.active = false
+				self.dontUpdate = false
+				localPlayer:EnableInput(11, true)
+				WebUI:ExecuteJS(string.format("clearScoreboardBody()"))
+			end
 		end
 	end
 end
