@@ -46,6 +46,7 @@ function BetterIngameAdmin:RegisterVars()
 	
 	-- Region ServerOwner
 	self.owner = nil
+	self.loggedOwner = false
 	-- Endregion
 	
 	-- Region Ping for Scoreboard
@@ -109,10 +110,15 @@ function BetterIngameAdmin:RegisterCommands()
 		end
 		SQL:Close()
 		if self.owner ~= nil then
-			print("GET SERVER OWNER: " .. self.owner)
+			if self.loggedOwner == false then
+				print("GET SERVER OWNER: " .. self.owner)
+				self.loggedOwner = true
+			end
 			return {'OK', self.owner}
 		else
-			print("GET SERVER OWNER: not defined")
+			if self.loggedOwner == false then
+				print("GET SERVER OWNER: CAUTION NO SERVER OWNER SET! PLEASE JOIN YOUR SERVER!")
+			end
 			return {'OK', 'OwnerNotSet'}
 		end
 	end)
@@ -201,12 +207,6 @@ function BetterIngameAdmin:RegisterEvents()
 		-- and check if we have an server owner)
 		-- and check the assist queue
     Events:Subscribe('Player:Authenticated', self, self.OnAuthenticated)
-	-- Endregion
-	
-	
-	-- Region get rid of this old unfinished adminpanel shit
-		-- delete after implementing in new admin panel (server setup -> manage presets)
-		NetEvents:Subscribe('ApplyGeneralSettings', self, self.OnApplyGeneralSettings)
 	-- Endregion
 end
 
