@@ -57,18 +57,22 @@ function BetterIngameAdmin:RegisterCommands()
 	-- Region ServerBanner
 	RCON:RegisterCommand("vars.bannerUrl", RemoteCommandFlag.None, function(command, args, loggedIn)
 		if args ~= nil then
-			if args[1] == "delete" then
+			if args[1] == "" then
 				self.bannerUrl = "fb://UI/Static/ServerBanner/BFServerBanner"
 				NetEvents:Broadcast('Info', {self.serverName, self.serverDescription, self.bannerUrl})
+				print("SET BANNER: Default")
 				return {'OK', self.bannerUrl}
 			elseif args[1] ~= nil then
 				self.bannerUrl = args[1]
 				NetEvents:Broadcast('Info', {self.serverName, self.serverDescription, self.bannerUrl})
+				print("SET BANNER: " .. args[1])
 				return {'OK', args[1]}
 			else
+				print("GET BANNER: " .. self.bannerUrl)
 				return {'OK', self.bannerUrl}
 			end
 		else
+			print("GET BANNER: " .. self.bannerUrl)
 			return {'OK', self.bannerUrl}
 		end
 	end)
@@ -105,8 +109,10 @@ function BetterIngameAdmin:RegisterCommands()
 		end
 		SQL:Close()
 		if self.owner ~= nil then
+			print("GET SERVER OWNER: " .. self.owner)
 			return {'OK', self.owner}
 		else
+			print("GET SERVER OWNER: not defined")
 			return {'OK', 'OwnerNotSet'}
 		end
 	end)
@@ -227,6 +233,7 @@ function BetterIngameAdmin:OnVotekickPlayer(player, votekickPlayer)
 				args[1] = "This player is protected."
 				args[2] = "The player ".. votekickPlayer .." is protected and can not be voted off."
 				NetEvents:SendTo('PopupResponse', player, args)
+				print("VOTEKICK: Protection - Player " .. player.name .. " tried to votekick Admin " .. votekickPlayer)
 				return
 			elseif self.owner == self.playerToVote then
 				-- That guy is the server owner. So he is protected.
@@ -234,6 +241,7 @@ function BetterIngameAdmin:OnVotekickPlayer(player, votekickPlayer)
 				args[1] = "This player is protected."
 				args[2] = "The player ".. votekickPlayer .." is protected and can not be voted off."
 				NetEvents:SendTo('PopupResponse', player, args)
+				print("VOTEKICK: Protection - Player " .. player.name .. " tried to votekick Owner " .. votekickPlayer)
 				return
 			end
 			if self.playerStartedVoteCounter[player.name] == nil then
@@ -243,6 +251,7 @@ function BetterIngameAdmin:OnVotekickPlayer(player, votekickPlayer)
 				self.playersVotedYesCount = self.playersVotedYesCount + 1
 				self.voteInProgress = true
 				self.typeOfVote = "votekick"
+				print("VOTEKICK: Started - Player " .. player.name .. " started votekick on Player " .. votekickPlayer)
 				return
 			end
 			if self.playerStartedVoteCounter[player.name] < 3 then
@@ -252,6 +261,7 @@ function BetterIngameAdmin:OnVotekickPlayer(player, votekickPlayer)
 				self.playersVotedYesCount = self.playersVotedYesCount + 1
 				self.voteInProgress = true
 				self.typeOfVote = "votekick"
+				print("VOTEKICK: Started - Player " .. player.name .. " started votekick on Player " .. votekickPlayer)
 				if self.playerStartedVoteCounter[player.name] == 3 then	
 					NetEvents:SendTo('HideVoteButtons', player)
 				end
@@ -281,6 +291,7 @@ function BetterIngameAdmin:OnVotebanPlayer(player, votebanPlayer)
 				args[1] = "This player is protected."
 				args[2] = "The player ".. votebanPlayer .." is protected and can not be voted off."
 				NetEvents:SendTo('PopupResponse', player, args)
+				print("VOTEBAN: Protection - Player " .. player.name .. " tried to voteban Admin " .. votebanPlayer)
 				return
 			elseif self.owner == self.playerToVote then
 				-- That guy is the server owner. So he is protected.
@@ -288,6 +299,7 @@ function BetterIngameAdmin:OnVotebanPlayer(player, votebanPlayer)
 				args[1] = "This player is protected."
 				args[2] = "The player ".. votebanPlayer .." is protected and can not be voted off."
 				NetEvents:SendTo('PopupResponse', player, args)
+				print("VOTEBAN: Protection - Player " .. player.name .. " tried to voteban Owner " .. votebanPlayer)
 				return
 			end
 			if self.playerStartedVoteCounter[player.name] == nil then
@@ -297,6 +309,7 @@ function BetterIngameAdmin:OnVotebanPlayer(player, votebanPlayer)
 				self.playersVotedYesCount = self.playersVotedYesCount + 1
 				self.voteInProgress = true
 				self.typeOfVote = "voteban"
+				print("VOTEBAN: Started - Player " .. player.name .. " started voteban on Player " .. votebanPlayer)
 				return
 			end
 			if self.playerStartedVoteCounter[player.name] < 3 then
@@ -306,6 +319,7 @@ function BetterIngameAdmin:OnVotebanPlayer(player, votebanPlayer)
 				self.playersVotedYesCount = self.playersVotedYesCount + 1
 				self.voteInProgress = true
 				self.typeOfVote = "voteban"
+				print("VOTEBAN: Started - Player " .. player.name .. " started voteban on Player " .. votebanPlayer)
 				if self.playerStartedVoteCounter[player.name] == 3 then	
 					NetEvents:SendTo('HideVoteButtons', player)
 				end
@@ -337,12 +351,14 @@ function BetterIngameAdmin:OnSurrender(player)
 			table.insert(self.playersVotedYes, player.name)
 			self.playersVotedYesCount = self.playersVotedYesCount + 1
 			self.voteInProgress = true
+			print("VOTE SURRENDER: Started - Player " .. player.name .. " started a surrender voting for the team " .. player.TeamId)
 		end
 		if self.playerStartedVoteCounter[player.name] < 3 then
 			NetEvents:Broadcast('Start:Surrender', self.typeOfVote)
 			table.insert(self.playersVotedYes, player.name)
 			self.playersVotedYesCount = self.playersVotedYesCount + 1
 			self.voteInProgress = true
+			print("VOTE SURRENDER: Started - Player " .. player.name .. " started a surrender voting for the team " .. player.TeamId)
 			if self.playerStartedVoteCounter[player.name] == 3 then	
 				NetEvents:SendTo('HideVoteButtons', player)
 			end
@@ -357,7 +373,7 @@ function BetterIngameAdmin:OnSurrender(player)
 		args[1] = "Vote in progress."
 		args[2] = "Please wait until the current voting is over and try again."
 		NetEvents:SendTo('PopupResponse', player, args)
-	end
+		end
 end
 
 function BetterIngameAdmin:OnCheckVoteYes(player)
@@ -416,20 +432,46 @@ function BetterIngameAdmin:OnEngineUpdate(deltaTime, simulationDeltaTime)
 end
 
 function BetterIngameAdmin:EndVote()
-	if self.playersVotedYesCount > self.playersVotedNoCount and (self.playersVotedYesCount + self.playersVotedNoCount) >= (PlayerManager:GetPlayerCount() / 2) then
-		if (self.typeOfVote == "votekick" or self.typeOfVote == "voteban") and self.playerToVote ~= nil then
-			local votedPlayer = PlayerManager:GetPlayerByName(self.playerToVote)
-			if self.typeOfVote == "votekick" and votedPlayer ~= nil then
-				votedPlayer:Kick("Votekick")
-			elseif self.typeOfVote == "voteban" then
-				RCON:SendCommand('banList.add', {"guid", tostring(self.playerToVoteAccountGuid), "seconds", "86400", "Voteban: 24 hours"})
-			end
-		elseif self.typeOfVote == "surrenderUS" then
+	if self.playersVotedYesCount > self.playersVotedNoCount then
+		if (self.playersVotedYesCount + self.playersVotedNoCount) >= (TeamSquadManager:GetTeamPlayerCount(TeamId.Team1) / 2) and self.typeOfVote == "surrenderUS" then
 			args = {"2"}
 			RCON:SendCommand('mapList.endround', args)
-		elseif self.typeOfVote == "surrenderRU" then
+			print("VOTE SURRENDER: Success - The US team surrenders. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+		elseif (self.playersVotedYesCount + self.playersVotedNoCount) >= (TeamSquadManager:GetTeamPlayerCount(TeamId.Team2) / 2) and self.typeOfVote == "surrenderRU" then
 			args = {"1"}
 			RCON:SendCommand('mapList.endround', args)
+			print("VOTE SURRENDER: Success - The RU team surrenders. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+		elseif (self.playersVotedYesCount + self.playersVotedNoCount) >= (PlayerManager:GetPlayerCount() / 2) then
+			if (self.typeOfVote == "votekick" or self.typeOfVote == "voteban") and self.playerToVote ~= nil then
+				local votedPlayer = PlayerManager:GetPlayerByName(self.playerToVote)
+				if self.typeOfVote == "votekick" and votedPlayer ~= nil then
+					votedPlayer:Kick("Votekick")
+					print("VOTEKICK: Success - The Player " .. self.playerToVote .. " got kicked. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+				elseif self.typeOfVote == "voteban" then
+					RCON:SendCommand('banList.add', {"guid", tostring(self.playerToVoteAccountGuid), "seconds", "86400", "Voteban: 24 hours"})
+					print("VOTEBAN: Success - The Player " .. self.playerToVote .. " got banned for 24 hours. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+				end
+			end
+		else
+			if self.typeOfVote == "votekick" then
+				print("VOTEKICK: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+			elseif self.typeOfVote == "voteban" then
+				print("VOTEBAN: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+			elseif self.typeOfVote == "surrenderRU" then
+				print("VOTE SURRENDER RU: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+			elseif self.typeOfVote == "surrenderUS" then
+				print("VOTE SURRENDER US: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+			end
+		end
+	else
+		if self.typeOfVote == "votekick" then
+			print("VOTEKICK: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+		elseif self.typeOfVote == "voteban" then
+			print("VOTEBAN: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+		elseif self.typeOfVote == "surrenderRU" then
+			print("VOTE SURRENDER RU: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+		elseif self.typeOfVote == "surrenderUS" then
+			print("VOTE SURRENDER US: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
 		end
 	end
 	self.playersVotedYesCount = 0
@@ -472,6 +514,7 @@ function BetterIngameAdmin:OnMovePlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, you are no admin or at least don't have the required abilitities to do this action."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN MOVE - Error Player " .. player.name .. " is no admin")
 		return
 	end
 	local targetPlayer = PlayerManager:GetPlayerByName(args[1])
@@ -481,6 +524,7 @@ function BetterIngameAdmin:OnMovePlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, we couldn't find the player."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN MOVE - Error Admin " .. player.name .. " tried to move Player " .. targetPlayer .. " but we couldn't find him.")
 		return
 	end
 	RCON:SendCommand('admin.movePlayer', {targetPlayer.name, args[2], args[3], "true"})
@@ -490,6 +534,7 @@ function BetterIngameAdmin:OnMovePlayer(player, args)
 		messages[1] = "Moved by admin."
 		messages[2] = "You got moved by an admin. Reason: ".. args[4]
 		NetEvents:SendTo('PopupResponse', targetPlayer, messages)
+		print("ADMIN MOVE - Admin " .. player.name .. " moved Player " .. targetPlayer .. " to the team " .. args[2] .. " and the squad " args[3] ". Reason: " .. args[4])
 	else
 		-- send confirm to player and message to target
 		messages[1] = "Moved by admin."
@@ -499,6 +544,7 @@ function BetterIngameAdmin:OnMovePlayer(player, args)
 		messages[1] = "Move confirmed."
 		messages[2] = "You moved the player ".. targetPlayer.name .." successfully."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN MOVE - Admin " .. player.name .. " moved Player " .. targetPlayer .. " to the team " .. args[2] .. " and the squad " args[3] ".")
 	end
 end
 
@@ -509,6 +555,7 @@ function BetterIngameAdmin:OnKillPlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, you are no admin or at least don't have the required abilitities to do this action."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN KILL - Error Player " .. player.name .. " is no admin")
 		return
 	end
 	local targetPlayer = PlayerManager:GetPlayerByName(args[1])
@@ -518,19 +565,31 @@ function BetterIngameAdmin:OnKillPlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, we couldn't find the player."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN KILL - Error Admin " .. player.name .. " tried to kill Player " .. targetPlayer .. " but we couldn't find him.")
 		return
 	end
 	if targetPlayer.alive == true then
 		RCON:SendCommand('admin.killPlayer', {targetPlayer.name})
-		RCON:SendCommand('admin.say', {"Reason for kill: "..args[2], "player", targetPlayer.name})
+		if args[2] ~= nil then
+			RCON:SendCommand('admin.say', {"Reason for kill: "..args[2], "player", targetPlayer.name})
+			print("ADMIN KILL - Admin " .. player.name .. " killed Player " .. targetPlayer .. ". Reason: " .. args[2])
+		else
+			print("ADMIN KILL - Admin " .. player.name .. " killed Player " .. targetPlayer .. ".")
+		end
 	elseif player.corpse ~= nil and player.corpse.isDead == false then
 		targetPlayer.corpse:ForceDead()
-		RCON:SendCommand('admin.say', {"Reason for kill: "..args[2], "player", targetPlayer.name})
+		if args[2] ~= nil and args[2] ~= "" then
+			RCON:SendCommand('admin.say', {"Reason for kill: "..args[2], "player", targetPlayer.name})
+			print("ADMIN KILL - Admin " .. player.name .. " killed Player " .. targetPlayer .. ". Reason: " .. args[2])
+		else
+			print("ADMIN KILL - Admin " .. player.name .. " killed Player " .. targetPlayer .. ".")
+		end
 	else
 		-- TargetPlayer aready dead.
 		messages[1] = "Error."
 		messages[2] = "The player".. targetPlayer.name .." is already dead."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN KILL - Error Admin " .. player.name .. " tried to kill Player " .. targetPlayer .. " but he is already dead.")
 	end
 end
 
@@ -541,6 +600,7 @@ function BetterIngameAdmin:OnKickPlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, you are no admin or at least don't have the required abilitities to do this action."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN KICK - Error Player " .. player.name .. " is no admin")
 		return
 	end
 	local targetPlayer = PlayerManager:GetPlayerByName(args[1])
@@ -550,12 +610,15 @@ function BetterIngameAdmin:OnKickPlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, we couldn't find the player."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN KICK - Error Admin " .. player.name .. " tried to kick Player " .. targetPlayer .. " but we couldn't find him.")
 		return
 	end
 	if args[2]~= nil and args[2] ~= "" then
 		targetPlayer:Kick(""..args[2].." (".. player.name..")")
+		print("ADMIN KICK - Admin " .. player.name .. " kicked Player " .. targetPlayer .. ". Reason: " .. args[2])
 	else
 		targetPlayer:Kick("Kicked by ".. player.name.."")
+		print("ADMIN KICK - Admin " .. player.name .. " kicked Player " .. targetPlayer .. ".")
 	end
 	messages = {}
 	messages[1] = "Kick confirmed."
@@ -570,6 +633,7 @@ function BetterIngameAdmin:OnTBanPlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, you are no admin or at least don't have the required abilitities to do this action."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN TBAN - Error Player " .. player.name .. " is no admin")
 		return
 	end
 	local targetPlayer = PlayerManager:GetPlayerByName(args[1])
@@ -579,12 +643,15 @@ function BetterIngameAdmin:OnTBanPlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, we couldn't find the player."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN TBAN - Error Admin " .. player.name .. " tried to temp. ban Player " .. targetPlayer .. " but we couldn't find him.")
 		return
 	end
 	if args[3]~= nil and args[3] ~= "" then
 		targetPlayer:BanTemporarily(args[2]*60, ""..args[3].." (".. player.name..") "..args[2].." minutes")
+		print("ADMIN TBAN - Admin " .. player.name .. " temp. banned Player " .. targetPlayer .. "for " .. args[2] .. " minutes. Reason: " .. args[3])
 	else
 		targetPlayer:BanTemporarily(args[2]*60, "Temporarily banned by ".. player.name.." for "..args[2].." minutes")
+		print("ADMIN TBAN - Admin " .. player.name .. " temp. banned Player " .. targetPlayer .. "for " .. args[2] .. " minutes.")
 	end
 	messages = {}
 	messages[1] = "Ban confirmed."
@@ -599,6 +666,7 @@ function BetterIngameAdmin:OnBanPlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, you are no admin or at least don't have the required abilitities to do this action."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN BAN - Error Player " .. player.name .. " is no admin")
 		return
 	end
 	local targetPlayer = PlayerManager:GetPlayerByName(args[1])
@@ -608,12 +676,15 @@ function BetterIngameAdmin:OnBanPlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, we couldn't find the player."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN BAN - Error Admin " .. player.name .. " tried to ban Player " .. targetPlayer .. " but we couldn't find him.")
 		return
 	end
 	if args[2]~= nil and args[2] ~= "" then
 		targetPlayer:Ban(""..args[2].." (".. player.name..")")
+		print("ADMIN BAN - Admin " .. player.name .. " banned Player " .. targetPlayer .. ". Reason: " .. args[2])
 	else
 		targetPlayer:Ban("Banned by ".. player.name.."")
+		print("ADMIN BAN - Admin " .. player.name .. " banned Player " .. targetPlayer .. ".")
 	end
 	messages = {}
 	messages[1] = "Ban confirmed."
@@ -628,6 +699,7 @@ function BetterIngameAdmin:OnDeleteAdminRights(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, you are no admin or at least don't have the required abilitities to do this action."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN - ADMIN RIGHTS - DELETE - Error Player " .. player.name .. " is no admin")
 		return
 	end
 	RCON:SendCommand('gameAdmin.remove', args)
@@ -640,6 +712,7 @@ function BetterIngameAdmin:OnDeleteAndSaveAdminRights(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, you are no admin or at least don't have the required abilitities to do this action."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN - ADMIN RIGHTS - DELETE AND SAVE - Error Player " .. player.name .. " is no admin")
 		return
 	end
 	RCON:SendCommand('gameAdmin.remove', args)
@@ -653,6 +726,7 @@ function BetterIngameAdmin:OnUpdateAdminRights(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, you are no admin or at least don't have the required abilitities to do this action."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN - ADMIN RIGHTS - ADD/ UPDATE - Error Player " .. player.name .. " is no admin")
 		return
 	end
 	RCON:SendCommand('gameAdmin.add', args)
@@ -665,6 +739,7 @@ function BetterIngameAdmin:OnUpdateAndSaveAdminRights(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, you are no admin or at least don't have the required abilitities to do this action."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ADMIN - ADMIN RIGHTS - ADD/ UPDATE AND SAVE - Error Player " .. player.name .. " is no admin")
 		return
 	end
 	RCON:SendCommand('gameAdmin.add', args)
@@ -688,6 +763,7 @@ end
 
 -- Region Player Assist enemy team
 function BetterIngameAdmin:OnAssistEnemyTeam(player)
+	--print("ASSIST - Player " .. player.name .. " want to assist the enemy team.")
 	self:AssistTarget(player, 0)
 end
 
@@ -696,6 +772,7 @@ function BetterIngameAdmin:OnQueueAssistEnemyTeam(player)
 	messages[1] = "Assist Queue."
 	messages[2] = "Sorry, we couldn't switch you. We will switch you when it is possible. You are now in the Assist Queue."
 	NetEvents:SendTo('PopupResponse', player, messages)
+	print("ASSIST - QUEUE - Player " .. player.name .. " is now in the assist queue.")
 	
 	if player.teamId == TeamId.Team1 then
 		table.insert(self.queueAssistList1, player.name)
@@ -795,8 +872,9 @@ function BetterIngameAdmin:AssistTarget(player, isInQueueList)
 			end
 			local messages = {}
 			messages[1] = "Assist Enemy Team."
-			messages[2] = "You have been switched due to your assist request."
+			messages[2] = "You have been switched because of your assist request."
 			NetEvents:SendTo('PopupResponse', player, messages)
+			print("ASSIST - MOVE - Player " .. player.name .. " is now helping the enemy team " .. player.teamId .. ".")
 		else
 			if isInQueueList == 0 then
 				self:QuickSwitch(player)
@@ -872,8 +950,9 @@ function BetterIngameAdmin:AssistTarget(player, isInQueueList)
 			end
 			local messages = {}
 			messages[1] = "Assist Enemy Team."
-			messages[2] = "You have been switched due to your assist request."
+			messages[2] = "You have been switched because of your assist request."
 			NetEvents:SendTo('PopupResponse', player, messages)
+			print("ASSIST - MOVE - Player " .. player.name .. " is now helping the enemy team " .. player.teamId .. ".")
 		elseif currentTeamCount > (enemyTeam2Count + 1) or (currentTeamTickets >= enemyTeam2Tickets and currentTeamCount > (enemyTeam2Count - 2)) then
 			if player.alive == true then
 				RCON:SendCommand('admin.killPlayer', {player.name})
@@ -890,8 +969,9 @@ function BetterIngameAdmin:AssistTarget(player, isInQueueList)
 			end
 			local messages = {}
 			messages[1] = "Assist Enemy Team."
-			messages[2] = "You have been switched due to your assist request."
+			messages[2] = "You have been switched because of your assist request."
 			NetEvents:SendTo('PopupResponse', player, messages)
+			print("ASSIST - MOVE - Player " .. player.name .. " is now helping the enemy team " .. player.teamId .. ".")
 		elseif currentTeamCount > (enemyTeam3Count + 1) or (currentTeamTickets >= enemyTeam3Tickets and currentTeamCount > (enemyTeam3Count - 2)) then
 			if player.alive == true then
 				RCON:SendCommand('admin.killPlayer', {player.name})
@@ -908,8 +988,9 @@ function BetterIngameAdmin:AssistTarget(player, isInQueueList)
 			end
 			local messages = {}
 			messages[1] = "Assist Enemy Team."
-			messages[2] = "You have been switched due to your assist request."
+			messages[2] = "You have been switched because of your assist request."
 			NetEvents:SendTo('PopupResponse', player, messages)
+			print("ASSIST - MOVE - Player " .. player.name .. " is now helping the enemy team " .. player.teamId .. ".")
 		else
 			if isInQueueList == 0 then
 				self:QuickSwitch(player)
@@ -1135,12 +1216,14 @@ function BetterIngameAdmin:QuickSwitch(player)
 	else
 		local messages = {}
 		messages[1] = "Assist Enemy Team."
-		messages[2] = "You have been switched due to your assist request."
+		messages[2] = "You have been switched because of your assist request."
 		NetEvents:SendTo('PopupResponse', player, messages)
+		print("ASSIST - MOVE - Player " .. player.name .. " is now helping the enemy team " .. player.teamId .. ".")
 		messages = {}
 		messages[1] = "Assist Enemy Team."
-		messages[2] = "You have been switched due to your assist request."
+		messages[2] = "You have been switched because of your assist request."
 		NetEvents:SendTo('PopupResponse', listPlayer, messages)	
+		print("ASSIST - MOVE - Player " .. listPlayer.name .. " is now helping the enemy team " .. listPlayer.teamId .. ".")
 	end
 end
 
@@ -1153,6 +1236,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1163,6 +1247,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1173,6 +1258,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1183,6 +1269,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1195,6 +1282,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1205,6 +1293,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1215,6 +1304,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1225,6 +1315,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1237,6 +1328,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1247,6 +1339,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1257,6 +1350,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1267,6 +1361,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1279,6 +1374,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1289,6 +1385,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1299,6 +1396,7 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
@@ -1309,10 +1407,12 @@ function BetterIngameAdmin:OnCancelAssistEnemyTeam(player)
 				messages[1] = "Assist Queue Cancelled."
 				messages[2] = "We removed you from the assist queue."
 				NetEvents:SendTo('PopupResponse', player, messages)
+				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
 		-- Error you are in no queue
+		print("ASSIST - CANCEL Error - Player " .. player.name .. " was in no assist queue.")
 	end
 end
 -- Endregion
@@ -1424,29 +1524,35 @@ end
 function BetterIngameAdmin:OnSetNextMap(player, mapIndex)
 	if (self.adminList[player.name] == nil or self.adminList[player.name].canUseMapFunctions == nil) and self.owner ~= player.name then
 		-- That guy is no admin or doesn't have that ability. That guy is also not the server owner.
+		print("ADMIN - SET NEXT MAP - Error - Player " .. player.name .. " is no admin.")
 		return
 	end
 	mapIndex = tonumber(mapIndex) - 1
 	RCON:SendCommand('mapList.setNextMapIndex', {tostring(mapIndex)})
+	print("ADMIN - SET NEXT MAP - Admin " .. player.name .. " has changed the next map index to " .. tostring(mapIndex) .. ".")
 	self:OnGetMapRotation()
 end
 
 function BetterIngameAdmin:OnRunNextRound(player)
 	if (self.adminList[player.name] == nil or self.adminList[player.name].canUseMapFunctions == nil) and self.owner ~= player.name then
 		-- That guy is no admin or doesn't have that ability. That guy is also not the server owner.
+		print("ADMIN - RUN NEXT ROUND - Error - Player " .. player.name .. " is no admin.")
 		return
 	end
 	RCON:SendCommand('mapList.runNextRound')
+	print("ADMIN - RUN NEXT ROUND - Player " .. player.name .. " ran the next round.")
 end
 
 function BetterIngameAdmin:OnRestartRound(player)
 	if (self.adminList[player.name] == nil or self.adminList[player.name].canUseMapFunctions == nil ) and self.owner ~= player.name then
 		-- That guy is no admin or doesn't have that ability. That guy is also not the server owner.
+		print("ADMIN - RESTART ROUND - Error - Player " .. player.name .. " is no admin.")
 		return
 	end
 	RCON:SendCommand('mapList.restartRound')
+	print("ADMIN - RESTART ROUND - Player " .. player.name .. " restarted the round.")
 end
--- Enregion
+-- Endregion
 
 -- Region Admin Server Setup
 function BetterIngameAdmin:OnGetServerSetupSettings(player)
@@ -1489,6 +1595,7 @@ end
 function BetterIngameAdmin:OnSaveServerSetupSettings(player, args)
 	if (self.adminList[player.name] == nil or self.adminList[player.name].canAlterServerSettings == nil) and self.owner ~= player.name then
 		-- That guy is no admin or doesn't have that ability. That guy is also not the server owner.
+		print("ADMIN - SAVE SERVER SETUP SETTINGS - Error - Player " .. player.name .. " is no admin.")
 		return
 	end
 	RCON:SendCommand('vars.serverName', {args[1]})
@@ -1499,6 +1606,7 @@ function BetterIngameAdmin:OnSaveServerSetupSettings(player, args)
 	self.serverConfig[3] = args[3]
 	RCON:SendCommand('vars.gamePassword', {args[4]})
 	self.serverConfig[4] = args[4]
+	print("ADMIN - SAVE SERVER SETUP SETTINGS - Player " .. player.name .. " updated the server name: " .. args[1] .. ", server description: " .. args[2] .. ", server message: " .. args[3] .. ", and game password: " .. args[4] .. ".")
 end
 -- Endregion
 
@@ -1506,18 +1614,24 @@ end
 function BetterIngameAdmin:OnManagePresets(player, args)
 	if (self.adminList[player.name] == nil or self.adminList[player.name].canAlterServerSettings == nil) and self.owner ~= player.name then
 		-- That guy is no admin or doesn't have that ability. That guy is also not the server owner.
+		print("ADMIN - MANAGE PRESETS - Error - Player " .. player.name .. " is no admin.")
 		return
 	end
 	if args[1] == "normal" then
 		self:PresetNormal()
+		print("ADMIN - MANAGE PRESETS - Player " .. player.name .. " changed the presets to: NORMAL.")
 	elseif args[1] == "hardcore" then
 		self:PresetHardcore()
+		print("ADMIN - MANAGE PRESETS - Player " .. player.name .. " changed the presets to: HARDCORE.")
 	elseif args[1] == "infantry" then
 		self:PresetInfantry()
+		print("ADMIN - MANAGE PRESETS - Player " .. player.name .. " changed the presets to: INFANTRY.")
 	elseif args[1] == "hardcoreNoMap" then
 		self:PresetHardcoreNoMap()
+		print("ADMIN - MANAGE PRESETS - Player " .. player.name .. " changed the presets to: HARDCORE NO MAP.")
 	elseif args[1] == "custom" then
 		self:PresetCustom(args)
+		print("ADMIN - MANAGE PRESETS - Player " .. player.name .. " changed the presets to: CUSTOM.")
 	end
 	NetEvents:Broadcast('ServerInfo', self.serverConfig)
 	local messages = {}
@@ -1886,14 +2000,17 @@ function BetterIngameAdmin:OnAuthenticated(player)
 		SQL:Close()
 		NetEvents:SendTo('ServerOwnerRights', player)
 		NetEvents:SendTo('QuickServerSetup', player)
+		print("ADMIN - SERVER OWNER SET - Player " .. player.name .. " is now server owner.")
 	elseif player.name == self.owner then
 		NetEvents:SendTo('ServerOwnerRights', player)
+		print("ADMIN - SERVER OWNER JOINED - Owner " .. player.name .. " has joined the server.")
 	end
 	
 	NetEvents:SendTo('Info', player, {self.serverName, self.serverDescription, self.bannerUrl})
 	
 	if self.adminList[player.name] ~= nil then
 		NetEvents:SendTo('AdminPlayer', player, self.adminList[player.name])
+		print("ADMIN - ADMIN JOINED - Admin " .. player.name .. " has joined the server.")
 	end
 	
 	NetEvents:SendTo('ServerInfo', player, self.serverConfig)
@@ -2289,53 +2406,4 @@ function BetterIngameAdmin:OnBroadcastServerInfo()
 end
 -- Endregion
 
--- Region get rid of this old admin panel shit
---[[
-function BetterIngameAdmin:OnApplyGeneralSettings(player, args)
-	RCON:SendCommand('vars.serverName', {args[1]})
-	RCON:SendCommand('vars.serverDescription', {args[2]})
-	RCON:SendCommand('vars.serverMessage', {args[3]})
-	RCON:SendCommand('vars.gamePassword', {args[4]})
-	RCON:SendCommand('vars.autoBalance', {tostring(args[5])})
-	RCON:SendCommand('vars.friendlyFire', {tostring(args[6])})
-	RCON:SendCommand('vars.killCam', {tostring(args[7])})
-	RCON:SendCommand('vars.minimap', {tostring(args[8])})
-	RCON:SendCommand('vars.hud', {tostring(args[9])})
-	RCON:SendCommand('vars.3dSpotting', {tostring(args[10])})
-	RCON:SendCommand('vars.miniMapSpotting', {tostring(args[11])})
-	RCON:SendCommand('vars.nameTag', {tostring(args[12])})
-	RCON:SendCommand('vars.3pCam', {tostring(args[13])})
-	RCON:SendCommand('vars.regenerateHealth', {tostring(args[14])})
-	RCON:SendCommand('vars.vehicleSpawnAllowed', {tostring(args[15])})
-	RCON:SendCommand('vars.onlySquadLeaderSpawn', {tostring(args[16])})
-	RCON:SendCommand('vu.DestructionEnabled', {tostring(args[17])})
-	RCON:SendCommand('vu.DesertingAllowed', {tostring(args[18])})
-	RCON:SendCommand('vu.VehicleDisablingEnabled', {tostring(args[19])})
-	RCON:SendCommand('vu.HighPerformanceReplication', {tostring(args[20])})
-	RCON:SendCommand('vu.SunFlareEnabled', {tostring(args[21])})
-	RCON:SendCommand('vu.ColorCorrectionEnabled', {tostring(args[22])})
-	RCON:SendCommand('vars.maxPlayers', {args[23]})
-	RCON:SendCommand('vars.teamKillCountForKick', {args[24]})
-	RCON:SendCommand('vars.teamKillValueForKick', {args[25]})
-	RCON:SendCommand('vars.teamKillValueIncrease', {args[26]})
-	RCON:SendCommand('vars.teamKillValueDecreasePerSecond', {args[27]})
-	RCON:SendCommand('vars.teamKillKickForBan', {args[28]})
-	RCON:SendCommand('vars.idleTimeout', {args[29]})
-	RCON:SendCommand('vars.idleBanRounds', {args[30]})
-	RCON:SendCommand('vars.roundStartPlayerCount', {args[31]})
-	RCON:SendCommand('vars.roundRestartPlayerCount', {args[32]})
-	RCON:SendCommand('vars.roundLockdownCountdown', {args[33]})
-	RCON:SendCommand('vars.vehicleSpawnDelay', {args[34]})
-	RCON:SendCommand('vars.soldierHealth', {args[35]})
-	RCON:SendCommand('vars.playerRespawnTime', {args[36]})
-	RCON:SendCommand('vars.playerManDownTime', {args[37]})
-	RCON:SendCommand('vars.bulletDamage', {args[38]})
-	RCON:SendCommand('vars.gameModeCounter', {args[39]})
-	RCON:SendCommand('vars.gunMasterWeaponsPreset', {args[40]})
-	RCON:SendCommand('vu.SuppressionMultiplier', {args[41]})
-	RCON:SendCommand('vu.TimeScale', {args[42]})
-	RCON:SendCommand('vu.SquadSize', {args[43]})
-	RCON:SendCommand('vu.ServerBanner', {args[44]})
-end]]
--- Endregion
 g_BetterIngameAdmin = BetterIngameAdmin()
