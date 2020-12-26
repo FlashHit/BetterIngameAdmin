@@ -454,24 +454,24 @@ function BetterIngameAdmin:EndVote()
 			end
 		else
 			if self.typeOfVote == "votekick" then
-				print("VOTEKICK: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+				print("VOTEKICK: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
 			elseif self.typeOfVote == "voteban" then
-				print("VOTEBAN: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+				print("VOTEBAN: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
 			elseif self.typeOfVote == "surrenderRU" then
-				print("VOTE SURRENDER RU: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+				print("VOTE SURRENDER RU: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
 			elseif self.typeOfVote == "surrenderUS" then
-				print("VOTE SURRENDER US: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+				print("VOTE SURRENDER US: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
 			end
 		end
 	else
 		if self.typeOfVote == "votekick" then
-			print("VOTEKICK: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+			print("VOTEKICK: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
 		elseif self.typeOfVote == "voteban" then
-			print("VOTEBAN: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+			print("VOTEBAN: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
 		elseif self.typeOfVote == "surrenderRU" then
-			print("VOTE SURRENDER RU: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+			print("VOTE SURRENDER RU: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
 		elseif self.typeOfVote == "surrenderUS" then
-			print("VOTE SURRENDER US: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO."
+			print("VOTE SURRENDER US: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
 		end
 	end
 	self.playersVotedYesCount = 0
@@ -534,7 +534,7 @@ function BetterIngameAdmin:OnMovePlayer(player, args)
 		messages[1] = "Moved by admin."
 		messages[2] = "You got moved by an admin. Reason: ".. args[4]
 		NetEvents:SendTo('PopupResponse', targetPlayer, messages)
-		print("ADMIN MOVE - Admin " .. player.name .. " moved Player " .. targetPlayer .. " to the team " .. args[2] .. " and the squad " args[3] ". Reason: " .. args[4])
+		print("ADMIN MOVE - Admin " .. player.name .. " moved Player " .. targetPlayer .. " to the team " .. args[2] .. " and the squad " .. args[3] .. ". Reason: " .. args[4])
 	else
 		-- send confirm to player and message to target
 		messages[1] = "Moved by admin."
@@ -544,7 +544,7 @@ function BetterIngameAdmin:OnMovePlayer(player, args)
 		messages[1] = "Move confirmed."
 		messages[2] = "You moved the player ".. targetPlayer.name .." successfully."
 		NetEvents:SendTo('PopupResponse', player, messages)
-		print("ADMIN MOVE - Admin " .. player.name .. " moved Player " .. targetPlayer .. " to the team " .. args[2] .. " and the squad " args[3] ".")
+		print("ADMIN MOVE - Admin " .. player.name .. " moved Player " .. targetPlayer .. " to the team " .. args[2] .. " and the squad " .. args[3] .. ".")
 	end
 end
 
