@@ -44,6 +44,8 @@ function BetterIngameAdmin:RegisterVars()
 	self.updateScoreboardInterval = 2 -- Add to Admin Settings
 	self.cumulatedTimeForScoreboard = 0
 	self.blockTab = false
+	self.isEndOfRound = false
+	self.lastScreenName = ""
 	self.pingTable = {}
 	-- Endregion
 	
@@ -77,6 +79,10 @@ function BetterIngameAdmin:RegisterVars()
 	
 	-- Region ServerInfo
 	self.serverInfo = nil
+	-- Endregion
+	
+	-- Region Spectator
+	self.isSpectator = false
 	-- Endregion
 end
 
@@ -743,7 +749,7 @@ end
 function BetterIngameAdmin:OnUIInputConceptEvent(hook, eventType, action)
 	if action == UIInputAction.UIInputAction_Tab then
 		local player = PlayerManager:GetLocalPlayer()
-		if player ~= nil then
+		if player ~= nil and self.isSpectator == false then
 			if self.blockTab == false then
 				if eventType == UIInputActionEventType.UIInputActionEventType_Pressed then
 					if self.active == false then
@@ -1076,20 +1082,31 @@ end
 
 function BetterIngameAdmin:OnUIPushScreen(hook, screen, graphPriority, parentGraph)
     local screen = UIGraphAsset(screen)
-	if screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardTwoTeamsScreen' then
-		local screenClone = UIScreenAsset(ResourceManager:SearchForDataContainer("UI/Flow/Screen/ScoreboardBackScreen"))
-		screenClone:MakeWritable()
-		local uiPageHeaderBinding = UIPageHeaderBinding(WidgetNode(screenClone.nodes[4]).dataBinding)
-		uiPageHeaderBinding:MakeWritable()
-		uiPageHeaderBinding.staticHeader  = ""
-		uiPageHeaderBinding.staticSubHeader = ""
-		
-		local player = PlayerManager:GetLocalPlayer()
-		self.active = true
-		self:UpdateUI(player)
-		self.dontUpdate = true
-		WebUI:ExecuteJS(string.format("showTabsAndEnableMouse()"))
-		hook:Pass(screenClone, graphPriority, parentGraph)
+
+	if screen.name == 'UI/Flow/Screen/EORDetailsScoreboardScreen' then
+		self.isEndOfRound = true
+	elseif screen.name == 'UI/Flow/Screen/EmptyScreen' and self.isEndOfRound == true then
+		self.isEndOfRound = false
+	
+	elseif self.isEndOfRound == false and self.lastScreenName == "UI/Flow/Screen/IngameMenuMP" and self.isSpectator == false then
+		if screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardTwoTeamsScreen' 
+		or screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardTwoSquadsScreen' 
+		or screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardFourSquadsScreen' 
+		or screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardTwoTeamsHUD16Screen' then
+			local screenClone = UIScreenAsset(ResourceManager:SearchForDataContainer("UI/Flow/Screen/ScoreboardBackScreen"))
+			screenClone:MakeWritable()
+			local uiPageHeaderBinding = UIPageHeaderBinding(WidgetNode(screenClone.nodes[4]).dataBinding)
+			uiPageHeaderBinding:MakeWritable()
+			uiPageHeaderBinding.staticHeader  = ""
+			uiPageHeaderBinding.staticSubHeader = ""
+			
+			local player = PlayerManager:GetLocalPlayer()
+			self.active = true
+			self:UpdateUI(player)
+			self.dontUpdate = true
+			WebUI:ExecuteJS(string.format("showTabsAndEnableMouse()"))
+			hook:Pass(screenClone, graphPriority, parentGraph)
+		end
 	end
 	if screen.name == 'UI/Flow/Screen/IngameMenuMP' 
 	or screen.name == 'UI/Flow/Screen/SquadScreen' 
@@ -1104,7 +1121,9 @@ function BetterIngameAdmin:OnUIPushScreen(hook, screen, graphPriority, parentGra
 	else
 		self.blockTab = false
 	end
+	self.lastScreenName = screen.name
 end
+
 function BetterIngameAdmin:OnPlayerPing(pingTable)
 	self.pingTable = pingTable
 	if self.showPing == true then
@@ -1140,10 +1159,13 @@ function BetterIngameAdmin:OnGetPlayerCount()
 end
 -- Endregion
 
--- Region ServerBanner Loading Screen
+-- Region ServerBanner Loading Screen & Spectator Check
 function BetterIngameAdmin:OnLevelLoadingInfo(screenInfo)
 	if screenInfo == "Initializing entities for autoloaded sublevels" then
 		WebUI:ExecuteJS(string.format("hideLoadingScreen()"))
+		if SpectatorManager:GetSpectating() == true then
+			self.isSpectator = true
+		end
 	end
 end
 
