@@ -1826,8 +1826,12 @@ function closeEditAdminpopup()
 	closepopup();
 }
 
-function setOwnerRights(){
+function setOwnerRights(playerName){
 	isOwner = true;
+	if(playerName != null){
+		localPlayer = playerName;
+		document.getElementById("serverInfoOwnerBody").innerHTML = localPlayer;
+	}
 }
 // for the local Player:
 function getAdminRights(abilities)
