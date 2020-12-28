@@ -524,7 +524,7 @@ function BetterIngameAdmin:OnMovePlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, we couldn't find the player."
 		NetEvents:SendTo('PopupResponse', player, messages)
-		print("ADMIN MOVE - Error Admin " .. player.name .. " tried to move Player " .. targetPlayer .. " but we couldn't find him.")
+		print("ADMIN MOVE - Error Admin " .. player.name .. " tried to move Player " .. targetPlayer.name .. " but we couldn't find him.")
 		return
 	end
 	RCON:SendCommand('admin.movePlayer', {targetPlayer.name, args[2], args[3], "true"})
@@ -534,7 +534,7 @@ function BetterIngameAdmin:OnMovePlayer(player, args)
 		messages[1] = "Moved by admin."
 		messages[2] = "You got moved by an admin. Reason: ".. args[4]
 		NetEvents:SendTo('PopupResponse', targetPlayer, messages)
-		print("ADMIN MOVE - Admin " .. player.name .. " moved Player " .. targetPlayer .. " to the team " .. args[2] .. " and the squad " .. args[3] .. ". Reason: " .. args[4])
+		print("ADMIN MOVE - Admin " .. player.name .. " moved Player " .. targetPlayer.name .. " to the team " .. args[2] .. " and the squad " .. args[3] .. ". Reason: " .. args[4])
 	else
 		-- send confirm to player and message to target
 		messages[1] = "Moved by admin."
@@ -544,7 +544,7 @@ function BetterIngameAdmin:OnMovePlayer(player, args)
 		messages[1] = "Move confirmed."
 		messages[2] = "You moved the player ".. targetPlayer.name .." successfully."
 		NetEvents:SendTo('PopupResponse', player, messages)
-		print("ADMIN MOVE - Admin " .. player.name .. " moved Player " .. targetPlayer .. " to the team " .. args[2] .. " and the squad " .. args[3] .. ".")
+		print("ADMIN MOVE - Admin " .. player.name .. " moved Player " .. targetPlayer.name .. " to the team " .. args[2] .. " and the squad " .. args[3] .. ".")
 	end
 end
 
@@ -565,31 +565,31 @@ function BetterIngameAdmin:OnKillPlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, we couldn't find the player."
 		NetEvents:SendTo('PopupResponse', player, messages)
-		print("ADMIN KILL - Error Admin " .. player.name .. " tried to kill Player " .. targetPlayer .. " but we couldn't find him.")
+		print("ADMIN KILL - Error Admin " .. player.name .. " tried to kill Player " .. targetPlayer.name .. " but we couldn't find him.")
 		return
 	end
 	if targetPlayer.alive == true then
 		RCON:SendCommand('admin.killPlayer', {targetPlayer.name})
 		if args[2] ~= nil then
 			RCON:SendCommand('admin.say', {"Reason for kill: "..args[2], "player", targetPlayer.name})
-			print("ADMIN KILL - Admin " .. player.name .. " killed Player " .. targetPlayer .. ". Reason: " .. args[2])
+			print("ADMIN KILL - Admin " .. player.name .. " killed Player " .. targetPlayer.name .. ". Reason: " .. args[2])
 		else
-			print("ADMIN KILL - Admin " .. player.name .. " killed Player " .. targetPlayer .. ".")
+			print("ADMIN KILL - Admin " .. player.name .. " killed Player " .. targetPlayer.name .. ".")
 		end
 	elseif player.corpse ~= nil and player.corpse.isDead == false then
 		targetPlayer.corpse:ForceDead()
 		if args[2] ~= nil and args[2] ~= "" then
 			RCON:SendCommand('admin.say', {"Reason for kill: "..args[2], "player", targetPlayer.name})
-			print("ADMIN KILL - Admin " .. player.name .. " killed Player " .. targetPlayer .. ". Reason: " .. args[2])
+			print("ADMIN KILL - Admin " .. player.name .. " killed Player " .. targetPlayer.name .. ". Reason: " .. args[2])
 		else
-			print("ADMIN KILL - Admin " .. player.name .. " killed Player " .. targetPlayer .. ".")
+			print("ADMIN KILL - Admin " .. player.name .. " killed Player " .. targetPlayer.name .. ".")
 		end
 	else
 		-- TargetPlayer aready dead.
 		messages[1] = "Error."
 		messages[2] = "The player".. targetPlayer.name .." is already dead."
 		NetEvents:SendTo('PopupResponse', player, messages)
-		print("ADMIN KILL - Error Admin " .. player.name .. " tried to kill Player " .. targetPlayer .. " but he is already dead.")
+		print("ADMIN KILL - Error Admin " .. player.name .. " tried to kill Player " .. targetPlayer.name .. " but he is already dead.")
 	end
 end
 
@@ -610,15 +610,15 @@ function BetterIngameAdmin:OnKickPlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, we couldn't find the player."
 		NetEvents:SendTo('PopupResponse', player, messages)
-		print("ADMIN KICK - Error Admin " .. player.name .. " tried to kick Player " .. targetPlayer .. " but we couldn't find him.")
+		print("ADMIN KICK - Error Admin " .. player.name .. " tried to kick Player " .. targetPlayer.name .. " but we couldn't find him.")
 		return
 	end
 	if args[2]~= nil and args[2] ~= "" then
+		print("ADMIN KICK - Admin " .. player.name .. " kicked Player " .. targetPlayer.name .. ". Reason: " .. args[2])
 		targetPlayer:Kick(""..args[2].." (".. player.name..")")
-		print("ADMIN KICK - Admin " .. player.name .. " kicked Player " .. targetPlayer .. ". Reason: " .. args[2])
 	else
+		print("ADMIN KICK - Admin " .. player.name .. " kicked Player " .. targetPlayer.name .. ".")
 		targetPlayer:Kick("Kicked by ".. player.name.."")
-		print("ADMIN KICK - Admin " .. player.name .. " kicked Player " .. targetPlayer .. ".")
 	end
 	messages = {}
 	messages[1] = "Kick confirmed."
@@ -643,15 +643,15 @@ function BetterIngameAdmin:OnTBanPlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, we couldn't find the player."
 		NetEvents:SendTo('PopupResponse', player, messages)
-		print("ADMIN TBAN - Error Admin " .. player.name .. " tried to temp. ban Player " .. targetPlayer .. " but we couldn't find him.")
+		print("ADMIN TBAN - Error Admin " .. player.name .. " tried to temp. ban Player " .. targetPlayer.name .. " but we couldn't find him.")
 		return
 	end
 	if args[3]~= nil and args[3] ~= "" then
+		print("ADMIN TBAN - Admin " .. player.name .. " temp. banned Player " .. targetPlayer.name .. "for " .. args[2] .. " minutes. Reason: " .. args[3])
 		targetPlayer:BanTemporarily(args[2]*60, ""..args[3].." (".. player.name..") "..args[2].." minutes")
-		print("ADMIN TBAN - Admin " .. player.name .. " temp. banned Player " .. targetPlayer .. "for " .. args[2] .. " minutes. Reason: " .. args[3])
 	else
+		print("ADMIN TBAN - Admin " .. player.name .. " temp. banned Player " .. targetPlayer.name .. "for " .. args[2] .. " minutes.")
 		targetPlayer:BanTemporarily(args[2]*60, "Temporarily banned by ".. player.name.." for "..args[2].." minutes")
-		print("ADMIN TBAN - Admin " .. player.name .. " temp. banned Player " .. targetPlayer .. "for " .. args[2] .. " minutes.")
 	end
 	messages = {}
 	messages[1] = "Ban confirmed."
@@ -676,15 +676,15 @@ function BetterIngameAdmin:OnBanPlayer(player, args)
 		messages[1] = "Error."
 		messages[2] = "Sorry, we couldn't find the player."
 		NetEvents:SendTo('PopupResponse', player, messages)
-		print("ADMIN BAN - Error Admin " .. player.name .. " tried to ban Player " .. targetPlayer .. " but we couldn't find him.")
+		print("ADMIN BAN - Error Admin " .. player.name .. " tried to ban Player " .. targetPlayer.name .. " but we couldn't find him.")
 		return
 	end
 	if args[2]~= nil and args[2] ~= "" then
+		print("ADMIN BAN - Admin " .. player.name .. " banned Player " .. targetPlayer.name .. ". Reason: " .. args[2])
 		targetPlayer:Ban(""..args[2].." (".. player.name..")")
-		print("ADMIN BAN - Admin " .. player.name .. " banned Player " .. targetPlayer .. ". Reason: " .. args[2])
 	else
+		print("ADMIN BAN - Admin " .. player.name .. " banned Player " .. targetPlayer.name .. ".")
 		targetPlayer:Ban("Banned by ".. player.name.."")
-		print("ADMIN BAN - Admin " .. player.name .. " banned Player " .. targetPlayer .. ".")
 	end
 	messages = {}
 	messages[1] = "Ban confirmed."
