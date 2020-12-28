@@ -1137,7 +1137,8 @@ end
 
 -- Region Get Admin Rights
 function BetterIngameAdmin:OnServerOwnerRights()
-	WebUI:ExecuteJS(string.format("setOwnerRights()"))
+	local localPlayer = PlayerManager:GetLocalPlayer()
+	WebUI:ExecuteJS(string.format("setOwnerRights(%s)", json.encode(localPlayer.name)))
 end
 
 function BetterIngameAdmin:OnAdminPlayer(args)
