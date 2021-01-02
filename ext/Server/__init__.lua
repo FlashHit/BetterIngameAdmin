@@ -20,7 +20,9 @@ function BetterIngameAdmin:RegisterVars()
 	self.playerStartedVoteCounter = {}
 		
 	self.cumulatedTime = 0
-	self.secondsToVote = 30
+	
+	self.cooldownIsRunning = false
+	self.cumulatedCooldownTime = 0
 	-- Endregion
 	
 	-- Region AdminList
@@ -47,6 +49,16 @@ function BetterIngameAdmin:RegisterVars()
 	-- Region ServerOwner
 	self.owner = nil
 	self.loggedOwner = false
+	-- Endregion
+	
+	-- Region ModSettings
+	self.loadedModSettings = false
+	self.showEnemyCorpses = true
+	self.voteDuration = 30
+	self.cooldownBetweenVotes = 0
+	self.maxVotingStartsPerPlayer = 3
+	self.votingParticipationNeeded = 50
+	self.enableAssistFunction = true
 	-- Endregion
 	
 	-- Region Ping for Scoreboard
@@ -196,6 +208,13 @@ function BetterIngameAdmin:RegisterEvents()
 	-- self:PresetCustom(args)
 	-- Endregion
 	
+	-- Region Manage ModSettings
+	NetEvents:Subscribe('ResetModSettings', self, self.OnResetModSettings)
+	NetEvents:Subscribe('ResetAndSaveModSettings', self, self.OnResetAndSaveModSettings)
+	NetEvents:Subscribe('ApplyModSettings', self, self.OnApplyModSettings)
+	NetEvents:Subscribe('SaveModSettings', self, self.OnSaveModSettings)
+	-- Endregion
+	
 	-- Region ServerBanner on Loading Screen
 		-- also Broadcast ServerSettings on every level loading
 	Events:Subscribe('Level:Loaded', self, self.OnLevelLoaded)
@@ -223,6 +242,13 @@ end
 -- Region Vote stuff
 	-- use reservedSlotsList for admin protection as soon as this get implemented
 function BetterIngameAdmin:OnVotekickPlayer(player, votekickPlayer)
+	if self.cooldownIsRunning == true then
+		local args = {}
+		args[1] = "Cooldown is running."
+		args[2] = "Please wait ".. math.floor(self.cooldownBetweenVotes - self.cumulatedCooldownTime)  .." seconds and try again."
+		NetEvents:SendTo('PopupResponse', player, args)
+		return
+	end	
 	if self.voteInProgress == false then
 		self.playerToVote = nil
 		if PlayerManager:GetPlayerByName(votekickPlayer) ~= nil then
@@ -246,23 +272,17 @@ function BetterIngameAdmin:OnVotekickPlayer(player, votekickPlayer)
 			end
 			if self.playerStartedVoteCounter[player.name] == nil then
 				self.playerStartedVoteCounter[player.name] = 0
-				NetEvents:Broadcast('Start:VotekickPlayer', votekickPlayer)
-				table.insert(self.playersVotedYes, player.name)
-				self.playersVotedYesCount = self.playersVotedYesCount + 1
-				self.voteInProgress = true
-				self.typeOfVote = "votekick"
-				print("VOTEKICK: Started - Player " .. player.name .. " started votekick on Player " .. votekickPlayer)
-				return
 			end
-			if self.playerStartedVoteCounter[player.name] < 3 then
+			if self.playerStartedVoteCounter[player.name] < self.maxVotingStartsPerPlayer then
 				self.playerStartedVoteCounter[player.name] = self.playerStartedVoteCounter[player.name] + 1
 				NetEvents:Broadcast('Start:VotekickPlayer', votekickPlayer)
 				table.insert(self.playersVotedYes, player.name)
 				self.playersVotedYesCount = self.playersVotedYesCount + 1
 				self.voteInProgress = true
 				self.typeOfVote = "votekick"
+				ChatManager:SendMessage(player.name .. " started a votekick on " .. self.playerToVote)
 				print("VOTEKICK: Started - Player " .. player.name .. " started votekick on Player " .. votekickPlayer)
-				if self.playerStartedVoteCounter[player.name] == 3 then	
+				if self.playerStartedVoteCounter[player.name] == self.maxVotingStartsPerPlayer then	
 					NetEvents:SendTo('HideVoteButtons', player)
 				end
 			else
@@ -281,6 +301,13 @@ function BetterIngameAdmin:OnVotekickPlayer(player, votekickPlayer)
 end
 
 function BetterIngameAdmin:OnVotebanPlayer(player, votebanPlayer)
+	if self.cooldownIsRunning == true then
+		local args = {}
+		args[1] = "Cooldown is running."
+		args[2] = "Please wait ".. self.cooldownBetweenVotes - self.cumulatedCooldownTime  .." seconds and try again."
+		NetEvents:SendTo('PopupResponse', player, args)
+		return
+	end	
 	if self.voteInProgress == false then
 		if PlayerManager:GetPlayerByName(votebanPlayer) ~= nil then
 			self.playerToVote = PlayerManager:GetPlayerByName(votebanPlayer).name
@@ -304,23 +331,17 @@ function BetterIngameAdmin:OnVotebanPlayer(player, votebanPlayer)
 			end
 			if self.playerStartedVoteCounter[player.name] == nil then
 				self.playerStartedVoteCounter[player.name] = 0
-				NetEvents:Broadcast('Start:VotebanPlayer', votebanPlayer)
-				table.insert(self.playersVotedYes, player.name)
-				self.playersVotedYesCount = self.playersVotedYesCount + 1
-				self.voteInProgress = true
-				self.typeOfVote = "voteban"
-				print("VOTEBAN: Started - Player " .. player.name .. " started voteban on Player " .. votebanPlayer)
-				return
 			end
-			if self.playerStartedVoteCounter[player.name] < 3 then
+			if self.playerStartedVoteCounter[player.name] < self.maxVotingStartsPerPlayer then
 				self.playerStartedVoteCounter[player.name] = self.playerStartedVoteCounter[player.name] + 1
 				NetEvents:Broadcast('Start:VotebanPlayer', votebanPlayer)
 				table.insert(self.playersVotedYes, player.name)
 				self.playersVotedYesCount = self.playersVotedYesCount + 1
 				self.voteInProgress = true
 				self.typeOfVote = "voteban"
+				ChatManager:SendMessage(player.name .. " started a voteban on " .. self.playerToVote)
 				print("VOTEBAN: Started - Player " .. player.name .. " started voteban on Player " .. votebanPlayer)
-				if self.playerStartedVoteCounter[player.name] == 3 then	
+				if self.playerStartedVoteCounter[player.name] == self.maxVotingStartsPerPlayer then	
 					NetEvents:SendTo('HideVoteButtons', player)
 				end
 			else
@@ -339,6 +360,13 @@ function BetterIngameAdmin:OnVotebanPlayer(player, votebanPlayer)
 end
 
 function BetterIngameAdmin:OnSurrender(player)
+	if self.cooldownIsRunning == true then
+		local args = {}
+		args[1] = "Cooldown is running."
+		args[2] = "Please wait ".. self.cooldownBetweenVotes - self.cumulatedCooldownTime  .." seconds and try again."
+		NetEvents:SendTo('PopupResponse', player, args)
+		return
+	end	
 	if self.voteInProgress == false then
 		if player.teamId == TeamId.Team1 then
 			self.typeOfVote = "surrenderUS"
@@ -347,19 +375,15 @@ function BetterIngameAdmin:OnSurrender(player)
 		end
 		if self.playerStartedVoteCounter[player.name] == nil then
 			self.playerStartedVoteCounter[player.name] = 0
-			NetEvents:Broadcast('Start:Surrender', self.typeOfVote)
-			table.insert(self.playersVotedYes, player.name)
-			self.playersVotedYesCount = self.playersVotedYesCount + 1
-			self.voteInProgress = true
-			print("VOTE SURRENDER: Started - Player " .. player.name .. " started a surrender voting for the team " .. player.TeamId)
 		end
-		if self.playerStartedVoteCounter[player.name] < 3 then
+		if self.playerStartedVoteCounter[player.name] < self.maxVotingStartsPerPlayer then
 			NetEvents:Broadcast('Start:Surrender', self.typeOfVote)
 			table.insert(self.playersVotedYes, player.name)
 			self.playersVotedYesCount = self.playersVotedYesCount + 1
 			self.voteInProgress = true
+			ChatManager:SendMessage(player.name .. " started a surrender voting")
 			print("VOTE SURRENDER: Started - Player " .. player.name .. " started a surrender voting for the team " .. player.TeamId)
-			if self.playerStartedVoteCounter[player.name] == 3 then	
+			if self.playerStartedVoteCounter[player.name] == self.maxVotingStartsPerPlayer then	
 				NetEvents:SendTo('HideVoteButtons', player)
 			end
 		else
@@ -373,7 +397,7 @@ function BetterIngameAdmin:OnSurrender(player)
 		args[1] = "Vote in progress."
 		args[2] = "Please wait until the current voting is over and try again."
 		NetEvents:SendTo('PopupResponse', player, args)
-		end
+	end
 end
 
 function BetterIngameAdmin:OnCheckVoteYes(player)
@@ -415,7 +439,7 @@ end
 function BetterIngameAdmin:OnEngineUpdate(deltaTime, simulationDeltaTime)
 	if self.voteInProgress == true then
 		self.cumulatedTime = self.cumulatedTime + deltaTime
-		if self.cumulatedTime >= self.secondsToVote + 1 then
+		if self.cumulatedTime >= self.voteDuration + 1 then
 			self:EndVote()
 		end
 	end
@@ -429,49 +453,56 @@ function BetterIngameAdmin:OnEngineUpdate(deltaTime, simulationDeltaTime)
 		self.cumulatedTimeForPing = 0
 		NetEvents:Broadcast('Player:Ping', pingTable)
 	end
+	if self.cooldownIsRunning == true then
+		self.cumulatedCooldownTime = self.cumulatedCooldownTime + deltaTime
+		if self.cooldownBetweenVotes <= self.cumulatedCooldownTime then
+			self.cumulatedCooldownTime = 0
+			self.cooldownIsRunning = false
+		end
+	end
 end
 
 function BetterIngameAdmin:EndVote()
-	if self.playersVotedYesCount > self.playersVotedNoCount then
-		if (self.playersVotedYesCount + self.playersVotedNoCount) >= (TeamSquadManager:GetTeamPlayerCount(TeamId.Team1) / 2) and self.typeOfVote == "surrenderUS" then
+	if self.playersVotedYesCount > self.playersVotedNoCount and self.playersVotedYesCount >= 4 then
+		if (self.playersVotedYesCount + self.playersVotedNoCount) >= (TeamSquadManager:GetTeamPlayerCount(TeamId.Team1) * self.votingParticipationNeeded / 100) and self.typeOfVote == "surrenderUS" then
 			args = {"2"}
 			RCON:SendCommand('mapList.endround', args)
-			print("VOTE SURRENDER: Success - The US team surrenders. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
-		elseif (self.playersVotedYesCount + self.playersVotedNoCount) >= (TeamSquadManager:GetTeamPlayerCount(TeamId.Team2) / 2) and self.typeOfVote == "surrenderRU" then
+			print("VOTE SURRENDER: Success - The US team surrenders. RESULT - YES: " .. self.playersVotedYesCount .. " Players | NO: " .. self.playersVotedNoCount .. " Players.")
+		elseif (self.playersVotedYesCount + self.playersVotedNoCount) >= (TeamSquadManager:GetTeamPlayerCount(TeamId.Team2) * self.votingParticipationNeeded / 100) and self.typeOfVote == "surrenderRU" then
 			args = {"1"}
 			RCON:SendCommand('mapList.endround', args)
-			print("VOTE SURRENDER: Success - The RU team surrenders. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
-		elseif (self.playersVotedYesCount + self.playersVotedNoCount) >= (PlayerManager:GetPlayerCount() / 2) then
+			print("VOTE SURRENDER: Success - The RU team surrenders. RESULT - YES: " .. self.playersVotedYesCount .. " Players | NO: " .. self.playersVotedNoCount .. " Players.")
+		elseif (self.playersVotedYesCount + self.playersVotedNoCount) >= (PlayerManager:GetPlayerCount()  * self.votingParticipationNeeded / 100) then
 			if (self.typeOfVote == "votekick" or self.typeOfVote == "voteban") and self.playerToVote ~= nil then
 				local votedPlayer = PlayerManager:GetPlayerByName(self.playerToVote)
 				if self.typeOfVote == "votekick" and votedPlayer ~= nil then
 					votedPlayer:Kick("Votekick")
-					print("VOTEKICK: Success - The Player " .. self.playerToVote .. " got kicked. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+					print("VOTEKICK: Success - The Player " .. self.playerToVote .. " got kicked. RESULT - YES: " .. self.playersVotedYesCount .. " Players | NO: " .. self.playersVotedNoCount .. " Players.")
 				elseif self.typeOfVote == "voteban" then
 					RCON:SendCommand('banList.add', {"guid", tostring(self.playerToVoteAccountGuid), "seconds", "86400", "Voteban: 24 hours"})
-					print("VOTEBAN: Success - The Player " .. self.playerToVote .. " got banned for 24 hours. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+					print("VOTEBAN: Success - The Player " .. self.playerToVote .. " got banned for 24 hours. RESULT - YES: " .. self.playersVotedYesCount .. " Players | NO: " .. self.playersVotedNoCount .. " Players.")
 				end
 			end
 		else
 			if self.typeOfVote == "votekick" then
-				print("VOTEKICK: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+				print("VOTEKICK: Failed - Not enough players voted. RESULT - YES: " .. self.playersVotedYesCount .. " Players | NO: " .. self.playersVotedNoCount .. " Players.")
 			elseif self.typeOfVote == "voteban" then
-				print("VOTEBAN: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+				print("VOTEBAN: Failed - Not enough players voted. RESULT - YES: " .. self.playersVotedYesCount .. " Players | NO: " .. self.playersVotedNoCount .. " Players.")
 			elseif self.typeOfVote == "surrenderRU" then
-				print("VOTE SURRENDER RU: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+				print("VOTE SURRENDER RU: Failed - Not enough players voted. RESULT - YES: " .. self.playersVotedYesCount .. " Players | NO: " .. self.playersVotedNoCount .. " Players.")
 			elseif self.typeOfVote == "surrenderUS" then
-				print("VOTE SURRENDER US: Failed - Not enough players voted. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+				print("VOTE SURRENDER US: Failed - Not enough players voted. RESULT - YES: " .. self.playersVotedYesCount .. " Players | NO: " .. self.playersVotedNoCount .. " Players.")
 			end
 		end
 	else
 		if self.typeOfVote == "votekick" then
-			print("VOTEKICK: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+			print("VOTEKICK: Failed - Not enough players voted with yes. RESULT - YES: " .. self.playersVotedYesCount .. " Players | NO: " .. self.playersVotedNoCount .. " Players.")
 		elseif self.typeOfVote == "voteban" then
-			print("VOTEBAN: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+			print("VOTEBAN: Failed - Not enough players voted with yes. RESULT - YES: " .. self.playersVotedYesCount .. " Players | NO: " .. self.playersVotedNoCount .. " Players.")
 		elseif self.typeOfVote == "surrenderRU" then
-			print("VOTE SURRENDER RU: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+			print("VOTE SURRENDER RU: Failed - Not enough players voted with yes. RESULT - YES: " .. self.playersVotedYesCount .. " Players | NO: " .. self.playersVotedNoCount .. " Players.")
 		elseif self.typeOfVote == "surrenderUS" then
-			print("VOTE SURRENDER US: Failed - Not enough players voted with yes. RESULT: " .. self.playersVotedYesCount .. " Players voted YES. " .. self.playersVotedNoCount .. " Players voted NO.")
+			print("VOTE SURRENDER US: Failed - Not enough players voted with yes. RESULT - YES: " .. self.playersVotedYesCount .. " Players | NO: " .. self.playersVotedNoCount .. " Players.")
 		end
 	end
 	self.playersVotedYesCount = 0
@@ -483,6 +514,7 @@ function BetterIngameAdmin:EndVote()
 	self.voteInProgress = false
 	self.cumulatedTime = 0
 	self.typeOfVote = ""
+	self.cooldownIsRunning = true
 end
 -- Endregion
 
@@ -764,7 +796,14 @@ end
 -- Region Player Assist enemy team
 function BetterIngameAdmin:OnAssistEnemyTeam(player)
 	--print("ASSIST - Player " .. player.name .. " want to assist the enemy team.")
-	self:AssistTarget(player, 0)
+	if self.enableAssistFunction == true then
+		self:AssistTarget(player, 0)
+	else
+		local messages = {}
+		messages[1] = "Assist Deactivated."
+		messages[2] = "Sorry, we couldn't switch you. The assist function is currently deactivated."
+		NetEvents:SendTo('PopupResponse', player, messages)
+	end
 end
 
 function BetterIngameAdmin:OnQueueAssistEnemyTeam(player)
@@ -786,7 +825,9 @@ function BetterIngameAdmin:OnQueueAssistEnemyTeam(player)
 end
 
 function BetterIngameAdmin:OnPlayerLeft(player)
-	self:CheckQueueAssist()
+	if self.enableAssistFunction == true then
+		self:CheckQueueAssist()
+	end
 end
 
 function BetterIngameAdmin:CheckQueueAssist()
@@ -1941,6 +1982,142 @@ function BetterIngameAdmin:PresetCustom(args)
 end
 -- Endregion
 
+-- Region Manage ModSettings
+function BetterIngameAdmin:OnResetModSettings(player)
+	if (self.adminList[player.name] == nil or self.adminList[player.name].canAlterServerSettings == nil) and self.owner ~= player.name then
+		-- That guy is no admin or doesn't have that ability. That guy is also not the server owner.
+		print("MODSETTINGS - Reset - Error - Player " .. player.name .. " is no admin.")
+		return
+	end
+	self.showEnemyCorpses = true
+	self.voteDuration = 30
+	self.cooldownBetweenVotes = 0
+	self.maxVotingStartsPerPlayer = 3
+	self.votingParticipationNeeded = 50
+	self.enableAssistFunction = true
+	
+	NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction})
+	print("MODSETTINGS - Reset - Admin " .. player.name .. " has updated the mod settings.")
+	
+	local message = {}
+	message[1] = "Mod Settings reset."
+	message[2] = "The mod settings have been resetted."
+	NetEvents:SendTo('PopupResponse', player, message)
+end
+
+function BetterIngameAdmin:OnResetAndSaveModSettings(player)
+	if (self.adminList[player.name] == nil or self.adminList[player.name].canAlterServerSettings == nil) and self.owner ~= player.name then
+		-- That guy is no admin or doesn't have that ability. That guy is also not the server owner.
+		print("MODSETTINGS - Reset & Save - Error - Player " .. player.name .. " is no admin.")
+		return
+	end
+	self.showEnemyCorpses = true
+	self.voteDuration = 30
+	self.cooldownBetweenVotes = 0
+	self.maxVotingStartsPerPlayer = 3
+	self.votingParticipationNeeded = 50
+	self.enableAssistFunction = true
+	
+	NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction})
+	print("MODSETTINGS - Reset & Save - Admin " .. player.name .. " has updated the mod settings.")
+	
+	self:SQLSaveModSettings()
+	
+	local message = {}
+	message[1] = "Mod Settings resetted & saved."
+	message[2] = "The mod settings have been resetted and saved."
+	NetEvents:SendTo('PopupResponse', player, message)
+end
+
+function BetterIngameAdmin:OnApplyModSettings(player, args)
+	if (self.adminList[player.name] == nil or self.adminList[player.name].canAlterServerSettings == nil) and self.owner ~= player.name then
+		-- That guy is no admin or doesn't have that ability. That guy is also not the server owner.
+		print("MODSETTINGS - Apply - Error - Player " .. player.name .. " is no admin.")
+		return
+	end
+	self.showEnemyCorpses = args[1]
+	self.voteDuration = tonumber(args[2])
+	self.cooldownBetweenVotes = tonumber(args[3])
+	self.maxVotingStartsPerPlayer = tonumber(args[4])
+	self.votingParticipationNeeded = tonumber(args[5])
+	self.enableAssistFunction = args[6]
+	
+	NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction})
+	print("MODSETTINGS - Apply - Admin " .. player.name .. " has updated the mod settings.")
+	
+	local message = {}
+	message[1] = "Mod Settings applied."
+	message[2] = "The mod settings have been applied."
+	NetEvents:SendTo('PopupResponse', player, message)
+end
+
+function BetterIngameAdmin:OnSaveModSettings(player, args)
+	if (self.adminList[player.name] == nil or self.adminList[player.name].canAlterServerSettings == nil) and self.owner ~= player.name then
+		-- That guy is no admin or doesn't have that ability. That guy is also not the server owner.
+		print("MODSETTINGS - Save - Error - Player " .. player.name .. " is no admin.")
+		return
+	end
+	self.showEnemyCorpses = args[1]
+	self.voteDuration = tonumber(args[2])
+	self.cooldownBetweenVotes = tonumber(args[3])
+	self.maxVotingStartsPerPlayer = tonumber(args[4])
+	self.votingParticipationNeeded = tonumber(args[5])
+	self.enableAssistFunction = args[6]
+	
+	NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction})
+	print("MODSETTINGS - Save - Admin " .. player.name .. " has updated the mod settings.")
+	
+	self:SQLSaveModSettings()
+	
+	local message = {}
+	message[1] = "Mod Settings applied & saved."
+	message[2] = "The mod settings have been applied and saved."
+	NetEvents:SendTo('PopupResponse', player, message)
+end
+
+function BetterIngameAdmin:SQLSaveModSettings()
+	
+	if not SQL:Open() then
+		return
+	end
+	local query = [[DROP TABLE IF EXISTS mod_settings]]
+	if not SQL:Query(query) then
+		print('Failed to execute query: ' .. SQL:Error())
+		return
+	end
+	query = [[
+	  CREATE TABLE IF NOT EXISTS mod_settings (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		showEnemyCorpses BOOLEAN,
+		voteDuration INTEGER,
+		cooldownBetweenVotes INTEGER,
+		maxVotingStartsPerPlayer INTEGER,
+		votingParticipationNeeded INTEGER,
+		enableAssistFunction BOOLEAN
+	  )
+	]]
+	if not SQL:Query(query) then
+	  print('Failed to execute query: ' .. SQL:Error())
+	  return
+	end
+	query = 'INSERT INTO mod_settings (showEnemyCorpses, voteDuration, cooldownBetweenVotes, maxVotingStartsPerPlayer, votingParticipationNeeded, enableAssistFunction) VALUES (?, ?, ?, ?, ?, ?)'
+	if not SQL:Query(query, self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction) then
+		print('Failed to execute query: ' .. SQL:Error())
+		return
+	end
+	
+	-- Fetch all rows from the table.
+	results = SQL:Query('SELECT * FROM mod_settings')
+
+	if not results then
+		print('Failed to execute query: ' .. SQL:Error())
+		return
+	end
+
+	SQL:Close()
+end
+-- Endregion
+
 -- Region ServerBanner on Loading Screen
 		-- also Broadcast ServerSettings on every level loading
 function BetterIngameAdmin:OnLevelLoaded(levelName, gameMode, round, roundsPerMap)
@@ -1948,6 +2125,70 @@ function BetterIngameAdmin:OnLevelLoaded(levelName, gameMode, round, roundsPerMa
 	self.serverName = args[2]
 	args = RCON:SendCommand('vars.serverDescription')
 	self.serverDescription = args[2]
+
+	if self.loadedModSettings == false then
+
+		if not SQL:Open() then
+			return
+		end
+		
+		local query = [[
+		  CREATE TABLE IF NOT EXISTS mod_settings (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			showEnemyCorpses BOOLEAN,
+			voteDuration INTEGER,
+			cooldownBetweenVotes INTEGER,
+			maxVotingStartsPerPlayer INTEGER,
+			votingParticipationNeeded INTEGER,
+			enableAssistFunction BOOLEAN
+		  )
+		]]
+		if not SQL:Query(query) then
+		  print('Failed to execute query: ' .. SQL:Error())
+		  return
+		end
+		
+		-- Fetch all rows from the table.
+		results = SQL:Query('SELECT * FROM mod_settings')
+
+		if not results then
+		  print('Failed to execute query: ' .. SQL:Error())
+		  return
+		end
+		
+		SQL:Close()
+
+		if #results == 0 then
+			print("MODSETTINGS - LIST EMPTY - CREATING LIST")
+			self:SQLSaveModSettings()
+		end
+		if results[1]["showEnemyCorpses"] == 1 then
+			self.showEnemyCorpses = true
+		else
+			self.showEnemyCorpses = false
+		end
+		self.cooldownBetweenVotes = results[1]["cooldownBetweenVotes"]
+		self.votingParticipationNeeded = results[1]["votingParticipationNeeded"]
+		self.voteDuration = results[1]["voteDuration"]
+		self.maxVotingStartsPerPlayer = results[1]["maxVotingStartsPerPlayer"]
+		if results[1]["enableAssistFunction"] == 1 then
+			self.enableAssistFunction = true
+		else
+			self.enableAssistFunction = false
+		end
+		self.loadedModSettings = true
+	end
+	
+	local syncedBFSettings = ResourceManager:GetSettings("SyncedBFSettings")
+	if syncedBFSettings ~= nil then
+		syncedBFSettings = SyncedBFSettings(syncedBFSettings)
+		if self.enableAssistFunction == true then
+			syncedBFSettings.teamSwitchingAllowed = false
+		else
+			syncedBFSettings.teamSwitchingAllowed = true
+		end
+	end
+	
 	self:OnBroadcastServerInfo()
 end
 
@@ -2000,6 +2241,7 @@ function BetterIngameAdmin:OnAuthenticated(player)
 		SQL:Close()
 		NetEvents:SendTo('ServerOwnerRights', player)
 		NetEvents:SendTo('QuickServerSetup', player)
+		self.serverConfig[52] = player.name
 		print("ADMIN - SERVER OWNER SET - Player " .. player.name .. " is now server owner.")
 	elseif player.name == self.owner then
 		NetEvents:SendTo('ServerOwnerRights', player)
@@ -2008,14 +2250,16 @@ function BetterIngameAdmin:OnAuthenticated(player)
 	
 	NetEvents:SendTo('Info', player, {self.serverName, self.serverDescription, self.bannerUrl})
 	
+	NetEvents:SendTo('RefreshModSettings', player, {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction})
+	
 	if self.adminList[player.name] ~= nil then
 		NetEvents:SendTo('AdminPlayer', player, self.adminList[player.name])
 		print("ADMIN - ADMIN JOINED - Admin " .. player.name .. " has joined the server.")
 	end
-	
 	NetEvents:SendTo('ServerInfo', player, self.serverConfig)
-	
-	self:CheckQueueAssist()
+	if self.enableAssistFunction == true then
+		self:CheckQueueAssist()
+	end
 end
 -- Endregion
 
@@ -2397,7 +2641,7 @@ function BetterIngameAdmin:OnBroadcastServerInfo()
 	arg = RCON:SendCommand('vars.serverOwner')
 	if arg ~= nil and arg[2] ~= nil then
 		table.remove(arg, 1)
-		table.insert(args, arg)
+		table.insert(args, arg[1])
 	else
 		table.insert(args, " ")
 	end
