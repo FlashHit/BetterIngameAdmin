@@ -303,7 +303,7 @@
 				</div>
 			</div>
 			<div id="fovClientSettings">
-				<div id="generalClientSettingsElement">
+				<div class="tempHide" id="generalClientSettingsElement">
 					<div class="generalClientSettingsElementLeft"><p>Field Of View (Broken)</p></div>
 					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('actualFov', 160, 1)"></i><span><input onKeyUp="if(this.value >=160) this.value = 160; if(this.value <=60) this.value = 60;" id="actualFov" type="number" step="1" min="60" max="160" value="75"></span><i class="arrow left" onclick="minus('actualFov', 60, 1)"></i></p></div>
 				</div>
@@ -410,7 +410,7 @@
 					</div>
 					<div class="serverSetupManageButtons" onclick="managePresets()"><p>Manage Presets</p></div>
 					<div class="serverSetupManageButtons" onclick="manageMapRotations()"><p>Manage Map Rotations</p></div>
-					<div class="serverSetupManageButtons tempHide" onclick="manageModSettings()"><p>Manage Mod Settings</p></div>
+					<div class="serverSetupManageButtons" onclick="manageModSettings()"><p>Manage Mod Settings</p></div>
 					<div class="serverSetupButtons" onclick="showClientSettings()"><p>Back</p></div>
 					<div class="serverSetupButtons" onclick="saveServerSetup()"><p>Save</p></div>
 				</div>
@@ -1036,6 +1036,45 @@
 			<div class="managePresetsSettingsRight">
 				<div class="mapRotationButtons" onclick="showClientSettings()"><p>Back</p></div>
 				<div class="mapRotationButtons" onclick="applyManagePresets()"><p>Apply</p></div>
+			</div>
+		</div>
+		<div id="manageModSettings">
+			<div id="manageModHeadertabs">
+				<div id="generalModSettingsTab" class="headertab active" onclick="showGeneralModSettings()"><p>General</p></div>
+				<!-- <div id="otherModSettingsTab" class="headertab" onclick="showOtherModSettings()"><p>Other Mods</p></div> -->
+			</div>
+			<div id="generalModSettings">
+				<div id="generalModSettingsElement">
+					<div class="generalModSettingsElementLeft"><p>Show dead enemies on scoreboard</p></div>
+					<div class="generalModSettingsElementRight"><p><i class="arrow right" onclick="toggleEnemyCorpsesScoreboard()"></i><span id="showEnemyCorpses">Yes</span><i class="arrow left" onclick="toggleEnemyCorpsesScoreboard()"></i></p></div>
+				</div>
+				<div id="generalModSettingsElement">
+					<div class="generalModSettingsElementLeft"><p>Voteduration</p></div>
+					<div class="generalModSettingsElementRight"><p><i class="arrow right" onclick="plusVoteDuration()"></i><span id="showVoteDuration">30</span><i class="arrow left" onclick="minusVoteDuration()"></i></p></div>
+				</div>
+				<div id="generalModSettingsElement">
+					<div class="generalModSettingsElementLeft"><p>Cooldown between votes</p></div>
+					<div class="generalModSettingsElementRight"><p><i class="arrow right" onclick="plusCooldownBetweenVotes()"></i><span id="showCooldownBetweenVotes">0</span><i class="arrow left" onclick="minusCooldownBetweenVotes()"></i></p></div>
+				</div>
+				<div id="generalModSettingsElement">
+					<div class="generalModSettingsElementLeft"><p>Maximum voting starts per player</p></div>
+					<div class="generalModSettingsElementRight"><p><i class="arrow right" onclick="plusMaxVotingStartsPerPlayer()"></i><span id="showMaxVotingStartsPerPlayer">3</span><i class="arrow left" onclick="minusMaxVotingStartsPerPlayer()"></i></p></div>
+				</div>
+				<div id="generalModSettingsElement">
+					<div class="generalModSettingsElementLeft"><p>Voting participation needed in %</p></div>
+					<div class="generalModSettingsElementRight"><p><i class="arrow right" onclick="plusVotingParticipation()"></i><span id="showMaxVotingParticipationNeeded">50</span><i class="arrow left" onclick="minusVotingParticipation()"></i></p></div>
+				</div>
+				<div id="generalModSettingsElement">
+					<div class="generalModSettingsElementLeft"><p>Assist function</p></div>
+					<div class="generalModSettingsElementRight"><p><i class="arrow right" onclick="toggleEnableAssist()"></i><span id="showEnableAssistFunction">On</span><i class="arrow left" onclick="toggleEnableAssist()"></i></p></div>
+				</div>
+				<div class="buttons">
+					<div class="closeTab" onclick="closeSmart()">Close</div>
+					<div class="resetFov" onclick="resetGeneralModSettings()">Reset</div>
+					<div class="resetAndSave" onclick="resetAndSaveGeneralModSettings()">Reset & Save</div>
+					<div class="applyMultipliers" onclick="applyGeneralModSettings()">Apply</div>
+					<div class="applyMultipliers" onclick="saveGeneralModSettings()">Save</div>
+				</div>
 			</div>
 		</div>
 	</div>
