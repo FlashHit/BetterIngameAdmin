@@ -776,7 +776,7 @@ input[type="checkbox"]:checked + label:after {
 	padding-left: 15px;
 	line-height: 30px;
 }
-#serverInfo p, #clientSettings p, #serverSetupSettings p {
+#serverInfo p, #clientSettings p, #serverSetupSettings p, #manageModSettings p {
 	margin: 0;
 }
 #serverInfoMapHeader, #serverInfoModeHeader, #serverInfoPlayerCountHeader, #serverInfoSpectatorCountHeader, #serverInfoPlayerPingHeader, #serverInfoPresetHeader, #serverInfoRegionHeader, #serverInfoOwnerHeader {
@@ -926,15 +926,15 @@ input[type="checkbox"]:checked + label:after {
 	margin-top: -2px;
 	margin-left: -2px;
 }
-#mapRotationConfiguration::-webkit-scrollbar, #mapListConfiguration::-webkit-scrollbar, #modListConfiguration::-webkit-scrollbar, #serverInfoConfiguration::-webkit-scrollbar, .presetsConfiguration::-webkit-scrollbar {
+table::-webkit-scrollbar, #mapRotationConfiguration::-webkit-scrollbar, #mapListConfiguration::-webkit-scrollbar, #modListConfiguration::-webkit-scrollbar, #serverInfoConfiguration::-webkit-scrollbar, .presetsConfiguration::-webkit-scrollbar {
  	display: inline;
  	width: 6px;
 }
-#mapRotationConfiguration::-webkit-scrollbar-thumb, #mapListConfiguration::-webkit-scrollbar-thumb, #modListConfiguration::-webkit-scrollbar-thumb, #serverInfoConfiguration::-webkit-scrollbar-thumb, .presetsConfiguration::-webkit-scrollbar-thumb {
+table::-webkit-scrollbar-thumb, #mapRotationConfiguration::-webkit-scrollbar-thumb, #mapListConfiguration::-webkit-scrollbar-thumb, #modListConfiguration::-webkit-scrollbar-thumb, #serverInfoConfiguration::-webkit-scrollbar-thumb, .presetsConfiguration::-webkit-scrollbar-thumb {
  	background-color: #ffffff;
 	background-clip: padding-box;
 }
-#mapRotationConfiguration::-webkit-scrollbar-track, #mapListConfiguration::-webkit-scrollbar-track, #modListConfiguration::-webkit-scrollbar-track, #serverInfoConfiguration::-webkit-scrollbar-track, .presetsConfiguration::-webkit-scrollbar-track {
+table::-webkit-scrollbar-track, #mapRotationConfiguration::-webkit-scrollbar-track, #mapListConfiguration::-webkit-scrollbar-track, #modListConfiguration::-webkit-scrollbar-track, #serverInfoConfiguration::-webkit-scrollbar-track, .presetsConfiguration::-webkit-scrollbar-track {
   	background-color: rgba(192, 193, 207, 0.22);
 }
 #serverInfoMapRotationBody {
@@ -983,24 +983,33 @@ input[type="checkbox"]:checked + label:after {
 	background-color: #fff;
 	width: calc(1074px - 25%);
 }
-#clientHeadertabs div {
+#manageModHeadertabs{
+	height: 30px;
+	background-color: #fff;
+	width: calc(1074px * 0.25);
+	margin: 25px 0;
+}
+#clientHeadertabs div, #manageModHeadertabs div {
 	float: left;
 	width: 33.334%;
 	background: linear-gradient(#263239d1, #27343c);
 	color: #fff;
 	text-shadow: 0px 0px 10px #6ed7ff;	
 }
-#clientHeadertabs .active, #clientHeadertabs .active:hover {
+#manageModHeadertabs div {
+	width: 100%;
+}
+#clientHeadertabs .active, #clientHeadertabs .active:hover, #manageModHeadertabs .active, #manageModHeadertabs .active:hover {
 	background: linear-gradient(#ffffff, #909090d1);
 	color: #000;
 	text-shadow: 0px 0px 0px #0000;	
 }
-#clientHeadertabs div:hover {
+#clientHeadertabs div:hover, #manageModHeadertabs div:hover {
 	background: linear-gradient(rgba(64, 84, 96, 0.82), rgb(62, 82, 94));
 	color: #fff;
 	text-shadow: 0px 0px 10px #6ed7ff;
 }
-#clientHeadertabs div p {
+#clientHeadertabs div p, #manageModHeadertabs div p {
 	text-align: center;
 	text-transform: uppercase;
 	font-size: 25px;
@@ -1011,14 +1020,15 @@ input[type="checkbox"]:checked + label:after {
 /* Endregion */
 
 /* Region Client Settings */
-#generalClientSettings, #mouseSensitivtyClientSettings, #fovClientSettings {
+#generalClientSettings, #mouseSensitivtyClientSettings, #fovClientSettings, #manageModSettings {
 	margin-top: 25px;
 	width: 590px;
 }
+
 #mouseSensitivtyClientSettings, #fovClientSettings {
 	display: none;
 }
-#generalClientSettingsElement {
+#generalClientSettingsElement, #generalModSettingsElement {
 	background: linear-gradient(#263239d1, #27343c);
 	color: #fff;
 	text-transform: uppercase;
@@ -1026,23 +1036,23 @@ input[type="checkbox"]:checked + label:after {
 	line-height: 28px;
 	margin-bottom: 2px;
 }
-#generalClientSettingsElement:hover {
+#generalClientSettingsElement:hover, #generalModSettingsElement:hover {
 	background: linear-gradient(#364d5cd1, #30424d);
 }
-#generalClientSettingsElement .generalClientSettingsElementLeft {
+#generalClientSettingsElement .generalClientSettingsElementLeft, #generalModSettingsElement .generalModSettingsElementLeft {
 	float: left;
 	width: 60%;
 }
 
-#generalClientSettingsElement .generalClientSettingsElementRight {
+#generalClientSettingsElement .generalClientSettingsElementRight, #generalModSettingsElement .generalModSettingsElementRight {
 	float: right;
 	width: 40%;
 	text-align: right;
 }
-.generalClientSettingsElementLeft>p {
+.generalClientSettingsElementLeft>p, .generalModSettingsElementLeft>p {
 	padding-left: 15px;
 }
-.generalClientSettingsElementRight>p {
+.generalClientSettingsElementRight>p, .generalModSettingsElementRight>p {
 	padding-right: 15px;
 }
 .arrow {
@@ -1061,12 +1071,12 @@ input[type="checkbox"]:checked + label:after {
   transform: rotate(135deg);
   margin-right: 5px;
 }
-.generalClientSettingsElementRight span {
+.generalClientSettingsElementRight span, .generalModSettingsElementRight span {
 	float: right;
 	text-align: center;
 	width: 175px;
 }
-.generalClientSettingsElementRight span input{
+.generalClientSettingsElementRight span input, .generalModSettingsElementRight span input{
 	background: none;
 	border: none;
 	color: #fff;
@@ -1076,18 +1086,19 @@ input[type="checkbox"]:checked + label:after {
 	width: inherit;
 }
 .generalClientSettingsElementRight span input::-webkit-outer-spin-button,
-.generalClientSettingsElementRight span input::-webkit-inner-spin-button {
+.generalClientSettingsElementRight span input::-webkit-inner-spin-button, .generalModSettingsElementRight span input::-webkit-outer-spin-button,
+.generalModSettingsElementRight span input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.generalClientSettingsElementRight span input:focus {
+.generalClientSettingsElementRight span input:focus, .generalModSettingsElementRight span input:focus {
 	outline: none;
 }
 .buttons {
 	position: absolute;
 	bottom: calc(50vh - 280px);
 }
-.closeTab, .resetMouseSensitivityMultipliers, .applyMultipliers, .resetFov {
+.closeTab, .resetMouseSensitivityMultipliers, .applyMultipliers, .resetFov, .resetAndSave {
 	height: 34px;
 	background: linear-gradient(#263239d1, #27343c);
 	color: #fff;
@@ -1097,7 +1108,7 @@ input[type="checkbox"]:checked + label:after {
 	float: left;
 	margin-right: 15px;
 }
-.closeTab:hover, .resetMouseSensitivityMultipliers:hover, .applyMultipliers:hover, .resetFov:hover, #serverSetup:hover, #mapRotationSetup:hover, .mapRotationButtons:hover, .serverSetupButtons:hover, .serverSetupManageButtons:hover {
+.closeTab:hover, .resetMouseSensitivityMultipliers:hover, .applyMultipliers:hover, .resetFov:hover, .resetAndSave:hover, #serverSetup:hover, #mapRotationSetup:hover, .mapRotationButtons:hover, .serverSetupButtons:hover, .serverSetupManageButtons:hover {
 	background: linear-gradient(#364d5cd1, #30424d);
 }
 .closeTab, .applyMultipliers, .resetFov {
@@ -1105,6 +1116,9 @@ input[type="checkbox"]:checked + label:after {
 }
 .resetMouseSensitivityMultipliers {
 	width: 200px;
+}
+.resetAndSave {
+	width: 150px;
 }
 #serverSetup, #mapRotationSetup {
 	height: 34px;
@@ -1122,7 +1136,7 @@ input[type="checkbox"]:checked + label:after {
 }
 /* Endregion */
 
-/* Region Admin Map Rotation and serverSetup*/
+/* Region Admin Map Rotation and serverSetup and ModSettings*/
 #mapRotationTab, #serverSetupTab {
 	display: none;
 }
@@ -1133,6 +1147,9 @@ input[type="checkbox"]:checked + label:after {
 #mapRotationSettings, #serverSetupSettings {
 	display: none;
 	padding-top: 40px;
+}
+#manageModSettings {
+	display: none;
 }
 .mapRotationHeader {
 	height: 30px;
@@ -1277,7 +1294,7 @@ input[type="checkbox"]:checked + label:after {
     line-height: 34px;
     text-transform: uppercase;
     float: left;
-    margin-top: 75px;
+    margin-top: 36px;
     padding-left: 15px;
     padding-right: 15px;
     margin-left: 15px;
@@ -1295,11 +1312,9 @@ input[type="checkbox"]:checked + label:after {
     margin-left: 15px;
     width: 250px;
 }
-
 .tempHide {
 	display: none;
 }
-
 .serverSetupButtons p, .serverSetupManageButtons p {
 	margin: 0;
 }
