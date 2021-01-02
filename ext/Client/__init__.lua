@@ -14,7 +14,15 @@ function BetterIngameAdmin:RegisterVars()
 	self.voteInProgress = false
 	self.cumulatedTime = 0
 	self.count = 1
-	self.secondsToVote = 30 -- Add to Admin Settings
+	-- Endregion
+	
+	-- Region ModSettings
+	self.showEnemyCorpses = true
+	self.voteDuration = 30
+	self.cooldownBetweenVotes = 0
+	self.maxVotingStartsPerPlayer = 3
+	self.votingParticipationNeeded = 50
+	self.enableAssistFunction = true
 	-- Endregion
 	
 	-- Region Todo: use local instead of self.
@@ -159,6 +167,14 @@ function BetterIngameAdmin:RegisterEvents()
 	Events:Subscribe('WebUI:ApplyManagePresets', self, self.OnWebUIApplyManagePresets)
 	-- Endregion
 	
+	-- Region Manage ModSettings
+	Events:Subscribe('WebUI:ResetGeneralModSettings', self, self.OnWebUIResetGeneralModSettings)
+	Events:Subscribe('WebUI:ResetAndSaveGeneralModSettings', self, self.OnWebUIResetAndSaveGeneralModSettings)
+	Events:Subscribe('WebUI:ApplyGeneralModSettings', self, self.OnWebUIApplyGeneralModSettings)
+	Events:Subscribe('WebUI:SaveGeneralModSettings', self, self.OnWebUISaveGeneralModSettings)
+	NetEvents:Subscribe('RefreshModSettings', self, self.OnRefreshModSettings)
+	-- Endregion
+	
 	-- Region Local Ping
 	Events:Subscribe('WebUI:ShowPing', self, self.OnWebUIShowPing)
 	Events:Subscribe('WebUI:HidePing', self, self.OnWebUIHidePing)
@@ -267,12 +283,14 @@ end
 
 function BetterIngameAdmin:OnStartVotekickPlayer(votekickPlayer)
 	self.voteInProgress = true
-	WebUI:ExecuteJS(string.format("startvotekick(%s)", json.encode(votekickPlayer)))
+	local args = {votekickPlayer, self.voteDuration}
+	WebUI:ExecuteJS(string.format("startvotekick(%s)", json.encode(args)))
 end
 
 function BetterIngameAdmin:OnStartVotebanPlayer(votebanPlayer)
 	self.voteInProgress = true
-	WebUI:ExecuteJS(string.format("startvoteban(%s)", json.encode(votebanPlayer)))
+	local args = {votebanPlayer, self.voteDuration}
+	WebUI:ExecuteJS(string.format("startvoteban(%s)", json.encode(args)))
 end
 
 function BetterIngameAdmin:OnStartSurrender(typeOfVote)
@@ -425,6 +443,35 @@ end
 -- Region Manage Presets
 function BetterIngameAdmin:OnWebUIApplyManagePresets(args)
 	NetEvents:Send('ManagePresets', json.decode(args))
+end
+-- Endregion
+
+-- Region Manage ModSettings
+function BetterIngameAdmin:OnWebUIResetGeneralModSettings()
+	NetEvents:Send('ResetModSettings')
+end
+
+function BetterIngameAdmin:OnWebUIResetAndSaveGeneralModSettings()
+	NetEvents:Send('ResetAndSaveModSettings')
+end
+
+function BetterIngameAdmin:OnWebUIApplyGeneralModSettings(args)
+	NetEvents:Send('ApplyModSettings', json.decode(args))
+end
+
+function BetterIngameAdmin:OnWebUISaveGeneralModSettings(args)
+	NetEvents:Send('SaveModSettings', json.decode(args))
+end
+
+function BetterIngameAdmin:OnRefreshModSettings(args)
+	self.showEnemyCorpses = args[1]
+	self.voteDuration = args[2]
+	self.cooldownBetweenVotes = args[3]
+	self.maxVotingStartsPerPlayer = args[4]
+	self.votingParticipationNeeded = args[5]
+	self.enableAssistFunction = args[6]
+	
+	WebUI:ExecuteJS(string.format("refreshModSettings(%s)", json.encode(args)))
 end
 -- Endregion
 
@@ -787,9 +834,9 @@ function BetterIngameAdmin:OnEngineUpdate(deltaTime, simulationDeltaTime)
 			WebUI:ExecuteJS(string.format("fontWeightNo()"))
 		end
 		self.cumulatedTime = self.cumulatedTime + deltaTime
-		if self.cumulatedTime >= self.count and self.count <= self.secondsToVote + 1 then
+		if self.cumulatedTime >= self.count and self.count <= self.voteDuration + 1 then
 			self.count = self.count + 1
-			if self.count >= self.secondsToVote + 1 then
+			if self.count >= self.voteDuration + 1 then
 				self.voteInProgress = false
 				self.cumulatedTime = 0
 				self.count = 1
@@ -987,7 +1034,12 @@ function BetterIngameAdmin:UpdateUI(player)
 		if self.pingTable[player.name] ~= nil and self.pingTable[player.name] >= 0 and self.pingTable[player.name] < 999 then
 			ping = self.pingTable[player.name]
 		end
-		local sendThis2 = {index, player.name, player.kills, player.deaths, player.score, player.alive, ping}
+		local sendThis2 = {}
+		if self.showEnemyCorpses == true then
+			sendThis2 = {index, player.name, player.kills, player.deaths, player.score, player.alive, ping}
+		else
+			sendThis2 = {index, player.name, player.kills, player.deaths, player.score, true, ping}
+		end
 		WebUI:ExecuteJS(string.format("updateScoreboardBody2(%s)", json.encode(sendThis2)))
 	end
 	
@@ -1009,7 +1061,12 @@ function BetterIngameAdmin:UpdateUI(player)
 			if self.pingTable[player.name] ~= nil and self.pingTable[player.name] >= 0 and self.pingTable[player.name] < 999 then
 				ping = self.pingTable[player.name]
 			end
-			local sendThis3 = {index, player.name, player.kills, player.deaths, player.score, player.alive, ping}
+			local sendThis3 = {}
+			if self.showEnemyCorpses == true then
+				sendThis3 = {index, player.name, player.kills, player.deaths, player.score, player.alive, ping}
+			else
+				sendThis3 = {index, player.name, player.kills, player.deaths, player.score, true, ping}
+			end
 			WebUI:ExecuteJS(string.format("updateScoreboardBody4(%s)", json.encode(sendThis3)))
 		end
 		
@@ -1019,7 +1076,12 @@ function BetterIngameAdmin:UpdateUI(player)
 			if self.pingTable[player.name] ~= nil and self.pingTable[player.name] >= 0 and self.pingTable[player.name] < 999 then
 				ping = self.pingTable[player.name]
 			end
-			local sendThis4 = {index, player.name, player.kills, player.deaths, player.score, player.alive, ping}
+			local sendThis4 = {}
+			if self.showEnemyCorpses == true then
+				sendThis4 = {index, player.name, player.kills, player.deaths, player.score, player.alive, ping}
+			else
+				sendThis4 = {index, player.name, player.kills, player.deaths, player.score, true, ping}
+			end
 			WebUI:ExecuteJS(string.format("updateScoreboardBody5(%s)", json.encode(sendThis4)))
 		end
 		
@@ -1137,8 +1199,7 @@ end
 
 -- Region Get Admin Rights
 function BetterIngameAdmin:OnServerOwnerRights()
-	local localPlayer = PlayerManager:GetLocalPlayer()
-	WebUI:ExecuteJS(string.format("setOwnerRights(%s)", json.encode(localPlayer.name)))
+	WebUI:ExecuteJS(string.format("setOwnerRights()"))
 end
 
 function BetterIngameAdmin:OnAdminPlayer(args)
@@ -1215,7 +1276,7 @@ end
 ResourceManager:RegisterInstanceLoadHandler(Guid('3E6AF1E2-B10E-11DF-9395-96FA88A245BF'), Guid('78B3E33E-098B-3320-ED15-89A36F04007B'), function(instance)
 	instance = UIMessageCompData(instance)
 	instance:MakeWritable()
-	MessageInfo(instance.chatMessageInfo).messageQueueSize = 20
+	MessageInfo(instance.chatMessageInfo).messageQueueSize = 6
 end)
 --Endregion
 
