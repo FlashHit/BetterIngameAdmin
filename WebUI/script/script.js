@@ -81,21 +81,26 @@ varsPresetHardcoreNoMap = true;
 
 /* Region Assist */
 isInAssistQueue = false;
+enableAssistFunction = true;
 /* Endregion */
 
 /* Region PopUp (gets triggered on click on playerName on scoreboard */
 function action(playerName ,squadId, isSquadPrivate)
 {
+	playerName = playerName.replace(/\</g,"&lt;");
+	playerName = playerName.replace(/\>/g,"&gt;");
 	WebUI.Call('DispatchEvent', 'WebUI:IgnoreReleaseTab');
 	document.getElementById("popup").style.display = "inline";
 	if(playerName == localPlayer) {
 		document.getElementById("popup").innerHTML = '<div id="titlepopup">Actions for yourself<div id="close" onclick="closepopup()"></div></div></div>';
 		document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
 		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="surrender()">Surrender</div>';
-		if(isInAssistQueue == false){
-			document.getElementById("popupelements").innerHTML += '<div id="popupelement"><div id="assistEnemy" onclick="assist()">Assist</div></div>';
-		}else{
-			document.getElementById("popupelements").innerHTML += '<div id="popupelement"><div id="cancelAssistEnemy" onclick="cancelAssist()">Cancel Assist</div></div>';
+		if(enableAssistFunction == true){
+			if(isInAssistQueue == false){
+				document.getElementById("popupelements").innerHTML += '<div id="popupelement"><div id="assistEnemy" onclick="assist()">Assist</div></div>';
+			}else{
+				document.getElementById("popupelements").innerHTML += '<div id="popupelement"><div id="cancelAssistEnemy" onclick="cancelAssist()">Cancel Assist</div></div>';
+			}
 		}
 		if(localPlayerIsSquadLeader == true) {
 			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="localSquad()">Squad</div>';
@@ -191,16 +196,18 @@ function votekick(playerName) {
 	closepopup();
 	document.getElementById("voteyes").style.fontWeight = "900";
 }
-function voteban(playerName) {
+function voteban(args) {
 	showHideVotings = true;
 	WebUI.Call('DispatchEvent', 'WebUI:VotebanPlayer', playerName);
 	closepopup();
 	document.getElementById("voteyes").style.fontWeight = "900";
 }
-function startvotekick(playerName) 
+function startvotekick(args) 
 {
-	isVoteInProgress = true
-	secondsLeft = 30;
+	let playerName = args[0].replace(/\</g,"&lt;");
+	playerName = playerName.replace(/\>/g,"&gt;");
+	isVoteInProgress = true;
+	secondsLeft = args[1];
 	yesvotes = 1;
 	novotes = 0;
 	if(showHideVotings == true){ 
@@ -219,10 +226,12 @@ function startvotekick(playerName)
 	document.getElementById("countyesvotes").innerHTML = ''+yesvotes+' Y';
 	document.getElementById("countnovotes").innerHTML = ''+novotes+' N';
 }
-function startvoteban(playerName) 
+function startvoteban(args) 
 {
-	isVoteInProgress = true
-	secondsLeft = 30;
+	let playerName = args[0].replace(/\</g,"&lt;");
+	playerName = playerName.replace(/\>/g,"&gt;");
+	isVoteInProgress = true;
+	secondsLeft = args[1];
 	yesvotes = 1;
 	novotes = 0;
 	if(showHideVotings == true){ 
@@ -1826,12 +1835,8 @@ function closeEditAdminpopup()
 	closepopup();
 }
 
-function setOwnerRights(playerName){
+function setOwnerRights(){
 	isOwner = true;
-	if(playerName != null){
-		localPlayer = playerName;
-		document.getElementById("serverInfoOwnerBody").innerHTML = localPlayer;
-	}
 }
 // for the local Player:
 function getAdminRights(abilities)
@@ -1937,7 +1942,8 @@ function updateScoreboardHeader(scoreboardHeader)
 	document.getElementById("tickets1").innerHTML = scoreboardHeader[1];
 	document.getElementById("team2").innerHTML = scoreboardHeader[2];
 	document.getElementById("tickets2").innerHTML = scoreboardHeader[3];
-	localPlayer = scoreboardHeader[4];
+	localPlayer = scoreboardHeader[4].replace(/\</g,"&lt;");
+	localPlayer = localPlayer.replace(/\>/g,"&gt;");
 	localPlayerSquad = scoreboardHeader[5];
 	localPlayerIsSquadLeader = scoreboardHeader[6];
 	localPlayerIsSquadPrivate = scoreboardHeader[7];
@@ -1960,6 +1966,8 @@ function updateScoreboardHeader2(scoreboardHeader)
 
 function updateScoreboardBody1(sendThis1) 
 {
+	sendThis1[1] = sendThis1[1].replace(/\</g,"&lt;");
+	sendThis1[1] = sendThis1[1].replace(/\>/g,"&gt;");
 	if(squadCount[sendThis1[5]] == null){
 		squadCount[sendThis1[5]] = 1;
 	}else{
@@ -1990,6 +1998,8 @@ function updateScoreboardBody1(sendThis1)
 }
 function updateScoreboardBody2(sendThis2) 
 {
+	sendThis2[1] = sendThis2[1].replace(/\</g,"&lt;");
+	sendThis2[1] = sendThis2[1].replace(/\>/g,"&gt;");
 	place2 += 1;
 	if(sendThis2[5] == true){
 		document.getElementById("table2tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis2[1]+'&apos;, '+0+', '+true+')"><td id="place2">'+place2+'</td><td id="name2">'+sendThis2[1]+'</td><td id="kills2">'+sendThis2[2]+'</td><td id="deaths2">'+sendThis2[3]+'</td><td id="points2">'+sendThis2[4]+'</td><td id="ping2">'+sendThis2[6]+'</td></tr>';
@@ -2018,6 +2028,8 @@ function updateScoreboardBody3(size)
 }
 function updateScoreboardBody4(sendThis3) 
 {
+	sendThis3[1] = sendThis3[1].replace(/\</g,"&lt;");
+	sendThis3[1] = sendThis3[1].replace(/\>/g,"&gt;");
 	place3 += 1;
 	if(sendThis3[5] == true){
 		document.getElementById("table3tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis3[1]+'&apos;, '+0+')"><td id="place3">'+place3+'</td><td id="name3">'+sendThis3[1]+'</td><td id="kills3">'+sendThis3[2]+'</td><td id="deaths3">'+sendThis3[3]+'</td><td id="points3">'+sendThis3[4]+'</td><td id="ping3">'+sendThis3[5]+'</td></tr>';
@@ -2027,6 +2039,8 @@ function updateScoreboardBody4(sendThis3)
 }
 function updateScoreboardBody5(sendThis4) 
 {
+	sendThis4[1] = sendThis4[1].replace(/\</g,"&lt;");
+	sendThis4[1] = sendThis4[1].replace(/\>/g,"&gt;");
 	place4 += 1;
 	if(sendThis4[5] == true){
 		document.getElementById("table4tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis4[1]+'&apos;, '+0+')"><td id="place4">'+place4+'</td><td id="name4">'+sendThis4[1]+'</td><td id="kills4">'+sendThis4[2]+'</td><td id="deaths4">'+sendThis4[3]+'</td><td id="points4">'+sendThis4[4]+'</td><td id="ping4">'+sendThis4[5]+'</td></tr>';
@@ -2081,6 +2095,7 @@ function clearScoreboardBody()
 	document.getElementById("serverInfo").style.display = "none";
 	document.getElementById("clientSettings").style.display = "none";
 	document.getElementById("managePresetsSettings").style.display = "none";
+	document.getElementById("manageModSettings").style.display = "none";
 	if ( document.getElementById("serverInfoTab").classList.contains('active') )
 	{
 		document.getElementById("serverInfoTab").classList.remove('active');
@@ -2154,6 +2169,7 @@ function showServerInfo()
 	document.getElementById("mapRotationSettings").style.display = null;
 	document.getElementById("serverSetupSettings").style.display = null;
 	document.getElementById("managePresetsSettings").style.display = "none";
+	document.getElementById("manageModSettings").style.display = "none";
 	document.getElementById("serverInfoPlayerPingBody").innerHTML = localPing+' ms';
 	width = document.getElementById("serverInfoMapRotationBody").clientWidth;
 	if( document.getElementById("checkModeName").clientWidth >= width - 28) {
@@ -2213,6 +2229,7 @@ function showScoreboard()
 	document.getElementById("mapRotationSettings").style.display = null;
 	document.getElementById("serverSetupSettings").style.display = null;
 	document.getElementById("managePresetsSettings").style.display = "none";
+	document.getElementById("manageModSettings").style.display = "none";
 }
 function showClientSettings()
 {
@@ -2245,6 +2262,7 @@ function showClientSettings()
 	document.getElementById("serverSetupTab").style.display = null;
 	document.getElementById("serverSetupSettings").style.display = null;
 	document.getElementById("managePresetsSettings").style.display = "none";
+	document.getElementById("manageModSettings").style.display = "none";
 	showGeneralClientSettings()
 }
 /* Endregion */
@@ -2468,6 +2486,7 @@ function mapRotationSetup()
 	document.getElementById("clientSettings").style.display = "none";
 	document.getElementById("mapRotationSettings").style.display = "block";
 	document.getElementById("managePresetsSettings").style.display = "none";
+	document.getElementById("manageModSettings").style.display = "none";
 	
 	document.getElementById("currentMap2").src = "fb://UI/Art/Menu/Icons/map_current";
 	document.getElementById("nextMap2").src = "fb://UI/Art/Menu/Icons/map_next";
@@ -2578,6 +2597,7 @@ function serverSetup()
 	document.getElementById("clientSettings").style.display = "none";
 	document.getElementById("serverSetupSettings").style.display = "block";
 	document.getElementById("managePresetsSettings").style.display = "none";
+	document.getElementById("manageModSettings").style.display = "none";
 	WebUI.Call('DispatchEvent', 'WebUI:GetServerSetupSettings');
 }
 
@@ -2633,6 +2653,7 @@ function managePresets()
 	document.getElementById("tables").style.display = "none";
 	document.getElementById("clientSettings").style.display = "none";
 	document.getElementById("serverSetupSettings").style.display = "none";
+	document.getElementById("manageModSettings").style.display = "none";
 	document.getElementById("managePresetsSettings").style.display = "block";
 	WebUI.Call('DispatchEvent', 'WebUI:GetPresetsSettings');
 }
@@ -3527,6 +3548,174 @@ function manageModSettings()
 	document.getElementById("managePresetsSettings").style.display = "none";
 	document.getElementById("manageModSettings").style.display = "block";
 	//WebUI.Call('DispatchEvent', 'WebUI:GetPresetsSettings');
+}
+
+function toggleEnemyCorpsesScoreboard()
+{
+	if(document.getElementById("showEnemyCorpses").innerHTML == "Yes")
+	{
+		document.getElementById("showEnemyCorpses").innerHTML = "No";
+	}else{
+		document.getElementById("showEnemyCorpses").innerHTML = "Yes";
+	}
+}
+
+function plusVoteDuration()
+{
+	let newValue = parseInt(document.getElementById("showVoteDuration").innerHTML) + 15
+	document.getElementById("showVoteDuration").innerHTML = newValue;
+}
+function plusCooldownBetweenVotes()
+{
+	let newValue = parseInt(document.getElementById("showCooldownBetweenVotes").innerHTML) + 15
+	document.getElementById("showCooldownBetweenVotes").innerHTML = newValue;
+}
+function plusMaxVotingStartsPerPlayer()
+{
+	let newValue = parseInt(document.getElementById("showMaxVotingStartsPerPlayer").innerHTML) + 1
+	document.getElementById("showMaxVotingStartsPerPlayer").innerHTML = newValue;
+}
+function plusVotingParticipation()
+{
+	let newValue = parseInt(document.getElementById("showMaxVotingParticipationNeeded").innerHTML) + 1
+	document.getElementById("showMaxVotingParticipationNeeded").innerHTML = newValue;
+}
+function minusVoteDuration()
+{
+	let newValue = parseInt(document.getElementById("showVoteDuration").innerHTML) - 15
+	if(newValue >= 0)
+	{
+		document.getElementById("showVoteDuration").innerHTML = newValue;
+	}else{
+		document.getElementById("showVoteDuration").innerHTML = "0";
+	}
+}
+function minusCooldownBetweenVotes()
+{
+	let newValue = parseInt(document.getElementById("showCooldownBetweenVotes").innerHTML) - 15
+	if(newValue >= 0)
+	{
+		document.getElementById("showCooldownBetweenVotes").innerHTML = newValue;
+	}else{
+		document.getElementById("showCooldownBetweenVotes").innerHTML = "0";
+	}
+}
+function minusMaxVotingStartsPerPlayer()
+{
+	let newValue = parseInt(document.getElementById("showMaxVotingStartsPerPlayer").innerHTML) - 1
+	if(newValue >= 0)
+	{
+		document.getElementById("showMaxVotingStartsPerPlayer").innerHTML = newValue;
+	}else{
+		document.getElementById("showMaxVotingStartsPerPlayer").innerHTML = "0";
+	}
+}
+function minusVotingParticipation()
+{
+	let newValue = parseInt(document.getElementById("showMaxVotingParticipationNeeded").innerHTML) - 1
+	if(newValue >= 0)
+	{
+		document.getElementById("showMaxVotingParticipationNeeded").innerHTML = newValue;
+	}else{
+		document.getElementById("showMaxVotingParticipationNeeded").innerHTML = "0";
+	}
+}
+function toggleEnableAssist()
+{
+	if(document.getElementById("showEnableAssistFunction").innerHTML == "On")
+	{
+		document.getElementById("showEnableAssistFunction").innerHTML = "Off";
+	}else{
+		document.getElementById("showEnableAssistFunction").innerHTML = "On";
+	}
+}
+function resetGeneralModSettings()
+{
+	document.getElementById("showEnemyCorpses").innerHTML = "Yes";
+	document.getElementById("showVoteDuration").innerHTML = "30";
+	document.getElementById("showCooldownBetweenVotes").innerHTML = "0";
+	document.getElementById("showMaxVotingStartsPerPlayer").innerHTML = "3";
+	document.getElementById("showMaxVotingParticipationNeeded").innerHTML = "50";
+	document.getElementById("showEnableAssistFunction").innerHTML = "On";
+
+	WebUI.Call('DispatchEvent', 'WebUI:ResetGeneralModSettings');
+	closeSmart();
+}
+function resetAndSaveGeneralModSettings()
+{
+	document.getElementById("showEnemyCorpses").innerHTML = "Yes";
+	document.getElementById("showVoteDuration").innerHTML = "30";
+	document.getElementById("showCooldownBetweenVotes").innerHTML = "0";
+	document.getElementById("showMaxVotingStartsPerPlayer").innerHTML = "3";
+	document.getElementById("showMaxVotingParticipationNeeded").innerHTML = "50";
+	document.getElementById("showEnableAssistFunction").innerHTML = "On";
+
+	WebUI.Call('DispatchEvent', 'WebUI:ResetAndSaveGeneralModSettings');
+	closeSmart();
+}
+function applyGeneralModSettings()
+{
+	modSettings = [];
+	if(document.getElementById("showEnemyCorpses").innerHTML == "Yes")
+	{
+		modSettings.push(true);
+	}else{
+		modSettings.push(false);
+	}
+	modSettings.push(document.getElementById("showVoteDuration").innerHTML);
+	modSettings.push(document.getElementById("showCooldownBetweenVotes").innerHTML);
+	modSettings.push(document.getElementById("showMaxVotingStartsPerPlayer").innerHTML);
+	modSettings.push(document.getElementById("showMaxVotingParticipationNeeded").innerHTML);
+	if(document.getElementById("showEnableAssistFunction").innerHTML == "On")
+	{
+		modSettings.push(true);
+	}else{
+		modSettings.push(false);
+	}
+	WebUI.Call('DispatchEvent', 'WebUI:ApplyGeneralModSettings', JSON.stringify(modSettings));
+	closeSmart();
+}
+function saveGeneralModSettings()
+{
+	modSettings = [];
+	if(document.getElementById("showEnemyCorpses").innerHTML == "Yes")
+	{
+		modSettings.push(true);
+	}else{
+		modSettings.push(false);
+	}
+	modSettings.push(document.getElementById("showVoteDuration").innerHTML);
+	modSettings.push(document.getElementById("showCooldownBetweenVotes").innerHTML);
+	modSettings.push(document.getElementById("showMaxVotingStartsPerPlayer").innerHTML);
+	modSettings.push(document.getElementById("showMaxVotingParticipationNeeded").innerHTML);
+	if(document.getElementById("showEnableAssistFunction").innerHTML == "On")
+	{
+		modSettings.push(true);
+	}else{
+		modSettings.push(false);
+	}
+	WebUI.Call('DispatchEvent', 'WebUI:SaveGeneralModSettings', JSON.stringify(modSettings));
+	closeSmart();
+}
+function refreshModSettings(args)
+{
+	if(args[0] == true)
+	{
+		document.getElementById("showEnemyCorpses").innerHTML = "Yes";
+	}else{
+		document.getElementById("showEnemyCorpses").innerHTML = "No";
+	}
+	document.getElementById("showVoteDuration").innerHTML = args[1];
+	document.getElementById("showCooldownBetweenVotes").innerHTML = args[2];
+	document.getElementById("showMaxVotingStartsPerPlayer").innerHTML = args[3];
+	document.getElementById("showMaxVotingParticipationNeeded").innerHTML = args[4];
+	enableAssistFunction = args[5];
+	if(args[5] == true)
+	{
+		document.getElementById("showEnableAssistFunction").innerHTML = "On";
+	}else{
+		document.getElementById("showEnableAssistFunction").innerHTML = "Off";
+	}
 }
 /* Endregion */
 
