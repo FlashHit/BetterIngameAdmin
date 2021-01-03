@@ -632,6 +632,10 @@ function getServerInfo(args) {
 	varsPresetInfantry = true;
 	varsPresetHardcore = true;
 	varsPresetHardcoreNoMap = true;
+
+	if (args[50] != undefined && args[50] != null && args[50].length > 0 && args[50].includes("vu-loading")) {
+		document.getElementById("banner").classList.add('vuLoading')
+	}
 	
 	document.getElementById("serverNameDescrContainerHeader").innerHTML = '<p>'+args[0]+'</p>';
 	document.getElementById("serverNameDescrContainerBody").innerHTML = '<p>'+args[1]+'</p>';
