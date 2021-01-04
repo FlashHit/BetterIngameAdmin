@@ -1296,6 +1296,13 @@ function showOrHideVotings() {
 		document.getElementById("hideVotings").innerHTML = "No";
 	}
 }
+function toggleMinimapSize() {
+	if(document.getElementById("defaultMinimapSize").innerHTML == "Small") {
+		document.getElementById("defaultMinimapSize").innerHTML = "Large";
+	}else{
+		document.getElementById("defaultMinimapSize").innerHTML = "Small";
+	}
+}
 function toggleHoldScoreboard() {
 	if(document.getElementById("scoreboardMethod").innerHTML == "Click Tab") {
 		document.getElementById("scoreboardMethod").innerHTML = "Hold Tab";
@@ -2403,6 +2410,11 @@ function applyGeneralClientSettings(){
 		showHideVotings = false;
 		document.getElementById("votepopup").style.display = "none";
 	}
+	if(document.getElementById("defaultMinimapSize").innerHTML == "Small"){
+		WebUI.Call('DispatchEvent', 'WebUI:SmallMiniMapSize');
+	}else{
+		WebUI.Call('DispatchEvent', 'WebUI:LargeMiniMapSize');
+	}
 	channelsMuted = [];
 	if(document.getElementById("adminChannel").innerHTML == "Off"){
 		channelsMuted.push("4");
@@ -2425,6 +2437,7 @@ function applyGeneralClientSettings(){
 		
 	}
 	WebUI.Call('DispatchEvent', 'WebUI:ChatChannels', JSON.stringify(channelsMuted));
+	
 	closeSmart();
 }
 function resetGeneralClientSettings() {
@@ -2434,7 +2447,7 @@ function resetGeneralClientSettings() {
 	document.getElementById("showPing").innerHTML = "No";
 	document.getElementById("showLocalPing").style.display = "none";
 	WebUI.Call('DispatchEvent', 'WebUI:HidePing');
-	
+	document.getElementById("defaultMinimapSize").innerHTML = "Small";
 	document.getElementById("hideVotings").innerHTML = "No";
 	showHideVotings = true;
 	if(isVoteInProgress == true) {
@@ -2447,6 +2460,7 @@ function resetGeneralClientSettings() {
 	document.getElementById("teamChannel").innerHTML = "On";
 	document.getElementById("squadChannel").innerHTML = "On";
 	WebUI.Call('DispatchEvent', 'WebUI:ChatChannels', JSON.stringify(channelsMuted));
+	WebUI.Call('DispatchEvent', 'WebUI:SmallMinimapSize');
 	
 	closeSmart();
 }
@@ -3629,6 +3643,15 @@ function toggleEnableAssist()
 		document.getElementById("showEnableAssistFunction").innerHTML = "On";
 	}
 }
+function toggleShowLoadingScreenInfo()
+{
+	if(document.getElementById("showLoadingScreenInfo").innerHTML == "Yes")
+	{
+		document.getElementById("showLoadingScreenInfo").innerHTML = "No";
+	}else{
+		document.getElementById("showLoadingScreenInfo").innerHTML = "Yes";
+	}
+}
 function resetGeneralModSettings()
 {
 	document.getElementById("showEnemyCorpses").innerHTML = "Yes";
@@ -3637,6 +3660,7 @@ function resetGeneralModSettings()
 	document.getElementById("showMaxVotingStartsPerPlayer").innerHTML = "3";
 	document.getElementById("showMaxVotingParticipationNeeded").innerHTML = "50";
 	document.getElementById("showEnableAssistFunction").innerHTML = "On";
+	document.getElementById("showLoadingScreenInfo").innerHTML = "Yes";
 
 	WebUI.Call('DispatchEvent', 'WebUI:ResetGeneralModSettings');
 	closeSmart();
@@ -3649,6 +3673,7 @@ function resetAndSaveGeneralModSettings()
 	document.getElementById("showMaxVotingStartsPerPlayer").innerHTML = "3";
 	document.getElementById("showMaxVotingParticipationNeeded").innerHTML = "50";
 	document.getElementById("showEnableAssistFunction").innerHTML = "On";
+	document.getElementById("showLoadingScreenInfo").innerHTML = "Yes";
 
 	WebUI.Call('DispatchEvent', 'WebUI:ResetAndSaveGeneralModSettings');
 	closeSmart();
@@ -3667,6 +3692,12 @@ function applyGeneralModSettings()
 	modSettings.push(document.getElementById("showMaxVotingStartsPerPlayer").innerHTML);
 	modSettings.push(document.getElementById("showMaxVotingParticipationNeeded").innerHTML);
 	if(document.getElementById("showEnableAssistFunction").innerHTML == "On")
+	{
+		modSettings.push(true);
+	}else{
+		modSettings.push(false);
+	}
+	if(document.getElementById("showLoadingScreenInfo").innerHTML == "Yes")
 	{
 		modSettings.push(true);
 	}else{
@@ -3694,6 +3725,12 @@ function saveGeneralModSettings()
 	}else{
 		modSettings.push(false);
 	}
+	if(document.getElementById("showLoadingScreenInfo").innerHTML == "Yes")
+	{
+		modSettings.push(true);
+	}else{
+		modSettings.push(false);
+	}
 	WebUI.Call('DispatchEvent', 'WebUI:SaveGeneralModSettings', JSON.stringify(modSettings));
 	closeSmart();
 }
@@ -3715,6 +3752,12 @@ function refreshModSettings(args)
 		document.getElementById("showEnableAssistFunction").innerHTML = "On";
 	}else{
 		document.getElementById("showEnableAssistFunction").innerHTML = "Off";
+	}
+	if(args[6] == true)
+	{
+		document.getElementById("showLoadingScreenInfo").innerHTML = "Yes";
+	}else{
+		document.getElementById("showLoadingScreenInfo").innerHTML = "No";
 	}
 }
 /* Endregion */
