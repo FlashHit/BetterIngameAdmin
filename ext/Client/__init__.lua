@@ -23,6 +23,7 @@ function BetterIngameAdmin:RegisterVars()
 	self.maxVotingStartsPerPlayer = 3
 	self.votingParticipationNeeded = 50
 	self.enableAssistFunction = true
+	self.showLoadingScreenInfo = require 'config'
 	-- Endregion
 	
 	-- Region Todo: use local instead of self.
@@ -259,6 +260,9 @@ end
 -- Region WebUI Init
 function BetterIngameAdmin:OnExtensionLoaded()
     WebUI:Init()
+	if self.showLoadingScreenInfo == false then
+		WebUI:ExecuteJS(string.format("hideLoadingScreen()"))
+	end
 end
 -- Endregion
 
@@ -1237,7 +1241,9 @@ end
 
 function BetterIngameAdmin:OnLevelDestroy()
 	WebUI:ExecuteJS(string.format("closeSmart()"))
-	WebUI:ExecuteJS(string.format("showLoadingScreen()"))
+	if self.showLoadingScreenInfo == true then
+		WebUI:ExecuteJS(string.format("showLoadingScreen()"))
+	end
 end
 -- Endregion
 
