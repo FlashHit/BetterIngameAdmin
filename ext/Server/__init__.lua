@@ -59,6 +59,7 @@ function BetterIngameAdmin:RegisterVars()
 	self.maxVotingStartsPerPlayer = 3
 	self.votingParticipationNeeded = 50
 	self.enableAssistFunction = true
+	self.showLoadingScreenInfo = true
 	-- Endregion
 	
 	-- Region Ping for Scoreboard
@@ -1995,8 +1996,9 @@ function BetterIngameAdmin:OnResetModSettings(player)
 	self.maxVotingStartsPerPlayer = 3
 	self.votingParticipationNeeded = 50
 	self.enableAssistFunction = true
+	self.showLoadingScreenInfo = true
 	
-	NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction})
+	NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction, self.showLoadingScreenInfo})
 	print("MODSETTINGS - Reset - Admin " .. player.name .. " has updated the mod settings.")
 	
 	local message = {}
@@ -2017,8 +2019,9 @@ function BetterIngameAdmin:OnResetAndSaveModSettings(player)
 	self.maxVotingStartsPerPlayer = 3
 	self.votingParticipationNeeded = 50
 	self.enableAssistFunction = true
+	self.showLoadingScreenInfo = true
 	
-	NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction})
+	NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction, self.showLoadingScreenInfo})
 	print("MODSETTINGS - Reset & Save - Admin " .. player.name .. " has updated the mod settings.")
 	
 	self:SQLSaveModSettings()
@@ -2041,8 +2044,9 @@ function BetterIngameAdmin:OnApplyModSettings(player, args)
 	self.maxVotingStartsPerPlayer = tonumber(args[4])
 	self.votingParticipationNeeded = tonumber(args[5])
 	self.enableAssistFunction = args[6]
+	self.showLoadingScreenInfo = args[7]
 	
-	NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction})
+	NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction, self.showLoadingScreenInfo})
 	print("MODSETTINGS - Apply - Admin " .. player.name .. " has updated the mod settings.")
 	
 	local message = {}
@@ -2063,8 +2067,9 @@ function BetterIngameAdmin:OnSaveModSettings(player, args)
 	self.maxVotingStartsPerPlayer = tonumber(args[4])
 	self.votingParticipationNeeded = tonumber(args[5])
 	self.enableAssistFunction = args[6]
+	self.showLoadingScreenInfo = args[7]
 	
-	NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction})
+	NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction, self.showLoadingScreenInfo})
 	print("MODSETTINGS - Save - Admin " .. player.name .. " has updated the mod settings.")
 	
 	self:SQLSaveModSettings()
@@ -2093,22 +2098,23 @@ function BetterIngameAdmin:SQLSaveModSettings()
 		cooldownBetweenVotes INTEGER,
 		maxVotingStartsPerPlayer INTEGER,
 		votingParticipationNeeded INTEGER,
-		enableAssistFunction BOOLEAN
+		enableAssistFunction BOOLEAN,
+		showLoadingScreenInfo BOOLEAN
 	  )
 	]]
 	if not SQL:Query(query) then
 	  print('Failed to execute query: ' .. SQL:Error())
 	  return
 	end
-	query = 'INSERT INTO mod_settings (showEnemyCorpses, voteDuration, cooldownBetweenVotes, maxVotingStartsPerPlayer, votingParticipationNeeded, enableAssistFunction) VALUES (?, ?, ?, ?, ?, ?)'
-	if not SQL:Query(query, self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction) then
+	query = 'INSERT INTO mod_settings (showEnemyCorpses, voteDuration, cooldownBetweenVotes, maxVotingStartsPerPlayer, votingParticipationNeeded, enableAssistFunction, showLoadingScreenInfo) VALUES (?, ?, ?, ?, ?, ?, ?)'
+	if not SQL:Query(query, self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction, self.showLoadingScreenInfo) then
 		print('Failed to execute query: ' .. SQL:Error())
 		return
 	end
 	
 	-- Fetch all rows from the table.
 	results = SQL:Query('SELECT * FROM mod_settings')
-
+	
 	if not results then
 		print('Failed to execute query: ' .. SQL:Error())
 		return
@@ -2140,7 +2146,8 @@ function BetterIngameAdmin:OnLevelLoaded(levelName, gameMode, round, roundsPerMa
 			cooldownBetweenVotes INTEGER,
 			maxVotingStartsPerPlayer INTEGER,
 			votingParticipationNeeded INTEGER,
-			enableAssistFunction BOOLEAN
+			enableAssistFunction BOOLEAN,
+			showLoadingScreenInfo BOOLEAN
 		  )
 		]]
 		if not SQL:Query(query) then
@@ -2175,6 +2182,11 @@ function BetterIngameAdmin:OnLevelLoaded(levelName, gameMode, round, roundsPerMa
 			self.enableAssistFunction = true
 		else
 			self.enableAssistFunction = false
+		end
+		if results[1]["showLoadingScreenInfo"] == 0 then
+			self.showLoadingScreenInfo = false
+		else
+			self.showLoadingScreenInfo = true
 		end
 		self.loadedModSettings = true
 	end
@@ -2248,9 +2260,10 @@ function BetterIngameAdmin:OnAuthenticated(player)
 		print("ADMIN - SERVER OWNER JOINED - Owner " .. player.name .. " has joined the server.")
 	end
 	
+	NetEvents:SendTo('RefreshModSettings', player, {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction, self.showLoadingScreenInfo})
+	
 	NetEvents:SendTo('Info', player, {self.serverName, self.serverDescription, self.bannerUrl})
 	
-	NetEvents:SendTo('RefreshModSettings', player, {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction})
 	
 	if self.adminList[player.name] ~= nil then
 		NetEvents:SendTo('AdminPlayer', player, self.adminList[player.name])
