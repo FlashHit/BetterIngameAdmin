@@ -23,7 +23,7 @@ function BetterIngameAdmin:RegisterVars()
 	self.maxVotingStartsPerPlayer = 3
 	self.votingParticipationNeeded = 50
 	self.enableAssistFunction = true
-	self.showLoadingScreenInfo = require 'config'
+	self.showLoadingScreenInfo = true
 	-- Endregion
 	
 	-- Region Todo: use local instead of self.
@@ -84,6 +84,41 @@ function BetterIngameAdmin:RegisterVars()
 	self.fast_2_0xZoom = nil
 	self.fastIronSights = nil
 	self.defaultIronSights = nil
+	
+	self.x10_0xZoomFieldOfView = nil
+	self.x10_0xZoomLookSpeedMultiplier = nil
+	self.x10xENVGFieldOfView = nil
+	self.x10xENVGLookSpeedMultiplier = nil
+	self.x12_0xZoomFieldOfView = nil
+	self.x12_0xZoomLookSpeedMultiplier = nil
+	self.x1xENVGFieldOfView = nil
+	self.x1xENVGLookSpeedMultiplier = nil
+	self.x20xENVG_COOPFieldOfView = nil
+	self.x20xENVG_COOPLookSpeedMultiplier = nil
+	self.x20xZoomFieldOfView = nil
+	self.x20xZoomLookSpeedMultiplier = nil
+	self.x2_0xZoomFieldOfView = nil
+	self.x2_0xZoomLookSpeedMultiplier = nil
+	self.x3_4xZoomFieldOfView = nil
+	self.x3_4xZoomLookSpeedMultiplier = nil
+	self.x4_0xZoomFieldOfView = nil
+	self.x4_0xZoomLookSpeedMultiplier = nil
+	self.x6_0xZoomFieldOfView = nil
+	self.x6_0xZoomLookSpeedMultiplier = nil
+	self.x6xENVGFieldOfView = nil
+	self.x6xENVGLookSpeedMultiplier = nil
+	self.x7_0xZoomFieldOfView = nil
+	self.x7_0xZoomLookSpeedMultiplier = nil
+	self.x8_0xZoomFieldOfView = nil
+	self.x8_0xZoomLookSpeedMultiplier = nil
+	self.defaultATSightsFieldOfView = nil
+	self.defaultATSightsLookSpeedMultiplier = nil
+	self.fast_2_0xZoomFieldOfView = nil
+	self.fast_2_0xZoomLookSpeedMultiplier = nil
+	self.fastIronSightsFieldOfView = nil
+	self.fastIronSightsLookSpeedMultiplier = nil
+	self.defaultIronSightsFieldOfView = nil
+	self.defaultIronSightsLookSpeedMultiplier = nil
 	-- Endregion
 	
 	-- Region ServerInfo
@@ -92,6 +127,12 @@ function BetterIngameAdmin:RegisterVars()
 	
 	-- Region Spectator
 	self.isSpectator = false
+	-- Endregion
+	
+	-- Region Minimap Client Settings
+	self.largeMap = false
+	self.mapSizeTimer = false
+	self.mapTimer = 0
 	-- Endregion
 end
 
@@ -188,6 +229,11 @@ function BetterIngameAdmin:RegisterEvents()
 	Hooks:Install('ClientChatManager:IncomingMessage', 1, self, self.OnCreateChatMessage)
 	-- Endregion
 	
+	-- Region MinimapSize
+	Events:Subscribe('WebUI:SmallMiniMapSize', self, self.OnWebUISmallMiniMapSize)
+	Events:Subscribe('WebUI:LargeMiniMapSize', self, self.OnWebUILargeMiniMapSize)
+	-- Endregion
+	
 	-- Region MouseSensitivity and Field Of View
 	Events:Subscribe('WebUI:GetMouseSensitivity', self, self.OnWebUIGetMouseSensitivity)
 	Events:Subscribe('WebUI:SetMouseSensitivity', self, self.OnWebUISetMouseSensitivity)
@@ -243,17 +289,8 @@ function BetterIngameAdmin:RegisterEvents()
 	-- Endregion
 	
 	-- Region TODOS		
-		-- level loaded event for fov and mouseSensitivity stuff and voteCount reset
+		-- level loaded event for voteCount reset
 		--Events:Subscribe('Level:Loaded', self, self.OnLevelLoaded)
-	-- Endregion
-	
-	-- Region things to delete from old unfinshed admin panel
-	Events:Subscribe('WebUI:GetGeneralSettings', self, self.OnWebUIGetGeneralSettings) -- remove this one?
-	NetEvents:Subscribe('GeneralSettings', self, self.OnGeneralSettings) -- remove this?
-	Events:Subscribe('WebUI:ApplyGeneralSettings', self, self.OnApplyGeneralSettings) -- remove this one?
-	Events:Subscribe('WebUI:GetMapSettings', self, self.OnWebUIGetMapSettings) -- remove
-	NetEvents:Subscribe('MapSettings', self, self.OnMapSettings) -- remove
-	Events:Subscribe('WebUI:ApplyMapSettings', self, self.OnApplyMapSettings) -- remove
 	-- Endregion
 end
 
@@ -474,6 +511,7 @@ function BetterIngameAdmin:OnRefreshModSettings(args)
 	self.maxVotingStartsPerPlayer = args[4]
 	self.votingParticipationNeeded = args[5]
 	self.enableAssistFunction = args[6]
+	self.showLoadingScreenInfo = args[7]
 	
 	WebUI:ExecuteJS(string.format("refreshModSettings(%s)", json.encode(args)))
 end
@@ -545,6 +583,16 @@ function BetterIngameAdmin:OnCreateChatMessage(hook, message, playerId, recipien
 			hook:Return()
 		end
 	end
+end
+-- Endregion
+
+-- Region MinimapSize
+function BetterIngameAdmin:OnWebUISmallMiniMapSize()
+	self.largeMap = false
+end
+
+function BetterIngameAdmin:OnWebUILargeMiniMapSize()
+	self.largeMap = true
 end
 -- Endregion
 
@@ -703,90 +751,204 @@ function HDEGtoVDEG(arg)
 end
 
 function BetterIngameAdmin:RegisterResourceManagerCallbacks()
+	-- Region No Minimap Reset
+	ResourceManager:RegisterInstanceLoadHandler(Guid('E006FA38-6668-11E0-8215-820026059936'), Guid('7F2573C7-5712-C90F-7328-B82E3C732CE9'), function(instance)
+		instance = LogicPrefabBlueprint(instance)
+		instance:MakeWritable()
+		for i = #instance.eventConnections, 1, -1 do
+			if EventSpec(instance.eventConnections[i].targetEvent).id == 1529486671 then
+				instance.eventConnections:erase(i)
+			end
+		end
+	end)
+	-- Endregion
+
 	ResourceManager:RegisterInstanceLoadHandler(Guid("895050F3-B0D1-4F83-A57B-CCFA3EB0B31D", "D"), Guid("5C006FDF-FA1D-4E29-8E21-2ECAB83AC01C", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.defaultIronSights = instance
+		if self.defaultIronSightsFieldOfView ~= nil then
+			self.defaultIronSights.fieldOfView = self.defaultIronSightsFieldOfView
+		end
+		if self.defaultIronSightsLookSpeedMultiplier ~= nil then
+			self.defaultIronSights.lookSpeedMultiplier = self.defaultIronSightsLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("FFEAFC24-9812-44BF-AD98-EBC06193739C", "D"), Guid("50887762-21DF-42F5-9740-ECDBCEECC3B4", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.fastIronSights = instance
+		if self.fastIronSightsFieldOfView ~= nil then
+			self.fastIronSights.fieldOfView = self.fastIronSightsFieldOfView
+		end
+		if self.fastIronSightsLookSpeedMultiplier ~= nil then
+			self.fastIronSights.lookSpeedMultiplier = self.fastIronSightsLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("DF98AF9C-A315-4B68-BD63-31DFAA5FABCF", "D"), Guid("83D88E7E-D266-430A-8664-CA15AFFA0D66", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.fast_2_0xZoom = instance
+		if self.fast_2_0xZoomFieldOfView ~= nil then
+			self.fast_2_0xZoom.fieldOfView = self.fast_2_0xZoomFieldOfView
+		end
+		if self.fast_2_0xZoomLookSpeedMultiplier ~= nil then
+			self.fast_2_0xZoom.lookSpeedMultiplier = self.fast_2_0xZoomLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("A211D3C5-2DA2-4A60-8A49-5F4D90D32CCB", "D"), Guid("A83312DC-829D-4B36-9A9B-F0140876E14A", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.defaultATSights = instance
+		if self.defaultATSightsFieldOfView ~= nil then
+			self.defaultATSights.fieldOfView = self.defaultATSightsFieldOfView
+		end
+		if self.defaultATSightsLookSpeedMultiplier ~= nil then
+			self.defaultATSights.lookSpeedMultiplier = self.defaultATSightsLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("725A64F5-4A69-4F67-A933-89E43BB1E641", "D"), Guid("C6913617-8845-4A35-9146-38F2A988EC03", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.x8_0xZoom = instance
+		if self.x8_0xZoomFieldOfView ~= nil then
+			self.x8_0xZoom.fieldOfView = self.x8_0xZoomFieldOfView
+		end
+		if self.x8_0xZoomLookSpeedMultiplier ~= nil then
+			self.x8_0xZoom.lookSpeedMultiplier = self.x8_0xZoomLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("D6C590F7-9AFE-4B45-BA23-5D187678C42C", "D"), Guid("BC4F88FE-DC56-4EDB-B2C6-9ABAFD993A88", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.x7_0xZoom = instance
+		if self.x7_0xZoomFieldOfView ~= nil then
+			self.x7_0xZoom.fieldOfView = self.x7_0xZoomFieldOfView
+		end
+		if self.x7_0xZoomLookSpeedMultiplier ~= nil then
+			self.x7_0xZoom.lookSpeedMultiplier = self.x7_0xZoomLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("8815B047-AEB1-4BCB-9A25-0128D948B3EE", "D"), Guid("6A83DD0E-1CA3-47DF-A829-F0EFEFF228F1", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.x6xENVG = instance
+		if self.x6xENVGFieldOfView ~= nil then
+			self.x6xENVG.fieldOfView = self.x6xENVGFieldOfView
+		end
+		if self.x6xENVGLookSpeedMultiplier ~= nil then
+			self.x6xENVG.lookSpeedMultiplier = self.x6xENVGLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("1EDCC582-8B61-44DC-876C-C2DBB03FF74B", "D"), Guid("531FFD11-A7A9-4175-9049-7ADA2333931D", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.x6_0xZoom = instance
+		if self.x6_0xZoomFieldOfView ~= nil then
+			self.x6_0xZoom.fieldOfView = self.x6_0xZoomFieldOfView
+		end
+		if self.x6_0xZoomLookSpeedMultiplier ~= nil then
+			self.x6_0xZoom.lookSpeedMultiplier = self.x6_0xZoomLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("7F25A028-ED1A-4B4E-A291-8A8E8B3A9159", "D"), Guid("BF74D9F8-E11C-4075-BDDB-AAC3F27C608D", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.x4_0xZoom = instance
+		if self.x4_0xZoomFieldOfView ~= nil then
+			self.x4_0xZoom.fieldOfView = self.x4_0xZoomFieldOfView
+		end
+		if self.x4_0xZoomLookSpeedMultiplier ~= nil then
+			self.x4_0xZoom.lookSpeedMultiplier = self.x4_0xZoomLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("6E7D36F2-7BAC-4E20-A8D7-8ABF9F7FC6D2", "D"), Guid("E7AA2666-EE70-4B9F-A918-7686E7932DAF", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.x3_4xZoom = instance
+		if self.x3_4xZoomFieldOfView ~= nil then
+			self.x3_4xZoom.fieldOfView = self.x3_4xZoomFieldOfView
+		end
+		if self.x3_4xZoomLookSpeedMultiplier ~= nil then
+			self.x3_4xZoom.lookSpeedMultiplier = self.x3_4xZoomLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("3D6A5B06-8046-47E8-8EE6-348E878E5DF5", "D"), Guid("B06E9839-DA28-42E6-86C4-42D1F8E3AADB", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.x2_0xZoom = instance
+		if self.x2_0xZoomFieldOfView ~= nil then
+			self.x2_0xZoom.fieldOfView = self.x2_0xZoomFieldOfView
+		end
+		if self.x2_0xZoomLookSpeedMultiplier ~= nil then
+			self.x2_0xZoom.lookSpeedMultiplier = self.x2_0xZoomLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("609CC1AC-4B36-4197-B1C1-2357E57CEBAF", "D"), Guid("34C9BF53-1E0C-42D3-9EC1-696421E8A420", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.x20xZoom = instance
+		if self.x20xZoomFieldOfView ~= nil then
+			self.x20xZoom.fieldOfView = self.x20xZoomFieldOfView
+		end
+		if self.x20xZoomLookSpeedMultiplier ~= nil then
+			self.x20xZoom.lookSpeedMultiplier = self.x20xZoomLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("401211FA-7E01-4019-BA4A-247406AD4776", "D"), Guid("9C462DC8-87D6-41B0-A4EF-9111E8D960B0", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.x20xENVG_COOP = instance
+		if self.x20xENVG_COOPFieldOfView ~= nil then
+			self.x20xENVG_COOP.fieldOfView = self.x20xENVG_COOPFieldOfView
+		end
+		if self.x20xENVG_COOPLookSpeedMultiplier ~= nil then
+			self.x20xENVG_COOP.lookSpeedMultiplier = self.x20xENVG_COOPLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("C28310FD-2731-44A3-9B56-A048B3227EA6", "D"), Guid("242DAE61-CC3D-428A-8AC5-324FA95EBE7B", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.x1xENVG = instance
+		if self.x1xENVGFieldOfView ~= nil then
+			self.x1xENVG.fieldOfView = self.x1xENVGFieldOfView
+		end
+		if self.x1xENVGLookSpeedMultiplier ~= nil then
+			self.x1xENVG.lookSpeedMultiplier = self.x1xENVGLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("72AFA964-EFE0-4203-83E2-88052DD7ECBA", "D"), Guid("B6B46C0F-92B8-4F9F-9429-595261801A14", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.x12_0xZoom = instance
+		if self.x12_0xZoomFieldOfView ~= nil then
+			self.x12_0xZoom.fieldOfView = self.x12_0xZoomFieldOfView
+		end
+		if self.x12_0xZoomLookSpeedMultiplier ~= nil then
+			self.x12_0xZoom.lookSpeedMultiplier = self.x12_0xZoomLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("D8CE5A90-5A74-4726-9D3C-B879996246E1", "D"), Guid("E754B4D6-BAD4-4FEE-9E00-8F9C4904975E", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.x10xENVG = instance
+		if self.x10xENVGFieldOfView ~= nil then
+			self.x10xENVG.fieldOfView = self.x10xENVGFieldOfView
+		end
+		if self.x10xENVGLookSpeedMultiplier ~= nil then
+			self.x10xENVG.lookSpeedMultiplier = self.x10xENVGLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("F412EBAD-2551-4832-93A0-B9E1A412FB5D", "D"), Guid("E068484D-EE7F-4199-992A-59772D8B7D4B", "D"), function(instance)
 		instance = ZoomLevelData(instance)
 		instance:MakeWritable()
 		self.x10_0xZoom = instance
+		if self.x10_0xZoomFieldOfView ~= nil then
+			self.x10_0xZoom.fieldOfView = self.x10_0xZoomFieldOfView
+		end
+		if self.x10_0xZoomLookSpeedMultiplier ~= nil then
+			self.x10_0xZoom.lookSpeedMultiplier = self.x10_0xZoomLookSpeedMultiplier
+		end
 	end)
 	ResourceManager:RegisterInstanceLoadHandler(Guid("FDAAAC18-0AC9-4E17-A723-4EC293FB0813", "D"), Guid("B2D0DC9F-B2A0-4B50-8BA5-A56B7AF1E44B", "D"), function(instance)
 		instance = ZoomLevelData(instance)
@@ -867,6 +1029,24 @@ function BetterIngameAdmin:OnEngineUpdate(deltaTime, simulationDeltaTime)
 			local localPlayer = PlayerManager:GetLocalPlayer()
 			if localPlayer ~= nil then
 				localPlayer:EnableInput(11, false)
+			end
+		end
+	end
+	if self.mapSizeTimer == true then
+		self.mapTimer = self.mapTimer + deltaTime
+		if self.mapTimer >= 0.1 then
+			local clientUIGraphEntityIterator = EntityManager:GetIterator("ClientUIGraphEntity")
+			
+			local clientUIGraphEntity = clientUIGraphEntityIterator:Next()
+			while clientUIGraphEntity do
+				if clientUIGraphEntity.data.instanceGuid == Guid('02395EB3-5C41-4396-AC7E-A14FAA85757C') or clientUIGraphEntity.data.instanceGuid == Guid('339168C6-FDEC-4EB2-8DAF-D42BDDDDD0A9') or clientUIGraphEntity.data.instanceGuid == Guid('984185F4-1B3F-4E61-8B1C-54F1C53898DC') or clientUIGraphEntity.data.instanceGuid == Guid('6D64CD68-CD5D-463D-8184-FF7A2D031F64') then
+					clientUIGraphEntity = Entity(clientUIGraphEntity)
+					self.mapSizeTimer = false
+					self.mapTimer = 0
+					clientUIGraphEntity:FireEvent('MapSize')
+					return
+				end
+				clientUIGraphEntity = clientUIGraphEntityIterator:Next()
 			end
 		end
 	end
@@ -1232,14 +1412,126 @@ function BetterIngameAdmin:OnLevelLoadingInfo(screenInfo)
 		if SpectatorManager:GetSpectating() == true then
 			self.isSpectator = true
 		end
+		-- no minimap reset
+		local clientUIGraphEntityIterator = EntityManager:GetIterator("ClientUIGraphEntity")
+	
+		local clientUIGraphEntity = clientUIGraphEntityIterator:Next()
+		while clientUIGraphEntity do
+			if clientUIGraphEntity.data.instanceGuid == Guid('02395EB3-5C41-4396-AC7E-A14FAA85757C') or clientUIGraphEntity.data.instanceGuid == Guid('339168C6-FDEC-4EB2-8DAF-D42BDDDDD0A9') or clientUIGraphEntity.data.instanceGuid == Guid('984185F4-1B3F-4E61-8B1C-54F1C53898DC') or clientUIGraphEntity.data.instanceGuid == Guid('6D64CD68-CD5D-463D-8184-FF7A2D031F64') then
+				clientUIGraphEntity = Entity(clientUIGraphEntity)
+				clientUIGraphEntity:RegisterEventCallback(self, self.OnMinimapInitializing)
+				return
+			end
+			clientUIGraphEntity = clientUIGraphEntityIterator:Next()
+		end
+	end
+end
+
+function BetterIngameAdmin:OnMinimapInitializing(ent, entityEvent)
+	if self.largeMap == false then
+		return
+	end
+	if entityEvent.eventId == -1711446775 then -- "Initialized"
+		self.mapSizeTimer = true
 	end
 end
 
 function BetterIngameAdmin:OnInfo(args)
 	WebUI:ExecuteJS(string.format("info(%s)", json.encode(args)))
+	if self.showLoadingScreenInfo == false then
+		WebUI:ExecuteJS(string.format("hideLoadingScreen()"))
+	end
 end
 
 function BetterIngameAdmin:OnLevelDestroy()
+	if self.x10_0xZoom ~= nil then
+		self.x10_0xZoomFieldOfView = self.x10_0xZoom.fieldOfView
+		self.x10_0xZoomLookSpeedMultiplier = self.x10_0xZoom.lookSpeedMultiplier
+	end
+	if self.x10xENVG ~= nil then
+		self.x10xENVGFieldOfView = self.x10xENVG.fieldOfView
+		self.x10xENVGLookSpeedMultiplier = self.x10xENVG.lookSpeedMultiplier
+	end
+	if self.x12_0xZoom ~= nil then
+		self.x12_0xZoomFieldOfView = self.x12_0xZoom.fieldOfView
+		self.x12_0xZoomLookSpeedMultiplier = self.x12_0xZoom.lookSpeedMultiplier
+	end
+	if self.x1xENVG ~= nil then
+		self.x1xENVGFieldOfView = self.x1xENVG.fieldOfView
+		self.x1xENVGLookSpeedMultiplier = self.x1xENVG.lookSpeedMultiplier
+	end
+	if self.x20xENVG_COOP ~= nil then
+		self.x20xENVG_COOPFieldOfView = self.x20xENVG_COOP.fieldOfView
+		self.x20xENVG_COOPLookSpeedMultiplier = self.x20xENVG_COOP.lookSpeedMultiplier
+	end
+	if self.x20xZoom ~= nil then
+		self.x20xZoomFieldOfView = self.x20xZoom.fieldOfView
+		self.x20xZoomLookSpeedMultiplier = self.x20xZoom.lookSpeedMultiplier
+	end
+	if self.x2_0xZoom ~= nil then
+		self.x2_0xZoomFieldOfView = self.x2_0xZoom.fieldOfView
+		self.x2_0xZoomLookSpeedMultiplier = self.x2_0xZoom.lookSpeedMultiplier
+	end
+	if self.x3_4xZoom ~= nil then
+		self.x3_4xZoomFieldOfView = self.x3_4xZoom.fieldOfView
+		self.x3_4xZoomLookSpeedMultiplier = self.x3_4xZoom.lookSpeedMultiplier
+	end
+	if self.x4_0xZoom ~= nil then
+		self.x4_0xZoomFieldOfView = self.x4_0xZoom.fieldOfView
+		self.x4_0xZoomLookSpeedMultiplier = self.x4_0xZoom.lookSpeedMultiplier
+	end
+	if self.x6_0xZoom ~= nil then
+		self.x6_0xZoomFieldOfView = self.x6_0xZoom.fieldOfView
+		self.x6_0xZoomLookSpeedMultiplier = self.x6_0xZoom.lookSpeedMultiplier
+	end
+	if self.x6xENVG ~= nil then
+		self.x6xENVGFieldOfView = self.x6xENVG.fieldOfView
+		self.x6xENVGLookSpeedMultiplier = self.x6xENVG.lookSpeedMultiplier
+	end
+	if self.x7_0xZoom ~= nil then
+		self.x7_0xZoomFieldOfView = self.x7_0xZoom.fieldOfView
+		self.x7_0xZoomLookSpeedMultiplier = self.x7_0xZoom.lookSpeedMultiplier
+	end
+	if self.x8_0xZoom ~= nil then
+		self.x8_0xZoomFieldOfView = self.x8_0xZoom.fieldOfView
+		self.x8_0xZoomLookSpeedMultiplier = self.x8_0xZoom.lookSpeedMultiplier
+	end
+	if self.defaultATSights ~= nil then
+		self.defaultATSightsFieldOfView = self.defaultATSights.fieldOfView
+		self.defaultATSightsLookSpeedMultiplier = self.defaultATSights.lookSpeedMultiplier
+	end
+	if self.fast_2_0xZoom ~= nil then
+		self.fast_2_0xZoomFieldOfView = self.fast_2_0xZoom.fieldOfView
+		self.fast_2_0xZoomLookSpeedMultiplier = self.fast_2_0xZoom.lookSpeedMultiplier
+	end
+	if self.fastIronSights ~= nil then
+		self.fastIronSightsFieldOfView = self.fastIronSights.fieldOfView
+		self.fastIronSightsLookSpeedMultiplier = self.fastIronSights.lookSpeedMultiplier
+	end
+	if self.defaultIronSights ~= nil then
+		self.defaultIronSightsFieldOfView = self.defaultIronSights.fieldOfView
+		self.defaultIronSightsLookSpeedMultiplier = self.defaultIronSights.lookSpeedMultiplier
+	end
+	
+	self.defaultBase = nil -- this one is broken
+	self.x10_0xZoom = nil
+	self.x10xENVG = nil
+	self.x12_0xZoom = nil
+	self.x1xENVG = nil
+	self.x20xENVG_COOP = nil
+	self.x20xZoom = nil
+	self.x2_0xZoom = nil
+	self.x3_4xZoom = nil
+	self.x4_0xZoom = nil
+	self.x6_0xZoom = nil
+	self.x6xENVG = nil
+	self.x7_0xZoom = nil
+	self.x8_0xZoom = nil
+	self.defaultATSights = nil
+	self.fast_2_0xZoom = nil
+	self.fastIronSights = nil
+	self.defaultIronSights = nil
+	
 	WebUI:ExecuteJS(string.format("closeSmart()"))
 	if self.showLoadingScreenInfo == true then
 		WebUI:ExecuteJS(string.format("showLoadingScreen()"))
@@ -1250,31 +1542,6 @@ end
 -- Region ServerOwner Quick Server Setup
 function BetterIngameAdmin:OnQuickServerSetup()
 	WebUI:ExecuteJS(string.format("quickServerSetup()"))
-end
--- Endregion
-
--- Region things to delete from old unfinshed admin panel
-function BetterIngameAdmin:OnWebUIGetGeneralSettings()
-	NetEvents:Send('GetGeneralSettings')
-end
-
-function BetterIngameAdmin:OnGeneralSettings(args)
-	WebUI:ExecuteJS(string.format("getGeneralSettings(%s)", json.encode(args)))
-end
-function BetterIngameAdmin:OnApplyGeneralSettings(args)
-	NetEvents:Send('ApplyGeneralSettings', json.decode(args))
-end
-
-function BetterIngameAdmin:OnWebUIGetMapSettings()
-	NetEvents:Send('GetMapSettings')
-end
-
-function BetterIngameAdmin:OnMapSettings(args)
-	WebUI:ExecuteJS(string.format("getMapSettings(%s)", json.encode(args)))
-end
-
-function BetterIngameAdmin:OnApplyMapSettings(args)
-	NetEvents:Send('ApplyMapSettings', json.decode(args))
 end
 -- Endregion
 
