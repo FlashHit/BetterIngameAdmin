@@ -3,11 +3,11 @@
 	"Authors": ["Flash_Hit"],
 	"Description": "Provides addition functions for players and admins.",
 	"URL": "none",
-	"Version": "0.1.2",
+	"Version": "0.1.3",
 	"HasWebUI": true,
 	"HasVeniceEXT": true,
 	"Dependencies": {
-       		"veniceext": "^1.0.4",
+        "veniceext": "^1.0.4",
 		"gameAdmin": "^1.0.0"
- 	}
+    }
 }

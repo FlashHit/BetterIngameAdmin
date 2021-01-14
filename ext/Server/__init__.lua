@@ -1,6 +1,7 @@
 class 'BetterIngameAdmin'
 
 function BetterIngameAdmin:__init()
+	self.isLatestVersion = require 'updateCheck'
     print("Initializing BetterIngameAdmin")
     self:RegisterVars()
     self:RegisterCommands()
@@ -383,7 +384,7 @@ function BetterIngameAdmin:OnSurrender(player)
 			self.playersVotedYesCount = self.playersVotedYesCount + 1
 			self.voteInProgress = true
 			ChatManager:SendMessage(player.name .. " started a surrender voting")
-			print("VOTE SURRENDER: Started - Player " .. player.name .. " started a surrender voting for the team " .. player.TeamId)
+			print("VOTE SURRENDER: Started - Player " .. player.name .. " started a surrender voting for the team " .. player.teamId)
 			if self.playerStartedVoteCounter[player.name] == self.maxVotingStartsPerPlayer then	
 				NetEvents:SendTo('HideVoteButtons', player)
 			end
@@ -532,7 +533,7 @@ function BetterIngameAdmin:OnGameAdminClear()
 	for adminName,abilitities in pairs(self.adminList) do
 		local admin = PlayerManager:GetPlayerByName(adminName)
 		if admin ~= nil then
-			NetEvents:SendTo('AdminPlayer', player)
+			NetEvents:SendTo('AdminPlayer', admin)
 		end
 	end
 	self.adminList = {}

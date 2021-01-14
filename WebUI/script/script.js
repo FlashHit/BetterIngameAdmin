@@ -32,6 +32,13 @@ place3 = 0;
 place4 = 0;
 /* Endregion */
 
+/* Region Votings */
+novotes = 0;
+yesvotes = 0;
+secondsLeft = 0;
+isVoteInProgress = false;
+/* Endregion */
+
 /* Region SquadCount */
 const squadCount = [];
 maxSquadSize = 4;
@@ -48,7 +55,6 @@ localPing = "–";
 /* Region Client Settings */
 toggleScoreboard = false;
 showHideVotings = true;
-isVoteInProgress = false;
 showPing = false;
 /* Endregion */
 
@@ -267,35 +273,45 @@ function startsurrender()
 function voteYes()
 {
 	yesvotes += 1;
-	document.getElementById("countyesvotes").innerHTML = ''+yesvotes+' Y';
+	if(showHideVotings == true){
+		document.getElementById("countyesvotes").innerHTML = ''+yesvotes+' Y';
+	}
 }
 function voteNo()
 {
 	novotes += 1;
-	document.getElementById("countnovotes").innerHTML = ''+novotes+' N';
+	if(showHideVotings == true){
+		document.getElementById("countnovotes").innerHTML = ''+novotes+' N';
+	}
 }
 
 function removeOneYesVote()
 {
 	yesvotes -= 1;
-	document.getElementById("countyesvotes").innerHTML = ''+yesvotes+' Y';
+	if(showHideVotings == true){
+		document.getElementById("countyesvotes").innerHTML = ''+yesvotes+' Y';
+	}
 }
 
 function removeOneNoVote()
 {
 	novotes -= 1;
-	document.getElementById("countnovotes").innerHTML = ''+novotes+' N';
+	if(showHideVotings == true){
+		document.getElementById("countnovotes").innerHTML = ''+novotes+' N';
+	}
 }
 function updateTimer()
 {
 	secondsLeft = secondsLeft - 1;
-	document.getElementById("votetitleright").innerHTML = '<p>'+secondsLeft+' sec</p>';
-	if(secondsLeft == 0) {
-		isVoteInProgress = false
-		document.getElementById("votepopup").style.display = "none";
-		document.getElementById("voteyes").style.fontWeight = null;
-		document.getElementById("voteno").style.fontWeight = null;
-		document.getElementById("votetitleleft").style.width = null;
+	if(showHideVotings == true){
+		document.getElementById("votetitleright").innerHTML = '<p>'+secondsLeft+' sec</p>';
+		if(secondsLeft == 0) {
+			isVoteInProgress = false
+			document.getElementById("votepopup").style.display = "none";
+			document.getElementById("voteyes").style.fontWeight = null;
+			document.getElementById("voteno").style.fontWeight = null;
+			document.getElementById("votetitleleft").style.width = null;
+		}
 	}
 }
 function fontWeightYes() {
@@ -981,6 +997,7 @@ function getServerInfo(args) {
 		document.getElementById("frequencyMode").innerHTML = '<p>120 Hz</p>';
 	}
 	document.getElementById("squadSize").innerHTML = '<p>'+args[42]+'</p>';
+	maxSquadSize = args[42];
 	document.getElementById("customPresetSquadSize").innerHTML = args[42];
 	if(args[42] != 4){
 		varsPresetNormal = false;
