@@ -49,6 +49,7 @@ end
 function BetterIngameAdmin:OnLevelLoaded(levelName, gameMode, round, roundsPerMap)
 	self.m_GeneralSettings:OnLevelLoaded(levelName, gameMode, round, roundsPerMap)
 	self.m_ModSettings:OnLevelLoaded(levelName, gameMode, round, roundsPerMap)
+	self.m_LoadingScreen:OnLevelLoaded(levelName, gameMode, round, roundsPerMap)
 end
 
 function BetterIngameAdmin:OnLevelDestroy()
