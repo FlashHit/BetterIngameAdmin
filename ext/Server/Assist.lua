@@ -1,17 +1,17 @@
 class 'Assist'
 
-function Assist:__init(p_ModSettings)
-    self.m_ModSettings = p_ModSettings
+local m_ModSettings = require('ModSettings')
 
-	self.queueAssistList1 = {}
-	self.queueAssistList2 = {}
-	self.queueAssistList3 = {}
-    self.queueAssistList4 = {}
-    
-    -- Region Player Assist enemy team
+function Assist:__init()
+	self.m_QueueAssistList1 = {}
+	self.m_QueueAssistList2 = {}
+	self.m_QueueAssistList3 = {}
+	self.m_QueueAssistList4 = {}
+
+	-- Region Player Assist enemy team
 	NetEvents:Subscribe('AssistEnemyTeam', self, self.OnAssistEnemyTeam)
 	NetEvents:Subscribe('CancelAssistEnemyTeam', self, self.OnCancelAssistEnemyTeam)
-	
+
 	-- self:OnQueueAssistEnemyTeam(player)
 	-- self:CheckQueueAssist()
 	-- self:AssistTarget(player, isInQueueList)
@@ -19,672 +19,676 @@ function Assist:__init(p_ModSettings)
 end
 
 function Assist:OnAuthenticated(p_Player)
-	if self.m_ModSettings.enableAssistFunction == true then
+	if m_ModSettings:GetEnableAssistFunction() then
 		self:CheckQueueAssist()
 	end
 end
 
-function Assist:OnAssistEnemyTeam(player)
+function Assist:OnAssistEnemyTeam(p_Player)
 	--print("ASSIST - Player " .. player.name .. " want to assist the enemy team.")
-	if self.m_ModSettings.enableAssistFunction == true then
-		self:AssistTarget(player, 0)
+	if m_ModSettings:GetEnableAssistFunction() then
+		self:AssistTarget(p_Player, 0)
 	else
-		local messages = {}
-		messages[1] = "Assist Deactivated."
-		messages[2] = "Sorry, we couldn't switch you. The assist function is currently deactivated."
-		NetEvents:SendTo('PopupResponse', player, messages)
+		local s_Messages = {}
+		s_Messages[1] = "Assist Deactivated."
+		s_Messages[2] = "Sorry, we couldn't switch you. The assist function is currently deactivated."
+		NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
 	end
 end
 
-function Assist:OnQueueAssistEnemyTeam(player)
-	local messages = {}
-	messages[1] = "Assist Queue."
-	messages[2] = "Sorry, we couldn't switch you. We will switch you when it is possible. You are now in the Assist Queue."
-	NetEvents:SendTo('PopupResponse', player, messages)
-	print("ASSIST - QUEUE - Player " .. player.name .. " is now in the assist queue.")
-	
-	if player.teamId == TeamId.Team1 then
-		table.insert(self.queueAssistList1, player.name)
-	elseif player.teamId == TeamId.Team2 then
-		table.insert(self.queueAssistList2, player.name)
-	elseif player.teamId == TeamId.Team3 then
-		table.insert(self.queueAssistList3, player.name)
+function Assist:OnQueueAssistEnemyTeam(p_Player)
+	local s_Messages = {}
+	s_Messages[1] = "Assist Queue."
+	s_Messages[2] = "Sorry, we couldn't switch you. We will switch you when it is possible. You are now in the Assist Queue."
+	NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+	print("ASSIST - QUEUE - Player " .. p_Player.name .. " is now in the assist queue.")
+
+	if p_Player.teamId == TeamId.Team1 then
+		table.insert(self.m_QueueAssistList1, p_Player.name)
+	elseif p_Player.teamId == TeamId.Team2 then
+		table.insert(self.m_QueueAssistList2, p_Player.name)
+	elseif p_Player.teamId == TeamId.Team3 then
+		table.insert(self.m_QueueAssistList3, p_Player.name)
 	else
-		table.insert(self.queueAssistList4, player.name)
+		table.insert(self.m_QueueAssistList4, p_Player.name)
 	end
 end
 
 function Assist:OnPlayerLeft(p_Player)
-	if self.m_ModSettings.enableAssistFunction == true then
+	if m_ModSettings:GetEnableAssistFunction() then
 		self:CheckQueueAssist()
 	end
 end
 
 function Assist:CheckQueueAssist()
 	::continue1::
-	if self.queueAssistList1[1] ~= nil then
-		local player = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
-		if player == nil then
-			table.remove(self.queueAssistList1, 1)
+	if self.m_QueueAssistList1[1] ~= nil then
+		local s_Player = PlayerManager:GetPlayerByName(self.m_QueueAssistList1[1])
+		if s_Player == nil then
+			table.remove(self.m_QueueAssistList1, 1)
 			goto continue1
 		end
-		self:AssistTarget(player, 1)
+		self:AssistTarget(s_Player, 1)
 	end
 	::continue2::
-	if self.queueAssistList2[1] ~= nil then
-		local player = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
-		if player == nil then
-			table.remove(self.queueAssistList2, 1)
+	if self.m_QueueAssistList2[1] ~= nil then
+		local s_Player = PlayerManager:GetPlayerByName(self.m_QueueAssistList2[1])
+		if s_Player == nil then
+			table.remove(self.m_QueueAssistList2, 1)
 			goto continue2
 		end
-		self:AssistTarget(player, 2)
+		self:AssistTarget(s_Player, 2)
 	end
 	::continue3::
-	if self.queueAssistList3[1] ~= nil then
-		local player = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
-		if player == nil then
-			table.remove(self.queueAssistList3, 1)
+	if self.m_QueueAssistList3[1] ~= nil then
+		local s_Player = PlayerManager:GetPlayerByName(self.m_QueueAssistList3[1])
+		if s_Player == nil then
+			table.remove(self.m_QueueAssistList3, 1)
 			goto continue3
 		end
-		self:AssistTarget(player, 3)
+		self:AssistTarget(s_Player, 3)
 	end
 	::continue4::
-	if self.queueAssistList4[1] ~= nil then
-		local player = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
-		if player == nil then
-			table.remove(self.queueAssistList4, 1)
+	if self.m_QueueAssistList4[1] ~= nil then
+		local s_Player = PlayerManager:GetPlayerByName(self.m_QueueAssistList4[1])
+		if s_Player == nil then
+			table.remove(self.m_QueueAssistList4, 1)
 			goto continue4
 		end
-		self:AssistTarget(player, 4)
+		self:AssistTarget(s_Player, 4)
 	end
 end
 
-function Assist:AssistTarget(player, isInQueueList)
-	local currentTeamCount = 0
-	local enemyTeamCount = 0
-	local currentTeamTickets = 0
-	local enemyTeamTickets = 0
-	local enemyTeam1Count = 0
-	local enemyTeam2Count = 0
-	local enemyTeam3Count = 0
-	local enemyTeam1Tickets = 0
-	local enemyTeam2Tickets = 0
-	local enemyTeam3Tickets = 0
-	local currentTeam = 0
-	local enemyTeam1 = 0
-	local enemyTeam2 = 0
-	local enemyTeam3 = 0
-	local gameMode = SharedUtils:GetCurrentGameMode()
-	if gameMode ~= "SquadDeathMatch0" then		
-		if player.teamId == TeamId.Team1 then
-			currentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
-			enemyTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
-			currentTeamTickets = TicketManager:GetTicketCount(TeamId.Team1)
-			enemyTeamTickets = TicketManager:GetTicketCount(TeamId.Team2)
+function Assist:AssistTarget(p_Player, p_IsInQueueList)
+	local s_CurrentTeamCount = 0
+	local s_EnemyTeamCount = 0
+	local s_CurrentTeamTickets = 0
+	local s_EnemyTeamTickets = 0
+	local s_EnemyTeam1Count = 0
+	local s_EnemyTeam2Count = 0
+	local s_EnemyTeam3Count = 0
+	local s_EnemyTeam1Tickets = 0
+	local s_EnemyTeam2Tickets = 0
+	local s_EnemyTeam3Tickets = 0
+	local s_CurrentTeam = 0
+	local s_EnemyTeam1 = 0
+	local s_EnemyTeam2 = 0
+	local s_EnemyTeam3 = 0
+	local s_GameMode = SharedUtils:GetCurrentGameMode()
+	if s_GameMode ~= "SquadDeathMatch0" then
+		if p_Player.teamId == TeamId.Team1 then
+			s_CurrentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
+			s_EnemyTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
+			s_CurrentTeamTickets = TicketManager:GetTicketCount(TeamId.Team1)
+			s_EnemyTeamTickets = TicketManager:GetTicketCount(TeamId.Team2)
 		else
-			currentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
-			enemyTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
-			currentTeamTickets = TicketManager:GetTicketCount(TeamId.Team2)
-			enemyTeamTickets = TicketManager:GetTicketCount(TeamId.Team1)
+			s_CurrentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
+			s_EnemyTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
+			s_CurrentTeamTickets = TicketManager:GetTicketCount(TeamId.Team2)
+			s_EnemyTeamTickets = TicketManager:GetTicketCount(TeamId.Team1)
 		end
-		if currentTeamCount > (enemyTeamCount + 1) or (currentTeamTickets >= enemyTeamTickets and currentTeamCount > (enemyTeamCount - 2)) then
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+		if s_CurrentTeamCount > (s_EnemyTeamCount + 1) or (s_CurrentTeamTickets >= s_EnemyTeamTickets and s_CurrentTeamCount > (s_EnemyTeamCount - 2)) then
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			if player.teamId == TeamId.Team1 then
-				player.teamId = TeamId.Team2
+			if p_Player.teamId == TeamId.Team1 then
+				p_Player.teamId = TeamId.Team2
 			else
-				player.teamId = TeamId.Team1
+				p_Player.teamId = TeamId.Team1
 			end
-			if isInQueueList == 1 then
-				table.remove(self.queueAssistList1, 1)
-			elseif isInQueueList == 2 then
-				table.remove(self.queueAssistList2, 1)
+			if p_IsInQueueList == 1 then
+				table.remove(self.m_QueueAssistList1, 1)
+			elseif p_IsInQueueList == 2 then
+				table.remove(self.m_QueueAssistList2, 1)
 			end
-			local messages = {}
-			messages[1] = "Assist Enemy Team."
-			messages[2] = "You have been switched because of your assist request."
-			NetEvents:SendTo('PopupResponse', player, messages)
-			print("ASSIST - MOVE - Player " .. player.name .. " is now helping the enemy team " .. player.teamId .. ".")
+			local s_Messages = {}
+			s_Messages[1] = "Assist Enemy Team."
+			s_Messages[2] = "You have been switched because of your assist request."
+			NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+			print("ASSIST - MOVE - Player " .. p_Player.name .. " is now helping the enemy team " .. p_Player.teamId .. ".")
 		else
-			if isInQueueList == 0 then
-				self:QuickSwitch(player)
+			if p_IsInQueueList == 0 then
+				self:QuickSwitch(p_Player)
 			end
 		end
 	else
-		if player.teamId == TeamId.Team1 then
-			currentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
-			enemyTeam1Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
-			enemyTeam2Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team3)
-			enemyTeam3Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team4)
-			currentTeamTickets = TicketManager:GetTicketCount(TeamId.Team1)
-			enemyTeam1Tickets = TicketManager:GetTicketCount(TeamId.Team2)
-			enemyTeam2Tickets = TicketManager:GetTicketCount(TeamId.Team3)
-			enemyTeam3Tickets = TicketManager:GetTicketCount(TeamId.Team4)
-			currentTeam = TeamId.Team1
-			enemyTeam1 = TeamId.Team2
-			enemyTeam2 = TeamId.Team3
-			enemyTeam3 = TeamId.Team4
-		elseif player.teamId == TeamId.Team2 then
-			currentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
-			enemyTeam1Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
-			enemyTeam2Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team3)
-			enemyTeam3Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team4)
-			currentTeamTickets = TicketManager:GetTicketCount(TeamId.Team2)
-			enemyTeam1Tickets = TicketManager:GetTicketCount(TeamId.Team1)
-			enemyTeam2Tickets = TicketManager:GetTicketCount(TeamId.Team3)
-			enemyTeam3Tickets = TicketManager:GetTicketCount(TeamId.Team4)
-			currentTeam = TeamId.Team2
-			enemyTeam1 = TeamId.Team1
-			enemyTeam2 = TeamId.Team3
-			enemyTeam3 = TeamId.Team4
-		elseif player.teamId == TeamId.Team3 then
-			currentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team3)
-			enemyTeam1Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
-			enemyTeam2Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
-			enemyTeam3Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team4)
-			currentTeamTickets = TicketManager:GetTicketCount(TeamId.Team3)
-			enemyTeam1Tickets = TicketManager:GetTicketCount(TeamId.Team1)
-			enemyTeam2Tickets = TicketManager:GetTicketCount(TeamId.Team2)
-			enemyTeam3Tickets = TicketManager:GetTicketCount(TeamId.Team4)
-			currentTeam = TeamId.Team3
-			enemyTeam1 = TeamId.Team1
-			enemyTeam2 = TeamId.Team2
-			enemyTeam3 = TeamId.Team4
+		if p_Player.teamId == TeamId.Team1 then
+			s_CurrentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
+			s_EnemyTeam1Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
+			s_EnemyTeam2Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team3)
+			s_EnemyTeam3Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team4)
+			s_CurrentTeamTickets = TicketManager:GetTicketCount(TeamId.Team1)
+			s_EnemyTeam1Tickets = TicketManager:GetTicketCount(TeamId.Team2)
+			s_EnemyTeam2Tickets = TicketManager:GetTicketCount(TeamId.Team3)
+			s_EnemyTeam3Tickets = TicketManager:GetTicketCount(TeamId.Team4)
+			s_CurrentTeam = TeamId.Team1
+			s_EnemyTeam1 = TeamId.Team2
+			s_EnemyTeam2 = TeamId.Team3
+			s_EnemyTeam3 = TeamId.Team4
+		elseif p_Player.teamId == TeamId.Team2 then
+			s_CurrentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
+			s_EnemyTeam1Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
+			s_EnemyTeam2Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team3)
+			s_EnemyTeam3Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team4)
+			s_CurrentTeamTickets = TicketManager:GetTicketCount(TeamId.Team2)
+			s_EnemyTeam1Tickets = TicketManager:GetTicketCount(TeamId.Team1)
+			s_EnemyTeam2Tickets = TicketManager:GetTicketCount(TeamId.Team3)
+			s_EnemyTeam3Tickets = TicketManager:GetTicketCount(TeamId.Team4)
+			s_CurrentTeam = TeamId.Team2
+			s_EnemyTeam1 = TeamId.Team1
+			s_EnemyTeam2 = TeamId.Team3
+			s_EnemyTeam3 = TeamId.Team4
+		elseif p_Player.teamId == TeamId.Team3 then
+			s_CurrentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team3)
+			s_EnemyTeam1Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
+			s_EnemyTeam2Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
+			s_EnemyTeam3Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team4)
+			s_CurrentTeamTickets = TicketManager:GetTicketCount(TeamId.Team3)
+			s_EnemyTeam1Tickets = TicketManager:GetTicketCount(TeamId.Team1)
+			s_EnemyTeam2Tickets = TicketManager:GetTicketCount(TeamId.Team2)
+			s_EnemyTeam3Tickets = TicketManager:GetTicketCount(TeamId.Team4)
+			s_CurrentTeam = TeamId.Team3
+			s_EnemyTeam1 = TeamId.Team1
+			s_EnemyTeam2 = TeamId.Team2
+			s_EnemyTeam3 = TeamId.Team4
 		else
-			currentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team4)
-			enemyTeam1Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
-			enemyTeam2Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
-			enemyTeam3Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team3)
-			currentTeamTickets = TicketManager:GetTicketCount(TeamId.Team4)
-			enemyTeam1Tickets = TicketManager:GetTicketCount(TeamId.Team1)
-			enemyTeam2Tickets = TicketManager:GetTicketCount(TeamId.Team2)
-			enemyTeam3Tickets = TicketManager:GetTicketCount(TeamId.Team3)
-			currentTeam = TeamId.Team4
-			enemyTeam1 = TeamId.Team1
-			enemyTeam2 = TeamId.Team2
-			enemyTeam3 = TeamId.Team3
+			s_CurrentTeamCount = TeamSquadManager:GetTeamPlayerCount(TeamId.Team4)
+			s_EnemyTeam1Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team1)
+			s_EnemyTeam2Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team2)
+			s_EnemyTeam3Count = TeamSquadManager:GetTeamPlayerCount(TeamId.Team3)
+			s_CurrentTeamTickets = TicketManager:GetTicketCount(TeamId.Team4)
+			s_EnemyTeam1Tickets = TicketManager:GetTicketCount(TeamId.Team1)
+			s_EnemyTeam2Tickets = TicketManager:GetTicketCount(TeamId.Team2)
+			s_EnemyTeam3Tickets = TicketManager:GetTicketCount(TeamId.Team3)
+			s_CurrentTeam = TeamId.Team4
+			s_EnemyTeam1 = TeamId.Team1
+			s_EnemyTeam2 = TeamId.Team2
+			s_EnemyTeam3 = TeamId.Team3
 		end
-		if currentTeamCount > (enemyTeam1Count + 1) or (currentTeamTickets >= enemyTeam1Tickets and currentTeamCount > (enemyTeam1Count - 2)) then
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+		if s_CurrentTeamCount > (s_EnemyTeam1Count + 1) or (s_CurrentTeamTickets >= s_EnemyTeam1Tickets and s_CurrentTeamCount > (s_EnemyTeam1Count - 2)) then
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			player.teamId = enemyTeam1
-			if isInQueueList == 1 then
-				table.remove(self.queueAssistList1, 1)
-			elseif isInQueueList == 2 then
-				table.remove(self.queueAssistList2, 1)
-			elseif isInQueueList == 3 then
-				table.remove(self.queueAssistList3, 1)
-			elseif isInQueueList == 4 then
-				table.remove(self.queueAssistList4, 1)
+			p_Player.teamId = s_EnemyTeam1
+			if p_IsInQueueList == 1 then
+				table.remove(self.m_QueueAssistList1, 1)
+			elseif p_IsInQueueList == 2 then
+				table.remove(self.m_QueueAssistList2, 1)
+			elseif p_IsInQueueList == 3 then
+				table.remove(self.m_QueueAssistList3, 1)
+			elseif p_IsInQueueList == 4 then
+				table.remove(self.m_QueueAssistList4, 1)
 			end
-			local messages = {}
-			messages[1] = "Assist Enemy Team."
-			messages[2] = "You have been switched because of your assist request."
-			NetEvents:SendTo('PopupResponse', player, messages)
-			print("ASSIST - MOVE - Player " .. player.name .. " is now helping the enemy team " .. player.teamId .. ".")
-		elseif currentTeamCount > (enemyTeam2Count + 1) or (currentTeamTickets >= enemyTeam2Tickets and currentTeamCount > (enemyTeam2Count - 2)) then
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			local s_Messages = {}
+			s_Messages[1] = "Assist Enemy Team."
+			s_Messages[2] = "You have been switched because of your assist request."
+			NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+			print("ASSIST - MOVE - Player " .. p_Player.name .. " is now helping the enemy team " .. p_Player.teamId .. ".")
+		elseif s_CurrentTeamCount > (s_EnemyTeam2Count + 1) or (s_CurrentTeamTickets >= s_EnemyTeam2Tickets and s_CurrentTeamCount > (s_EnemyTeam2Count - 2)) then
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			player.teamId = enemyTeam2
-			if isInQueueList == 1 then
-				table.remove(self.queueAssistList1, 1)
-			elseif isInQueueList == 2 then
-				table.remove(self.queueAssistList2, 1)
-			elseif isInQueueList == 3 then
-				table.remove(self.queueAssistList3, 1)
-			elseif isInQueueList == 4 then
-				table.remove(self.queueAssistList4, 1)
+			p_Player.teamId = s_EnemyTeam2
+			if p_IsInQueueList == 1 then
+				table.remove(self.m_QueueAssistList1, 1)
+			elseif p_IsInQueueList == 2 then
+				table.remove(self.m_QueueAssistList2, 1)
+			elseif p_IsInQueueList == 3 then
+				table.remove(self.m_QueueAssistList3, 1)
+			elseif p_IsInQueueList == 4 then
+				table.remove(self.m_QueueAssistList4, 1)
 			end
-			local messages = {}
-			messages[1] = "Assist Enemy Team."
-			messages[2] = "You have been switched because of your assist request."
-			NetEvents:SendTo('PopupResponse', player, messages)
-			print("ASSIST - MOVE - Player " .. player.name .. " is now helping the enemy team " .. player.teamId .. ".")
-		elseif currentTeamCount > (enemyTeam3Count + 1) or (currentTeamTickets >= enemyTeam3Tickets and currentTeamCount > (enemyTeam3Count - 2)) then
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			local s_Messages = {}
+			s_Messages[1] = "Assist Enemy Team."
+			s_Messages[2] = "You have been switched because of your assist request."
+			NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+			print("ASSIST - MOVE - Player " .. p_Player.name .. " is now helping the enemy team " .. p_Player.teamId .. ".")
+		elseif s_CurrentTeamCount > (s_EnemyTeam3Count + 1) or (s_CurrentTeamTickets >= s_EnemyTeam3Tickets and s_CurrentTeamCount > (s_EnemyTeam3Count - 2)) then
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			player.teamId = enemyTeam3
-			if isInQueueList == 1 then
-				table.remove(self.queueAssistList1, 1)
-			elseif isInQueueList == 2 then
-				table.remove(self.queueAssistList2, 1)
-			elseif isInQueueList == 3 then
-				table.remove(self.queueAssistList3, 1)
-			elseif isInQueueList == 4 then
-				table.remove(self.queueAssistList4, 1)
+			p_Player.teamId = s_EnemyTeam3
+			if p_IsInQueueList == 1 then
+				table.remove(self.m_QueueAssistList1, 1)
+			elseif p_IsInQueueList == 2 then
+				table.remove(self.m_QueueAssistList2, 1)
+			elseif p_IsInQueueList == 3 then
+				table.remove(self.m_QueueAssistList3, 1)
+			elseif p_IsInQueueList == 4 then
+				table.remove(self.m_QueueAssistList4, 1)
 			end
-			local messages = {}
-			messages[1] = "Assist Enemy Team."
-			messages[2] = "You have been switched because of your assist request."
-			NetEvents:SendTo('PopupResponse', player, messages)
-			print("ASSIST - MOVE - Player " .. player.name .. " is now helping the enemy team " .. player.teamId .. ".")
+			local s_Messages = {}
+			s_Messages[1] = "Assist Enemy Team."
+			s_Messages[2] = "You have been switched because of your assist request."
+			NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+			print("ASSIST - MOVE - Player " .. p_Player.name .. " is now helping the enemy team " .. p_Player.teamId .. ".")
 		else
-			if isInQueueList == 0 then
-				self:QuickSwitch(player)
+			if p_IsInQueueList == 0 then
+				self:QuickSwitch(p_Player)
 			end
 		end
 	end
 end
 
-function Assist:QuickSwitch(player)
-	local playerTeamId = player.teamId
-	local listPlayer = nil
-	if player.teamId == TeamId.Team1 then
+function Assist:QuickSwitch(p_Player)
+	local s_PlayerTeamId = p_Player.teamId
+	local s_ListPlayer = nil
+	if p_Player.teamId == TeamId.Team1 then
 		::continue12::
-		if self.queueAssistList2[1] ~= nil then
-			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
-			if listPlayer == nil then
-				table.remove(self.queueAssistList2, 1)
+		if self.m_QueueAssistList2[1] ~= nil then
+			s_ListPlayer = PlayerManager:GetPlayerByName(self.m_QueueAssistList2[1])
+			if s_ListPlayer == nil then
+				table.remove(self.m_QueueAssistList2, 1)
 				goto continue12
 			end
-			if listPlayer.alive == true then
-				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			if s_ListPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {s_ListPlayer.name})
 			end
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			listPlayer.teamId = TeamId.Team1
-			player.teamId = TeamId.Team2
-			table.remove(self.queueAssistList2, 1)
+			s_ListPlayer.teamId = TeamId.Team1
+			p_Player.teamId = TeamId.Team2
+			table.remove(self.m_QueueAssistList2, 1)
 		end
 		::continue13::
-		if self.queueAssistList3[1] ~= nil then
-			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
-			if listPlayer == nil then
-				table.remove(self.queueAssistList3, 1)
+		if self.m_QueueAssistList3[1] ~= nil then
+			s_ListPlayer = PlayerManager:GetPlayerByName(self.m_QueueAssistList3[1])
+			if s_ListPlayer == nil then
+				table.remove(self.m_QueueAssistList3, 1)
 				goto continue13
 			end
-			if listPlayer.alive == true then
-				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			if s_ListPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {s_ListPlayer.name})
 			end
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			listPlayer.teamId = TeamId.Team1
-			player.teamId = TeamId.Team3
-			table.remove(self.queueAssistList3, 1)
+			s_ListPlayer.teamId = TeamId.Team1
+			p_Player.teamId = TeamId.Team3
+			table.remove(self.m_QueueAssistList3, 1)
 		end
 		::continue14::
-		if self.queueAssistList4[1] ~= nil then
-			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
-			if listPlayer == nil then
-				table.remove(self.queueAssistList4, 1)
+		if self.m_QueueAssistList4[1] ~= nil then
+			s_ListPlayer = PlayerManager:GetPlayerByName(self.m_QueueAssistList4[1])
+			if s_ListPlayer == nil then
+				table.remove(self.m_QueueAssistList4, 1)
 				goto continue14
 			end
-			if listPlayer.alive == true then
-				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			if s_ListPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {s_ListPlayer.name})
 			end
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			listPlayer.teamId = TeamId.Team1
-			player.teamId = TeamId.Team4
-			table.remove(self.queueAssistList4, 1)
+			s_ListPlayer.teamId = TeamId.Team1
+			p_Player.teamId = TeamId.Team4
+			table.remove(self.m_QueueAssistList4, 1)
 		end
-	elseif player.teamId == TeamId.Team2 then
+	elseif p_Player.teamId == TeamId.Team2 then
 		::continue21::
-		if self.queueAssistList1[1] ~= nil then
-			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
-			if listPlayer == nil then
-				table.remove(self.queueAssistList1, 1)
+		if self.m_QueueAssistList1[1] ~= nil then
+			s_ListPlayer = PlayerManager:GetPlayerByName(self.m_QueueAssistList1[1])
+			if s_ListPlayer == nil then
+				table.remove(self.m_QueueAssistList1, 1)
 				goto continue21
 			end
-			if listPlayer.alive == true then
-				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			if s_ListPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {s_ListPlayer.name})
 			end
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			listPlayer.teamId = TeamId.Team2
-			player.teamId = TeamId.Team1
-			table.remove(self.queueAssistList1, 1)
+			s_ListPlayer.teamId = TeamId.Team2
+			p_Player.teamId = TeamId.Team1
+			table.remove(self.m_QueueAssistList1, 1)
 		end
 		::continue23::
-		if self.queueAssistList3[1] ~= nil then
-			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
-			if listPlayer == nil then
-				table.remove(self.queueAssistList3, 1)
+		if self.m_QueueAssistList3[1] ~= nil then
+			s_ListPlayer = PlayerManager:GetPlayerByName(self.m_QueueAssistList3[1])
+			if s_ListPlayer == nil then
+				table.remove(self.m_QueueAssistList3, 1)
 				goto continue23
 			end
-			if listPlayer.alive == true then
-				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			if s_ListPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {s_ListPlayer.name})
 			end
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			listPlayer.teamId = TeamId.Team2
-			player.teamId = TeamId.Team3
-			table.remove(self.queueAssistList3, 1)
+			s_ListPlayer.teamId = TeamId.Team2
+			p_Player.teamId = TeamId.Team3
+			table.remove(self.m_QueueAssistList3, 1)
 		end
 		::continue24::
-		if self.queueAssistList4[1] ~= nil then
-			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
-			if listPlayer == nil then
-				table.remove(self.queueAssistList4, 1)
+		if self.m_QueueAssistList4[1] ~= nil then
+			s_ListPlayer = PlayerManager:GetPlayerByName(self.m_QueueAssistList4[1])
+			if s_ListPlayer == nil then
+				table.remove(self.m_QueueAssistList4, 1)
 				goto continue24
 			end
-			if listPlayer.alive == true then
-				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			if s_ListPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {s_ListPlayer.name})
 			end
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			listPlayer.teamId = TeamId.Team2
-			player.teamId = TeamId.Team4
-			table.remove(self.queueAssistList4, 1)
+			s_ListPlayer.teamId = TeamId.Team2
+			p_Player.teamId = TeamId.Team4
+			table.remove(self.m_QueueAssistList4, 1)
 		end
-	elseif player.teamId == TeamId.Team3 then
+	elseif p_Player.teamId == TeamId.Team3 then
 		::continue31::
-		if self.queueAssistList1[1] ~= nil then
-			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
-			if listPlayer == nil then
-				table.remove(self.queueAssistList1, 1)
+		if self.m_QueueAssistList1[1] ~= nil then
+			s_ListPlayer = PlayerManager:GetPlayerByName(self.m_QueueAssistList1[1])
+			if s_ListPlayer == nil then
+				table.remove(self.m_QueueAssistList1, 1)
 				goto continue31
 			end
-			if listPlayer.alive == true then
-				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			if s_ListPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {s_ListPlayer.name})
 			end
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			listPlayer.teamId = TeamId.Team3
-			player.teamId = TeamId.Team1
-			table.remove(self.queueAssistList1, 1)
+			s_ListPlayer.teamId = TeamId.Team3
+			p_Player.teamId = TeamId.Team1
+			table.remove(self.m_QueueAssistList1, 1)
 		end
 		::continue32::
-		if self.queueAssistList2[1] ~= nil then
-			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
-			if listPlayer == nil then
-				table.remove(self.queueAssistList2, 1)
+		if self.m_QueueAssistList2[1] ~= nil then
+			s_ListPlayer = PlayerManager:GetPlayerByName(self.m_QueueAssistList2[1])
+			if s_ListPlayer == nil then
+				table.remove(self.m_QueueAssistList2, 1)
 				goto continue32
 			end
-			if listPlayer.alive == true then
-				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			if s_ListPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {s_ListPlayer.name})
 			end
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			listPlayer.teamId = TeamId.Team3
-			player.teamId = TeamId.Team2
-			table.remove(self.queueAssistList2, 1)
+			s_ListPlayer.teamId = TeamId.Team3
+			p_Player.teamId = TeamId.Team2
+			table.remove(self.m_QueueAssistList2, 1)
 		end
 		::continue34::
-		if self.queueAssistList4[1] ~= nil then
-			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList4[1])
-			if listPlayer == nil then
-				table.remove(self.queueAssistList4, 1)
+		if self.m_QueueAssistList4[1] ~= nil then
+			s_ListPlayer = PlayerManager:GetPlayerByName(self.m_QueueAssistList4[1])
+			if s_ListPlayer == nil then
+				table.remove(self.m_QueueAssistList4, 1)
 				goto continue34
 			end
-			if listPlayer.alive == true then
-				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			if s_ListPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {s_ListPlayer.name})
 			end
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			listPlayer.teamId = TeamId.Team3
-			player.teamId = TeamId.Team4
-			table.remove(self.queueAssistList4, 1)
+			s_ListPlayer.teamId = TeamId.Team3
+			p_Player.teamId = TeamId.Team4
+			table.remove(self.m_QueueAssistList4, 1)
 		end
 	else
 		::continue41::
-		if self.queueAssistList1[1] ~= nil then
-			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList1[1])
-			if listPlayer == nil then
-				table.remove(self.queueAssistList1, 1)
+		if self.m_QueueAssistList1[1] ~= nil then
+			s_ListPlayer = PlayerManager:GetPlayerByName(self.m_QueueAssistList1[1])
+			if s_ListPlayer == nil then
+				table.remove(self.m_QueueAssistList1, 1)
 				goto continue41
 			end
-			if listPlayer.alive == true then
-				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			if s_ListPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {s_ListPlayer.name})
 			end
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			listPlayer.teamId = TeamId.Team4
-			player.teamId = TeamId.Team1
-			table.remove(self.queueAssistList1, 1)
+			s_ListPlayer.teamId = TeamId.Team4
+			p_Player.teamId = TeamId.Team1
+			table.remove(self.m_QueueAssistList1, 1)
 		end
 		::continue42::
-		if self.queueAssistList2[1] ~= nil then
-			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList2[1])
-			if listPlayer == nil then
-				table.remove(self.queueAssistList2, 1)
+		if self.m_QueueAssistList2[1] ~= nil then
+			s_ListPlayer = PlayerManager:GetPlayerByName(self.m_QueueAssistList2[1])
+			if s_ListPlayer == nil then
+				table.remove(self.m_QueueAssistList2, 1)
 				goto continue42
 			end
-			if listPlayer.alive == true then
-				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			if s_ListPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {s_ListPlayer.name})
 			end
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			listPlayer.teamId = TeamId.Team4
-			player.teamId = TeamId.Team2
-			table.remove(self.queueAssistList2, 1)
+			s_ListPlayer.teamId = TeamId.Team4
+			p_Player.teamId = TeamId.Team2
+			table.remove(self.m_QueueAssistList2, 1)
 		end
 		::continue43::
-		if self.queueAssistList3[1] ~= nil then
-			listPlayer = PlayerManager:GetPlayerByName(self.queueAssistList3[1])
-			if listPlayer == nil then
-				table.remove(self.queueAssistList3, 1)
+		if self.m_QueueAssistList3[1] ~= nil then
+			s_ListPlayer = PlayerManager:GetPlayerByName(self.m_QueueAssistList3[1])
+			if s_ListPlayer == nil then
+				table.remove(self.m_QueueAssistList3, 1)
 				goto continue43
 			end
-			if listPlayer.alive == true then
-				RCON:SendCommand('admin.killPlayer', {listPlayer.name})
+			if s_ListPlayer.alive == true then
+				RCON:SendCommand('admin.killPlayer', {s_ListPlayer.name})
 			end
-			if player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {player.name})
+			if p_Player.alive == true then
+				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
-			listPlayer.teamId = TeamId.Team4
-			player.teamId = TeamId.Team3
-			table.remove(self.queueAssistList3, 1)
+			s_ListPlayer.teamId = TeamId.Team4
+			p_Player.teamId = TeamId.Team3
+			table.remove(self.m_QueueAssistList3, 1)
 		end
 	end
-	if playerTeamId == player.teamId then
-		self:OnQueueAssistEnemyTeam(player)
+	if s_PlayerTeamId == p_Player.teamId then
+		self:OnQueueAssistEnemyTeam(p_Player)
 	else
-		local messages = {}
-		messages[1] = "Assist Enemy Team."
-		messages[2] = "You have been switched because of your assist request."
-		NetEvents:SendTo('PopupResponse', player, messages)
-		print("ASSIST - MOVE - Player " .. player.name .. " is now helping the enemy team " .. player.teamId .. ".")
-		messages = {}
-		messages[1] = "Assist Enemy Team."
-		messages[2] = "You have been switched because of your assist request."
-		NetEvents:SendTo('PopupResponse', listPlayer, messages)	
-		print("ASSIST - MOVE - Player " .. listPlayer.name .. " is now helping the enemy team " .. listPlayer.teamId .. ".")
+		local s_Messages = {}
+		s_Messages[1] = "Assist Enemy Team."
+		s_Messages[2] = "You have been switched because of your assist request."
+		NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+		print("ASSIST - MOVE - Player " .. p_Player.name .. " is now helping the enemy team " .. p_Player.teamId .. ".")
+		s_Messages = {}
+		s_Messages[1] = "Assist Enemy Team."
+		s_Messages[2] = "You have been switched because of your assist request."
+		NetEvents:SendTo('PopupResponse', s_ListPlayer, s_Messages)
+		print("ASSIST - MOVE - Player " .. s_ListPlayer.name .. " is now helping the enemy team " .. s_ListPlayer.teamId .. ".")
 	end
 end
 
-function Assist:OnCancelAssistEnemyTeam(player)
-	if player.teamId == 1 then
-		for i,listPlayerName in pairs(self.queueAssistList1) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList1, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
+function Assist:OnCancelAssistEnemyTeam(p_Player)
+	if p_Player.teamId == 1 then
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList1) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList1, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
-		for i,listPlayerName in pairs(self.queueAssistList2) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList2, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList2) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList2, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
-		for i,listPlayerName in pairs(self.queueAssistList3) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList3, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList3) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList3, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
-		for i,listPlayerName in pairs(self.queueAssistList4) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList4, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
-				return
-			end
-		end
-		-- Error you are in no queue
-	elseif player.teamId == 2 then
-		for i,listPlayerName in pairs(self.queueAssistList2) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList2, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
-				return
-			end
-		end
-		for i,listPlayerName in pairs(self.queueAssistList1) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList1, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
-				return
-			end
-		end
-		for i,listPlayerName in pairs(self.queueAssistList3) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList3, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
-				return
-			end
-		end
-		for i,listPlayerName in pairs(self.queueAssistList4) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList4, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList4) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList4, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
 		-- Error you are in no queue
-	elseif player.teamId == 3 then
-		for i,listPlayerName in pairs(self.queueAssistList3) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList3, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
+	elseif p_Player.teamId == 2 then
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList2) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList2, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
-		for i,listPlayerName in pairs(self.queueAssistList1) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList1, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList1) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList1, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
-		for i,listPlayerName in pairs(self.queueAssistList2) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList2, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList3) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList3, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
-		for i,listPlayerName in pairs(self.queueAssistList4) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList4, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
-				return
-			end
-		end
-		-- Error you are in no queue
-	elseif player.teamId == 4 then
-		for i,listPlayerName in pairs(self.queueAssistList4) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList4, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
-				return
-			end
-		end
-		for i,listPlayerName in pairs(self.queueAssistList1) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList1, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
-				return
-			end
-		end
-		for i,listPlayerName in pairs(self.queueAssistList2) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList2, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
-				return
-			end
-		end
-		for i,listPlayerName in pairs(self.queueAssistList3) do
-			if player.name == listPlayerName then
-				table.remove(self.queueAssistList3, i)
-				local messages = {}
-				messages[1] = "Assist Queue Cancelled."
-				messages[2] = "We removed you from the assist queue."
-				NetEvents:SendTo('PopupResponse', player, messages)
-				print("ASSIST - CANCEL - Player " .. player.name .. " cancelled the assist and was removed from the assist queue.")
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList4) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList4, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
 				return
 			end
 		end
 		-- Error you are in no queue
-		print("ASSIST - CANCEL Error - Player " .. player.name .. " was in no assist queue.")
+	elseif p_Player.teamId == 3 then
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList3) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList3, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
+				return
+			end
+		end
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList1) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList1, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
+				return
+			end
+		end
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList2) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList2, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
+				return
+			end
+		end
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList4) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList4, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
+				return
+			end
+		end
+		-- Error you are in no queue
+	elseif p_Player.teamId == 4 then
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList4) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList4, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
+				return
+			end
+		end
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList1) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList1, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
+				return
+			end
+		end
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList2) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList2, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
+				return
+			end
+		end
+		for i, l_ListPlayerName in pairs(self.m_QueueAssistList3) do
+			if p_Player.name == l_ListPlayerName then
+				table.remove(self.m_QueueAssistList3, i)
+				local s_Messages = {}
+				s_Messages[1] = "Assist Queue Cancelled."
+				s_Messages[2] = "We removed you from the assist queue."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - CANCEL - Player " .. p_Player.name .. " cancelled the assist and was removed from the assist queue.")
+				return
+			end
+		end
+		-- Error you are in no queue
+		print("ASSIST - CANCEL Error - Player " .. p_Player.name .. " was in no assist queue.")
 	end
 end
 
-return Assist
+if g_Assist == nil then
+	g_Assist = Assist()
+end
+
+return g_Assist

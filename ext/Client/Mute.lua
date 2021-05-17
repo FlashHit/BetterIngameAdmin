@@ -1,8 +1,8 @@
 class 'Mute'
 
 function Mute:__init()
-    self.mutedPlayers = {}
-    self.mutedChannels = {}
+	self.m_MutedPlayers = {}
+	self.m_MutedChannels = {}
 
 	Events:Subscribe('WebUI:MutePlayer', self, self.OnWebUIMutePlayer)
 	Events:Subscribe('WebUI:UnmutePlayer', self, self.OnWebUIUnmutePlayer)
@@ -11,61 +11,65 @@ function Mute:__init()
 
 end
 
-function Mute:OnWebUIMutePlayer(playerName)
-	local player = PlayerManager:GetPlayerByName(playerName)
-	local playerAlreadyMuted = false
-	for _,mutedPlayer in pairs(self.mutedPlayers) do
-		if mutedPlayer == player.id then	
-			playerAlreadyMuted = true
+function Mute:OnWebUIMutePlayer(p_PlayerName)
+	local s_Player = PlayerManager:GetPlayerByName(p_PlayerName)
+	local s_PlayerAlreadyMuted = false
+	for _, l_MutedPlayer in pairs(self.m_MutedPlayers) do
+		if l_MutedPlayer == s_Player.id then
+			s_PlayerAlreadyMuted = true
 			return
 		end
 	end
-	if playerAlreadyMuted == false then
-		table.insert(self.mutedPlayers, player.id)
+	if s_PlayerAlreadyMuted == false then
+		table.insert(self.m_MutedPlayers, s_Player.id)
 		WebUI:ExecuteJS(string.format("successPlayerMuted()"))
 	else
 		WebUI:ExecuteJS(string.format("errorPlayerAlreadyMuted()"))
 	end
 end
 
-function Mute:OnWebUIUnmutePlayer(playerName)
-	local player = PlayerManager:GetPlayerByName(playerName)
-	local playerAlreadyMuted = false
-	for i,mutedPlayer in pairs(self.mutedPlayers) do
-		if mutedPlayer == player.id then	
-			playerAlreadyMuted = true
-			table.remove(self.mutedPlayers, i)
+function Mute:OnWebUIUnmutePlayer(p_PlayerName)
+	local s_Player = PlayerManager:GetPlayerByName(p_PlayerName)
+	local s_PlayerAlreadyMuted = false
+	for i, l_MutedPlayer in pairs(self.m_MutedPlayers) do
+		if l_MutedPlayer == s_Player.id then
+			s_PlayerAlreadyMuted = true
+			table.remove(self.m_MutedPlayers, i)
 			return
 		end
 	end
-	if playerAlreadyMuted == true then
+	if s_PlayerAlreadyMuted == true then
 		WebUI:ExecuteJS(string.format("successPlayerUnmuted()"))
 	else
 		WebUI:ExecuteJS(string.format("errorPlayerWasNotMuted()"))
 	end
 end
 
-function Mute:OnWebUIChatChannels(chatChannels)
-	self.mutedChannels = {}
-	if chatChannels ~= nil then
-		chatChannels = json.decode(chatChannels)
-		for i,channel in pairs(chatChannels) do
-			table.insert(self.mutedChannels, tonumber(channel))
+function Mute:OnWebUIChatChannels(p_ChatChannels)
+	self.m_MutedChannels = {}
+	if p_ChatChannels ~= nil then
+		p_ChatChannels = json.decode(p_ChatChannels)
+		for i, l_Channel in pairs(p_ChatChannels) do
+			table.insert(self.m_MutedChannels, tonumber(l_Channel))
 		end
 	end
 end
 
-function Mute:OnCreateChatMessage(hook, message, playerId, recipientMask, channelId, isSenderDead)
-	for _,mutedPlayer in pairs(self.mutedPlayers) do
-		if mutedPlayer == playerId then
-			hook:Return()
+function Mute:OnCreateChatMessage(p_HookCtx, p_Message, p_PlayerId, p_RecipientMask, p_ChannelId, p_IsSenderDead)
+	for _, l_MutedPlayer in pairs(self.m_MutedPlayers) do
+		if l_MutedPlayer == p_PlayerId then
+			p_HookCtx:Return()
 		end
 	end
-	for _,mutedChannel in pairs(self.mutedChannels) do
-		if mutedChannel == channelId then
-			hook:Return()
+	for _, l_MutedChannel in pairs(self.m_MutedChannels) do
+		if l_MutedChannel == p_ChannelId then
+			p_HookCtx:Return()
 		end
 	end
 end
 
-return Mute
+if g_Mute == nil then
+	g_Mute = Mute()
+end
+
+return g_Mute

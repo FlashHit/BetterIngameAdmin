@@ -1,21 +1,21 @@
 class 'LoadingScreen'
 
 function LoadingScreen:__init()
-    self.m_ShowLoadingScreenInfo = true
+	self.m_ShowLoadingScreenInfo = true
 
-    NetEvents:Subscribe('Info', self, self.OnInfo) -- Todo: Rename to ServerBannerInfo or LoadingScreenInfo
+	NetEvents:Subscribe('Info', self, self.OnInfo) -- Todo: Rename to ServerBannerInfo or LoadingScreenInfo
 end
 
 function LoadingScreen:OnExtensionLoaded()
-    if self.m_ShowLoadingScreenInfo == false then
+	if self.m_ShowLoadingScreenInfo == false then
 		WebUI:ExecuteJS("hideLoadingScreen()")
-    end
+	end
 end
 
-function LoadingScreen:OnLevelLoadingInfo(screenInfo)
-    if screenInfo == "Initializing entities for autoloaded sublevels" then
-        WebUI:ExecuteJS("hideLoadingScreen()")
-    end
+function LoadingScreen:OnLevelLoadingInfo(p_ScreenInfo)
+	if p_ScreenInfo == "Initializing entities for autoloaded sublevels" then
+		WebUI:ExecuteJS("hideLoadingScreen()")
+	end
 end
 
 function LoadingScreen:OnInfo(p_Args)
@@ -35,4 +35,8 @@ function LoadingScreen:SetLoadingScreenInfo(p_ShowLoadingScreenInfo)
 	self.m_ShowLoadingScreenInfo = p_ShowLoadingScreenInfo
 end
 
-return LoadingScreen
+if g_LoadingScreen == nil then
+	g_LoadingScreen = LoadingScreen()
+end
+
+return g_LoadingScreen

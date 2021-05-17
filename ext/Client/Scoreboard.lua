@@ -1,442 +1,443 @@
 class 'Scoreboard'
 
 function Scoreboard:__init()
-    self.showEnemyCorpses = true
+	self.m_ShowEnemyCorpses = true
 
-    self.active = false
-    --  Client Setting
-    self.toggleScoreboard = false
+	self.m_Active = false
+	-- Client Setting
+	self.m_ToggleScoreboard = false
 
-    self.ignoreReleaseTab = false
-    self.dontUpdate = false
-    self.updateScoreboardInterval = 2 -- Add to Admin Settings
-    self.cumulatedTimeForScoreboard = 0
-    self.blockTab = false
-    self.isEndOfRound = false
-    self.lastScreenName = ""
-    self.pingTable = {}
+	self.m_IgnoreReleaseTab = false
+	self.m_DontUpdate = false
+	self.m_UpdateScoreboardInterval = 2 -- Add to Admin Settings
+	self.m_CumulatedTimeForScoreboard = 0
+	self.m_BlockTab = false
+	self.m_IsEndOfRound = false
+	self.m_LastScreenName = ""
+	self.m_PingTable = {}
 
-    self.serverInfo = nil
+	self.m_ServerInfo = nil
 
-    self.isSpectator = false
+	self.m_IsSpectator = false
 
 	Events:Subscribe('WebUI:HoldScoreboard', self, self.OnWebUIHoldScoreboard)
 	Events:Subscribe('WebUI:ClickScoreboard', self, self.OnWebUIClickScoreboard)
 	Events:Subscribe('WebUI:IgnoreReleaseTab', self, self.OnWebUIIgnoreReleaseTab)
-    Events:Subscribe('WebUI:ActiveFalse', self, self.OnWebUIActiveFalse)
-    
+	Events:Subscribe('WebUI:ActiveFalse', self, self.OnWebUIActiveFalse)
+
 	NetEvents:Subscribe('ServerInfo', self, self.OnServerInfo)
 	Events:Subscribe('WebUI:GetPlayerCount', self, self.OnGetPlayerCount)
 end
 
 function Scoreboard:ShowEnemyCorpses(p_Enabled)
-	self.showEnemyCorpses = p_Enabled
+	self.m_ShowEnemyCorpses = p_Enabled
 end
 
-function Scoreboard:OnUIInputConceptEvent(hook, eventType, action)
-    if action ~= UIInputAction.UIInputAction_Tab then
-       return 
-    end
-    local player = PlayerManager:GetLocalPlayer()
-    if player == nil or self.isSpectator == true then
-        return
-    end
-    if self.blockTab == false then
-        if eventType == UIInputActionEventType.UIInputActionEventType_Pressed then
-            if self.active == false then
-                self.active = true
-                self:UpdateUI(player)
-            elseif self.active == true then
-                self.active = false
-                self.dontUpdate = false
-                player:EnableInput(11, true)
-                WebUI:ExecuteJS(string.format("clearScoreboardBody()"))
-            end
-        elseif self.toggleScoreboard == false then
-            if self.ignoreReleaseTab == false then
-                self.active = false
-                self.dontUpdate = false
-                player:EnableInput(11, true)
-                WebUI:ExecuteJS(string.format("clearScoreboardBody()"))
-            else
-                self.ignoreReleaseTab = false
-            end
-        end
-    end
-    hook:Pass(UIInputAction.UIInputAction_None, eventType)
+function Scoreboard:OnUIInputConceptEvent(p_HookCtx, p_EventType, p_Action)
+	if p_Action ~= UIInputAction.UIInputAction_Tab then
+		return
+	end
+	local s_Player = PlayerManager:GetLocalPlayer()
+	if s_Player == nil or self.m_IsSpectator == true then
+		return
+	end
+	if self.m_BlockTab == false then
+		if p_EventType == UIInputActionEventType.UIInputActionEventType_Pressed then
+			if self.m_Active == false then
+				self.m_Active = true
+				self:UpdateUI(s_Player)
+			elseif self.m_Active == true then
+				self.m_Active = false
+				self.m_DontUpdate = false
+				s_Player:EnableInput(11, true)
+				WebUI:ExecuteJS(string.format("clearScoreboardBody()"))
+			end
+		elseif self.m_ToggleScoreboard == false then
+			if self.m_IgnoreReleaseTab == false then
+				self.m_Active = false
+				self.m_DontUpdate = false
+				s_Player:EnableInput(11, true)
+				WebUI:ExecuteJS(string.format("clearScoreboardBody()"))
+			else
+				self.m_IgnoreReleaseTab = false
+			end
+		end
+	end
+	p_HookCtx:Pass(UIInputAction.UIInputAction_None, p_EventType)
 end
 
-function Scoreboard:OnEngineUpdate(deltaTime, simulationDeltaTime)
-    if self.active == false then
-        return
-    end
-    if self.updateScoreboardInterval < self.cumulatedTimeForScoreboard and self.dontUpdate == false then
-        local player = PlayerManager:GetLocalPlayer()
-        if player ~= nil then
-            self:UpdateUI(player)
-        end
-        self.cumulatedTimeForScoreboard = 0
-    else
-        self.cumulatedTimeForScoreboard = self.cumulatedTimeForScoreboard + deltaTime
-    end
-    if InputManager:WentMouseButtonDown(InputDeviceMouseButtons.IDB_Button_1) then
-        if self.toggleScoreboard == false then
-            self.ignoreReleaseTab = true
-        end
-        self.dontUpdate = true
-        WebUI:ExecuteJS("showTabsAndEnableMouse()")
-        local localPlayer = PlayerManager:GetLocalPlayer()
-        if localPlayer ~= nil then
-            localPlayer:EnableInput(11, false)
-        end
-    end
+function Scoreboard:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
+	if self.m_Active == false then
+		return
+	end
+	if self.m_UpdateScoreboardInterval < self.m_CumulatedTimeForScoreboard and self.m_DontUpdate == false then
+		local s_Player = PlayerManager:GetLocalPlayer()
+		if s_Player ~= nil then
+			self:UpdateUI(s_Player)
+		end
+		self.m_CumulatedTimeForScoreboard = 0
+	else
+		self.m_CumulatedTimeForScoreboard = self.m_CumulatedTimeForScoreboard + p_DeltaTime
+	end
+	if InputManager:WentMouseButtonDown(InputDeviceMouseButtons.IDB_Button_1) then
+		if self.m_ToggleScoreboard == false then
+			self.m_IgnoreReleaseTab = true
+		end
+		self.m_DontUpdate = true
+		WebUI:ExecuteJS("showTabsAndEnableMouse()")
+		local s_LocalPlayer = PlayerManager:GetLocalPlayer()
+		if s_LocalPlayer ~= nil then
+			s_LocalPlayer:EnableInput(11, false)
+		end
+	end
 end
 
-function Scoreboard:UpdateUI(player)
-	local gameMode = SharedUtils:GetCurrentGameMode()
-    local size = 16
-    local usTickets = " "
-    local ruTickets = " "
-    local charlieTickets = " "
-	local deltaTickets = " "
-	local tickets1
-	local tickets2
-	local tickets3
-	local tickets4
-	local playerListTeam1
-	local playerListTeam2
-	local playerListTeam3
-	local playerListTeam4
-	if gameMode:match("Conquest") or gameMode:match("Superiority") or gameMode == "Domination0" or gameMode == "Scavenger0" then
-        usTickets, ruTickets = self:GetTicketCounterTickets()
-    elseif gameMode:match("Rush") then
-        usTickets, ruTickets = self:GetLifeCounterTickets()	
-	elseif gameMode:match("TeamDeathMatch") or gameMode == "SquadDeathMatch0" then
-        usTickets, ruTickets, charlieTickets, deltaTickets = self:GetKillCounterTickets()		
+function Scoreboard:UpdateUI(p_Player)
+	local s_GameMode = SharedUtils:GetCurrentGameMode()
+	local s_Size = 16
+	local s_UsTickets = " "
+	local s_RuTickets = " "
+	local s_CharlieTickets = " "
+	local s_DeltaTickets = " "
+	local s_Team1
+	local s_Team2
+	local s_Team3
+	local s_Team4
+	local s_Tickets1
+	local s_Tickets2
+	local s_Tickets3
+	local s_Tickets4
+	local s_PlayerListTeam1
+	local s_PlayerListTeam2
+	local s_PlayerListTeam3
+	local s_PlayerListTeam4
+	if s_GameMode:match("Conquest") or s_GameMode:match("Superiority") or s_GameMode == "Domination0" or s_GameMode == "Scavenger0" then
+		s_UsTickets, s_RuTickets = self:GetTicketCounterTickets()
+	elseif s_GameMode:match("Rush") then
+		s_UsTickets, s_RuTickets = self:GetLifeCounterTickets()
+	elseif s_GameMode:match("TeamDeathMatch") or s_GameMode == "SquadDeathMatch0" then
+		s_UsTickets, s_RuTickets, s_CharlieTickets, s_DeltaTickets = self:GetKillCounterTickets()
 	-- elseif gameMode == "CaptureTheFlag0" or gameMode == "GunMaster0" then
 	end
-	if gameMode ~= "SquadDeathMatch0" then
-		size = 16
-		if player.teamId == TeamId.Team1 then
-			team1 = "US"
-			team2 = "RU"
-			tickets1 = tostring(usTickets)
-			tickets2 = tostring(ruTickets)
-			playerListTeam1 = PlayerManager:GetPlayersByTeam(TeamId.Team1)
-			playerListTeam2 = PlayerManager:GetPlayersByTeam(TeamId.Team2)
+	if s_GameMode ~= "SquadDeathMatch0" then
+		s_Size = 16
+		if p_Player.teamId == TeamId.Team1 then
+			s_Team1 = "US"
+			s_Team2 = "RU"
+			s_Tickets1 = tostring(s_UsTickets)
+			s_Tickets2 = tostring(s_RuTickets)
+			s_PlayerListTeam1 = PlayerManager:GetPlayersByTeam(TeamId.Team1)
+			s_PlayerListTeam2 = PlayerManager:GetPlayersByTeam(TeamId.Team2)
 		else
-			team1 = "RU"
-			team2 = "US"
-			tickets1 = tostring(ruTickets)
-			tickets2 = tostring(usTickets)
-			playerListTeam1 = PlayerManager:GetPlayersByTeam(TeamId.Team2)
-			playerListTeam2 = PlayerManager:GetPlayersByTeam(TeamId.Team1)
+			s_Team1 = "RU"
+			s_Team2 = "US"
+			s_Tickets1 = tostring(s_RuTickets)
+			s_Tickets2 = tostring(s_UsTickets)
+			s_PlayerListTeam1 = PlayerManager:GetPlayersByTeam(TeamId.Team2)
+			s_PlayerListTeam2 = PlayerManager:GetPlayersByTeam(TeamId.Team1)
 		end
 	else
-		size = 8
-		if player.teamId == TeamId.Team1 then
-			team1 = "Alpha"
-			team2 = "Bravo"
-			team3 = "Charlie"
-			team4 = "Delta"
-			tickets1 = tostring(usTickets)
-			tickets2 = tostring(ruTickets)
-			tickets3 = tostring(charlieTickets)
-			tickets4 = tostring(deltaTickets)
-			playerListTeam1 = PlayerManager:GetPlayersByTeam(TeamId.Team1)
-			playerListTeam2 = PlayerManager:GetPlayersByTeam(TeamId.Team2)
-			playerListTeam3 = PlayerManager:GetPlayersByTeam(TeamId.Team3)
-			playerListTeam4 = PlayerManager:GetPlayersByTeam(TeamId.Team4)
-		elseif player.teamId == TeamId.Team2 then
-			team2 = "Alpha"
-			team1 = "Bravo"
-			team3 = "Charlie"
-			team4 = "Delta"
-			tickets2 = tostring(usTickets)
-			tickets1 = tostring(ruTickets)
-			tickets3 = tostring(charlieTickets)
-			tickets4 = tostring(deltaTickets)
-			playerListTeam2 = PlayerManager:GetPlayersByTeam(TeamId.Team1)
-			playerListTeam1 = PlayerManager:GetPlayersByTeam(TeamId.Team2)
-			playerListTeam3 = PlayerManager:GetPlayersByTeam(TeamId.Team3)
-			playerListTeam4 = PlayerManager:GetPlayersByTeam(TeamId.Team4)
-		elseif player.teamId == TeamId.Team3 then
-			team2 = "Alpha"
-			team3 = "Bravo"
-			team1 = "Charlie"
-			team4 = "Delta"
-			tickets2 = tostring(usTickets)
-			tickets3 = tostring(ruTickets)
-			tickets1 = tostring(charlieTickets)
-			tickets4 = tostring(deltaTickets)
-			playerListTeam2 = PlayerManager:GetPlayersByTeam(TeamId.Team1)
-			playerListTeam3 = PlayerManager:GetPlayersByTeam(TeamId.Team2)
-			playerListTeam1 = PlayerManager:GetPlayersByTeam(TeamId.Team3)
-			playerListTeam4 = PlayerManager:GetPlayersByTeam(TeamId.Team4)
-		elseif player.teamId == TeamId.Team4 then
-			team2 = "Alpha"
-			team3 = "Bravo"
-			team4 = "Charlie"
-			team1 = "Delta"
-			tickets2 = tostring(usTickets)
-			tickets3 = tostring(ruTickets)
-			tickets4 = tostring(charlieTickets)
-			tickets1 = tostring(deltaTickets)
-			playerListTeam2 = PlayerManager:GetPlayersByTeam(TeamId.Team1)
-			playerListTeam3 = PlayerManager:GetPlayersByTeam(TeamId.Team2)
-			playerListTeam4 = PlayerManager:GetPlayersByTeam(TeamId.Team3)
-			playerListTeam1 = PlayerManager:GetPlayersByTeam(TeamId.Team4)
+		s_Size = 8
+		if p_Player.teamId == TeamId.Team1 then
+			s_Team1 = "Alpha"
+			s_Team2 = "Bravo"
+			s_Team3 = "Charlie"
+			s_Team4 = "Delta"
+			s_Tickets1 = tostring(s_UsTickets)
+			s_Tickets2 = tostring(s_RuTickets)
+			s_Tickets3 = tostring(s_CharlieTickets)
+			s_Tickets4 = tostring(s_DeltaTickets)
+			s_PlayerListTeam1 = PlayerManager:GetPlayersByTeam(TeamId.Team1)
+			s_PlayerListTeam2 = PlayerManager:GetPlayersByTeam(TeamId.Team2)
+			s_PlayerListTeam3 = PlayerManager:GetPlayersByTeam(TeamId.Team3)
+			s_PlayerListTeam4 = PlayerManager:GetPlayersByTeam(TeamId.Team4)
+		elseif p_Player.teamId == TeamId.Team2 then
+			s_Team2 = "Alpha"
+			s_Team1 = "Bravo"
+			s_Team3 = "Charlie"
+			s_Team4 = "Delta"
+			s_Tickets2 = tostring(s_UsTickets)
+			s_Tickets1 = tostring(s_RuTickets)
+			s_Tickets3 = tostring(s_CharlieTickets)
+			s_Tickets4 = tostring(s_DeltaTickets)
+			s_PlayerListTeam2 = PlayerManager:GetPlayersByTeam(TeamId.Team1)
+			s_PlayerListTeam1 = PlayerManager:GetPlayersByTeam(TeamId.Team2)
+			s_PlayerListTeam3 = PlayerManager:GetPlayersByTeam(TeamId.Team3)
+			s_PlayerListTeam4 = PlayerManager:GetPlayersByTeam(TeamId.Team4)
+		elseif p_Player.teamId == TeamId.Team3 then
+			s_Team2 = "Alpha"
+			s_Team3 = "Bravo"
+			s_Team1 = "Charlie"
+			s_Team4 = "Delta"
+			s_Tickets2 = tostring(s_UsTickets)
+			s_Tickets3 = tostring(s_RuTickets)
+			s_Tickets1 = tostring(s_CharlieTickets)
+			s_Tickets4 = tostring(s_DeltaTickets)
+			s_PlayerListTeam2 = PlayerManager:GetPlayersByTeam(TeamId.Team1)
+			s_PlayerListTeam3 = PlayerManager:GetPlayersByTeam(TeamId.Team2)
+			s_PlayerListTeam1 = PlayerManager:GetPlayersByTeam(TeamId.Team3)
+			s_PlayerListTeam4 = PlayerManager:GetPlayersByTeam(TeamId.Team4)
+		elseif p_Player.teamId == TeamId.Team4 then
+			s_Team2 = "Alpha"
+			s_Team3 = "Bravo"
+			s_Team4 = "Charlie"
+			s_Team1 = "Delta"
+			s_Tickets2 = tostring(s_UsTickets)
+			s_Tickets3 = tostring(s_RuTickets)
+			s_Tickets4 = tostring(s_CharlieTickets)
+			s_Tickets1 = tostring(s_DeltaTickets)
+			s_PlayerListTeam2 = PlayerManager:GetPlayersByTeam(TeamId.Team1)
+			s_PlayerListTeam3 = PlayerManager:GetPlayersByTeam(TeamId.Team2)
+			s_PlayerListTeam4 = PlayerManager:GetPlayersByTeam(TeamId.Team3)
+			s_PlayerListTeam1 = PlayerManager:GetPlayersByTeam(TeamId.Team4)
 		end
 	end
-	local scoreboardHeader = {team1, tickets1, team2, tickets2, player.name, player.squadId, player.isSquadLeader, player.isSquadPrivate}
-	WebUI:ExecuteJS(string.format("updateScoreboardHeader(%s)", json.encode(scoreboardHeader)))
-	
-	if gameMode == "SquadDeathMatch0" then
-		local scoreboardHeader2 = {team3, tickets3, team4, tickets4}
-		WebUI:ExecuteJS(string.format("updateScoreboardHeader2(%s)", json.encode(scoreboardHeader2)))
+	local s_ScoreboardHeader = {s_Team1, s_Tickets1, s_Team2, s_Tickets2, p_Player.name, p_Player.squadId, p_Player.isSquadLeader, p_Player.isSquadPrivate}
+	WebUI:ExecuteJS(string.format("updateScoreboardHeader(%s)", json.encode(s_ScoreboardHeader)))
+
+	if s_GameMode == "SquadDeathMatch0" then
+		local s_ScoreboardHeader2 = {s_Team3, s_Tickets3, s_Team4, s_Tickets4}
+		WebUI:ExecuteJS(string.format("updateScoreboardHeader2(%s)", json.encode(s_ScoreboardHeader2)))
 	end
-	
-	table.sort(playerListTeam1, function(a, b) 
+
+	table.sort(s_PlayerListTeam1, function(a, b)
 		return a.score > b.score
 	end)
-	
-	table.sort(playerListTeam2, function(a, b) 
+
+	table.sort(s_PlayerListTeam2, function(a, b)
 		return a.score > b.score
 	end)
-	
-	local playerListTeams = {playerListTeam1, playerListTeam2}
-	
-	for index,player in pairs(playerListTeam1) do
-		local kit = "ID_M_DEAD"
+
+	for index,player in pairs(s_PlayerListTeam1) do
+		local s_Kit = "ID_M_DEAD"
 		if player.customization ~= nil then
-			kit = CharacterCustomizationAsset(player.customization).labelSid 
+			s_Kit = CharacterCustomizationAsset(player.customization).labelSid
 		end
-		local ping = "–"
-		if self.pingTable[player.name] ~= nil and self.pingTable[player.name] >= 0 and self.pingTable[player.name] < 999 then
-			ping = self.pingTable[player.name]
+		local s_Ping = "–"
+		if self.m_PingTable[player.name] ~= nil and self.m_PingTable[player.name] >= 0 and self.m_PingTable[player.name] < 999 then
+			s_Ping = self.m_PingTable[player.name]
 		end
-		local sendThis1 = {index, player.name, player.kills, player.deaths, player.score, player.squadId, player.alive, kit, ping, player.isSquadPrivate}
-		WebUI:ExecuteJS(string.format("updateScoreboardBody1(%s)", json.encode(sendThis1)))
+		local s_SendThis1 = {index, player.name, player.kills, player.deaths, player.score, player.squadId, player.alive, s_Kit, s_Ping, player.isSquadPrivate}
+		WebUI:ExecuteJS(string.format("updateScoreboardBody1(%s)", json.encode(s_SendThis1)))
 	end
-	
-	for index,player in pairs(playerListTeam2) do
-		local ping = "–"
-		if self.pingTable[player.name] ~= nil and self.pingTable[player.name] >= 0 and self.pingTable[player.name] < 999 then
-			ping = self.pingTable[player.name]
+
+	for index,player in pairs(s_PlayerListTeam2) do
+		local s_Ping = "–"
+		if self.m_PingTable[player.name] ~= nil and self.m_PingTable[player.name] >= 0 and self.m_PingTable[player.name] < 999 then
+			s_Ping = self.m_PingTable[player.name]
 		end
-		local sendThis2 = {}
-		if self.showEnemyCorpses == true then
-			sendThis2 = {index, player.name, player.kills, player.deaths, player.score, player.alive, ping}
+		local s_SendThis2 = {}
+		if self.m_ShowEnemyCorpses == true then
+			s_SendThis2 = {index, player.name, player.kills, player.deaths, player.score, player.alive, s_Ping}
 		else
-			sendThis2 = {index, player.name, player.kills, player.deaths, player.score, true, ping}
+			s_SendThis2 = {index, player.name, player.kills, player.deaths, player.score, true, s_Ping}
 		end
-		WebUI:ExecuteJS(string.format("updateScoreboardBody2(%s)", json.encode(sendThis2)))
+		WebUI:ExecuteJS(string.format("updateScoreboardBody2(%s)", json.encode(s_SendThis2)))
 	end
-	
-	WebUI:ExecuteJS(string.format("updateScoreboardBody3(%s)", json.encode(size)))
-	
-	if gameMode == "SquadDeathMatch0" then
-		table.sort(playerListTeam3, function(a, b) 
+
+	WebUI:ExecuteJS(string.format("updateScoreboardBody3(%s)", json.encode(s_Size)))
+
+	if s_GameMode == "SquadDeathMatch0" then
+		table.sort(s_PlayerListTeam3, function(a, b)
 			return a.score > b.score
 		end)
-		
-		table.sort(playerListTeam4, function(a, b) 
+
+		table.sort(s_PlayerListTeam4, function(a, b)
 			return a.score > b.score
 		end)
-		local playerListTeams2 = {playerListTeam3, playerListTeam4}
-	
-		for index,player in pairs(playerListTeam3) do
-			local ping = "–"
-			if self.pingTable[player.name] ~= nil and self.pingTable[player.name] >= 0 and self.pingTable[player.name] < 999 then
-				ping = self.pingTable[player.name]
+
+		for index,player in pairs(s_PlayerListTeam3) do
+			local s_Ping = "–"
+			if self.m_PingTable[player.name] ~= nil and self.m_PingTable[player.name] >= 0 and self.m_PingTable[player.name] < 999 then
+				s_Ping = self.m_PingTable[player.name]
 			end
-			local sendThis3 = {}
-			if self.showEnemyCorpses == true then
-				sendThis3 = {index, player.name, player.kills, player.deaths, player.score, player.alive, ping}
+			local s_SendThis3 = {}
+			if self.m_ShowEnemyCorpses == true then
+				s_SendThis3 = {index, player.name, player.kills, player.deaths, player.score, player.alive, s_Ping}
 			else
-				sendThis3 = {index, player.name, player.kills, player.deaths, player.score, true, ping}
+				s_SendThis3 = {index, player.name, player.kills, player.deaths, player.score, true, s_Ping}
 			end
-			WebUI:ExecuteJS(string.format("updateScoreboardBody4(%s)", json.encode(sendThis3)))
+			WebUI:ExecuteJS(string.format("updateScoreboardBody4(%s)", json.encode(s_SendThis3)))
 		end
-		
-		for index,player in pairs(playerListTeam4) do
-			local ping = "–"
-			if self.pingTable[player.name] ~= nil and self.pingTable[player.name] >= 0 and self.pingTable[player.name] < 999 then
-				ping = self.pingTable[player.name]
+
+		for index,player in pairs(s_PlayerListTeam4) do
+			local s_Ping = "–"
+			if self.m_PingTable[player.name] ~= nil and self.m_PingTable[player.name] >= 0 and self.m_PingTable[player.name] < 999 then
+				s_Ping = self.m_PingTable[player.name]
 			end
-			local sendThis4 = {}
-			if self.showEnemyCorpses == true then
-				sendThis4 = {index, player.name, player.kills, player.deaths, player.score, player.alive, ping}
+			local s_SendThis4 = {}
+			if self.m_ShowEnemyCorpses == true then
+				s_SendThis4 = {index, player.name, player.kills, player.deaths, player.score, player.alive, s_Ping}
 			else
-				sendThis4 = {index, player.name, player.kills, player.deaths, player.score, true, ping}
+				s_SendThis4 = {index, player.name, player.kills, player.deaths, player.score, true, s_Ping}
 			end
-			WebUI:ExecuteJS(string.format("updateScoreboardBody5(%s)", json.encode(sendThis4)))
+			WebUI:ExecuteJS(string.format("updateScoreboardBody5(%s)", json.encode(s_SendThis4)))
 		end
-		
+
 		WebUI:ExecuteJS("updateScoreboardBody6()")
 	end
 end
 
 function Scoreboard:GetTicketCounterTickets()
-    local clientTicketCounterIterator = EntityManager:GetIterator('ClientTicketCounterEntity')
-    local ticketCounterEntity = clientTicketCounterIterator:Next()
-    local usTickets = " "
-    local ruTickets = " "
-    while ticketCounterEntity ~= nil do
-        if TicketCounterEntity(ticketCounterEntity).team == TeamId.Team1 then
-            usTickets = TicketCounterEntity(ticketCounterEntity).ticketCount
-        else
-            ruTickets = TicketCounterEntity(ticketCounterEntity).ticketCount
-        end
-        ticketCounterEntity = clientTicketCounterIterator:Next()
-    end
-    return usTickets, ruTickets
+	local s_ClientTicketCounterIterator = EntityManager:GetIterator('ClientTicketCounterEntity')
+	local s_TicketCounterEntity = s_ClientTicketCounterIterator:Next()
+	local s_UsTickets = " "
+	local s_RuTickets = " "
+	while s_TicketCounterEntity ~= nil do
+		if TicketCounterEntity(s_TicketCounterEntity).team == TeamId.Team1 then
+			s_UsTickets = TicketCounterEntity(s_TicketCounterEntity).ticketCount
+		else
+			s_RuTickets = TicketCounterEntity(s_TicketCounterEntity).ticketCount
+		end
+		s_TicketCounterEntity = s_ClientTicketCounterIterator:Next()
+	end
+	return s_UsTickets, s_RuTickets
 end
 
 function Scoreboard:GetLifeCounterTickets()
-    local lifeCounterEntityIterator = EntityManager:GetIterator('ClientLifeCounterEntity')
-    local lifeCounterEntity = lifeCounterEntityIterator:Next()
-    local usTickets = " "
-    local ruTickets = " "
-    while lifeCounterEntity ~= nil do
-        if LifeCounterEntityData(lifeCounterEntity.data).teamId == TeamId.Team1 then
-            usTickets = LifeCounterEntity(lifeCounterEntity).lifeCounter
-        elseif LifeCounterEntityData(lifeCounterEntity.data).teamId == TeamId.Team2 then
-            ruTickets = LifeCounterEntity(lifeCounterEntity).lifeCounter
-        end
-        lifeCounterEntity = lifeCounterEntityIterator:Next()
-    end
-    return usTickets, ruTickets
+	local s_LifeCounterEntityIterator = EntityManager:GetIterator('ClientLifeCounterEntity')
+	local s_LifeCounterEntity = s_LifeCounterEntityIterator:Next()
+	local s_UsTickets = " "
+	local s_RuTickets = " "
+	while s_LifeCounterEntity ~= nil do
+		if LifeCounterEntityData(s_LifeCounterEntity.data).teamId == TeamId.Team1 then
+			s_UsTickets = LifeCounterEntity(s_LifeCounterEntity).lifeCounter
+		elseif LifeCounterEntityData(s_LifeCounterEntity.data).teamId == TeamId.Team2 then
+			s_RuTickets = LifeCounterEntity(s_LifeCounterEntity).lifeCounter
+		end
+		s_LifeCounterEntity = s_LifeCounterEntityIterator:Next()
+	end
+	return s_UsTickets, s_RuTickets
 end
 
 function Scoreboard:GetKillCounterTickets()
-    local killCounterEntityIterator = EntityManager:GetIterator('ClientKillCounterEntity')
-    local killCounterEntity = killCounterEntityIterator:Next()
-    local alphaTickets = " "
-    local bravoTickets = " "
-    local charlieTickets = " "
-    local deltaTickets = " "
-    while killCounterEntity ~= nil do
-        if KillCounterEntityData(killCounterEntity.data).teamId == TeamId.Team1 then
-            alphaTickets = KillCounterEntity(killCounterEntity).killCount
-        elseif KillCounterEntityData(killCounterEntity.data).teamId == TeamId.Team2 then
-            bravoTickets = KillCounterEntity(killCounterEntity).killCount
-        elseif KillCounterEntityData(killCounterEntity.data).teamId == TeamId.Team3 then
-            charlieTickets = KillCounterEntity(killCounterEntity).killCount
-        elseif KillCounterEntityData(killCounterEntity.data).teamId == TeamId.Team4 then
-            deltaTickets = KillCounterEntity(killCounterEntity).killCount
-        end
-        killCounterEntity = killCounterEntityIterator:Next()
-    end
-    return alphaTickets, bravoTickets, charlieTickets, deltaTickets
+	local s_KillCounterEntityIterator = EntityManager:GetIterator('ClientKillCounterEntity')
+	local s_KillCounterEntity = s_KillCounterEntityIterator:Next()
+	local s_AlphaTickets = " "
+	local s_BravoTickets = " "
+	local s_CharlieTickets = " "
+	local s_DeltaTickets = " "
+	while s_KillCounterEntity ~= nil do
+		if KillCounterEntityData(s_KillCounterEntity.data).teamId == TeamId.Team1 then
+			s_AlphaTickets = KillCounterEntity(s_KillCounterEntity).killCount
+		elseif KillCounterEntityData(s_KillCounterEntity.data).teamId == TeamId.Team2 then
+			s_BravoTickets = KillCounterEntity(s_KillCounterEntity).killCount
+		elseif KillCounterEntityData(s_KillCounterEntity.data).teamId == TeamId.Team3 then
+			s_CharlieTickets = KillCounterEntity(s_KillCounterEntity).killCount
+		elseif KillCounterEntityData(s_KillCounterEntity.data).teamId == TeamId.Team4 then
+			s_DeltaTickets = KillCounterEntity(s_KillCounterEntity).killCount
+		end
+		s_KillCounterEntity = s_KillCounterEntityIterator:Next()
+	end
+	return s_AlphaTickets, s_BravoTickets, s_CharlieTickets, s_DeltaTickets
 end
 
 function Scoreboard:OnWebUIHoldScoreboard()
-	self.toggleScoreboard = false
+	self.m_ToggleScoreboard = false
 end
 
 function Scoreboard:OnWebUIClickScoreboard()
-	self.toggleScoreboard = true
+	self.m_ToggleScoreboard = true
 end
 
 function Scoreboard:OnWebUIIgnoreReleaseTab()
-	if self.toggleScoreboard == false then
-		self.ignoreReleaseTab = true
+	if self.m_ToggleScoreboard == false then
+		self.m_IgnoreReleaseTab = true
 	end
 end
 
 function Scoreboard:OnWebUIActiveFalse()
-	if self.active == true then
-		local player = PlayerManager:GetLocalPlayer()
-		if player ~= nil then
-			player:EnableInput(11, true)
+	if self.m_Active == true then
+		local s_Player = PlayerManager:GetLocalPlayer()
+		if s_Player ~= nil then
+			s_Player:EnableInput(11, true)
 		end
-		self.active = false
+		self.m_Active = false
 	end
 end
 
-function Scoreboard:OnSoldierHealthAction(soldier, action)
-	if action == HealthStateAction.OnRevive then
-		local localPlayer = PlayerManager:GetLocalPlayer()
-		if localPlayer.soldier ~= nil then
-			if soldier == localPlayer.soldier then
-				self.active = false
-				self.dontUpdate = false
-				localPlayer:EnableInput(11, true)
+function Scoreboard:OnSoldierHealthAction(p_Soldier, p_Action)
+	if p_Action == HealthStateAction.OnRevive then
+		local s_LocalPlayer = PlayerManager:GetLocalPlayer()
+		if s_LocalPlayer.soldier ~= nil then
+			if p_Soldier == s_LocalPlayer.soldier then
+				self.m_Active = false
+				self.m_DontUpdate = false
+				s_LocalPlayer:EnableInput(11, true)
 				WebUI:ExecuteJS("clearScoreboardBody()")
 			end
-		elseif localPlayer.corpse ~= nil then
-			if soldier == localPlayer.corpse then
-				self.active = false
-				self.dontUpdate = false
-				localPlayer:EnableInput(11, true)
+		elseif s_LocalPlayer.corpse ~= nil then
+			if p_Soldier == s_LocalPlayer.corpse then
+				self.m_Active = false
+				self.m_DontUpdate = false
+				s_LocalPlayer:EnableInput(11, true)
 				WebUI:ExecuteJS("clearScoreboardBody()")
 			end
 		end
 	end
 end
 
-function Scoreboard:OnUIPushScreen(hook, screen, graphPriority, parentGraph)
-    local screen = UIGraphAsset(screen)
-    if screen.name == 'UI/Flow/Screen/EORDetailsScoreboardScreen' then
-        self.isEndOfRound = true
-    elseif screen.name == 'UI/Flow/Screen/EmptyScreen' and self.isEndOfRound == true then
-        self.isEndOfRound = false
-    elseif self.isEndOfRound == false and self.lastScreenName == "UI/Flow/Screen/IngameMenuMP" and self.isSpectator == false then
-        if screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardTwoTeamsScreen' 
-        or screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardTwoSquadsScreen' 
-        or screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardFourSquadsScreen' 
-        or screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardTwoTeamsHUD16Screen' then
-            local screenClone = UIScreenAsset(ResourceManager:SearchForDataContainer("UI/Flow/Screen/ScoreboardBackScreen"))
-            screenClone:MakeWritable()
-            local uiPageHeaderBinding = UIPageHeaderBinding(WidgetNode(screenClone.nodes[4]).dataBinding)
-            uiPageHeaderBinding:MakeWritable()
-            uiPageHeaderBinding.staticHeader  = ""
-            uiPageHeaderBinding.staticSubHeader = ""
-            local player = PlayerManager:GetLocalPlayer()
-            self.active = true
-            self:UpdateUI(player)
-            self.dontUpdate = true
-            WebUI:ExecuteJS(string.format("showTabsAndEnableMouse()"))
-            hook:Pass(screenClone, graphPriority, parentGraph)
-        end
-    end
-    if screen.name == 'UI/Flow/Screen/IngameMenuMP' 
-    or screen.name == 'UI/Flow/Screen/SquadScreen' 
-    or screen.name == 'UI/Flow/Screen/OptionsControlsScreen'
-    or screen.name == 'UI/Flow/Screen/OptionsGameplayScreen'
-    or screen.name == 'UI/Flow/Screen/OptionsAudioScreen'
-    or screen.name == 'UI/Flow/Screen/OptionsVideoScreen'
-    or screen.name == 'UI/Flow/Screen/OptionsKeyBindingScreen'
-    or screen.name:match('UI/Flow/Screen/Popups/') then
-        self.blockTab = true
-        WebUI:ExecuteJS("closeSmart()")
-    else
-        self.blockTab = false
-    end
-    self.lastScreenName = screen.name
+function Scoreboard:OnUIPushScreen(p_HookCtx, p_Screen, p_GraphPriority, p_ParentGraph)
+	p_Screen = Asset(p_Screen)
+	if p_Screen.name == 'UI/Flow/Screen/EORDetailsScoreboardScreen' then
+		self.m_IsEndOfRound = true
+	elseif p_Screen.name == 'UI/Flow/Screen/EmptyScreen' and self.m_IsEndOfRound == true then
+		self.m_IsEndOfRound = false
+	elseif self.m_IsEndOfRound == false and self.m_LastScreenName == "UI/Flow/Screen/IngameMenuMP" and self.m_IsSpectator == false then
+		if p_Screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardTwoTeamsScreen'
+		or p_Screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardTwoSquadsScreen'
+		or p_Screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardFourSquadsScreen'
+		or p_Screen.name == 'UI/Flow/Screen/Scoreboards/ScoreboardTwoTeamsHUD16Screen' then
+			local s_ScreenClone = UIScreenAsset(ResourceManager:SearchForDataContainer("UI/Flow/Screen/ScoreboardBackScreen"))
+			s_ScreenClone:MakeWritable()
+			local s_UiPageHeaderBinding = UIPageHeaderBinding(WidgetNode(s_ScreenClone.nodes[4]).dataBinding)
+			s_UiPageHeaderBinding:MakeWritable()
+			s_UiPageHeaderBinding.staticHeader = ""
+			s_UiPageHeaderBinding.staticSubHeader = ""
+			local s_Player = PlayerManager:GetLocalPlayer()
+			self.m_Active = true
+			self:UpdateUI(s_Player)
+			self.m_DontUpdate = true
+			WebUI:ExecuteJS(string.format("showTabsAndEnableMouse()"))
+			p_HookCtx:Pass(s_ScreenClone, p_GraphPriority, p_ParentGraph)
+		end
+	end
+	if p_Screen.name == 'UI/Flow/Screen/IngameMenuMP'
+	or p_Screen.name == 'UI/Flow/Screen/SquadScreen'
+	or p_Screen.name == 'UI/Flow/Screen/OptionsControlsScreen'
+	or p_Screen.name == 'UI/Flow/Screen/OptionsGameplayScreen'
+	or p_Screen.name == 'UI/Flow/Screen/OptionsAudioScreen'
+	or p_Screen.name == 'UI/Flow/Screen/OptionsVideoScreen'
+	or p_Screen.name == 'UI/Flow/Screen/OptionsKeyBindingScreen'
+	or p_Screen.name:match('UI/Flow/Screen/Popups/') then
+		self.m_BlockTab = true
+		WebUI:ExecuteJS("closeSmart()")
+	else
+		self.m_BlockTab = false
+	end
+	self.m_LastScreenName = p_Screen.name
 end
 
-function Scoreboard:OnPlayerPing(pingTable)
-	self.pingTable = pingTable
+function Scoreboard:OnPlayerPing(p_PingTable)
+	self.m_PingTable = p_PingTable
 end
- 
+
 function Scoreboard:OnServerInfo(p_Args)
-	self.serverInfo = p_Args
+	self.m_ServerInfo = p_Args
 	WebUI:ExecuteJS(string.format("getServerInfo(%s)", json.encode(p_Args)))
 end
 
 function Scoreboard:OnGetPlayerCount()
-	local count = {}
-	count[1] = PlayerManager:GetPlayerCount() - PlayerManager:GetSpectatorCount()
-	count[2] = PlayerManager:GetSpectatorCount()
-	WebUI:ExecuteJS(string.format("getPlayerCount(%s)", json.encode(count)))
+	local s_Count = {}
+	s_Count[1] = PlayerManager:GetPlayerCount() - PlayerManager:GetSpectatorCount()
+	s_Count[2] = PlayerManager:GetSpectatorCount()
+	WebUI:ExecuteJS(string.format("getPlayerCount(%s)", json.encode(s_Count)))
 end
 
-function Scoreboard:OnLevelLoadingInfo(screenInfo)
-	if screenInfo == "Initializing entities for autoloaded sublevels" then
+function Scoreboard:OnLevelLoadingInfo(p_ScreenInfo)
+	if p_ScreenInfo == "Initializing entities for autoloaded sublevels" then
 		if SpectatorManager:GetSpectating() == true then
-			self.isSpectator = true
+			self.m_IsSpectator = true
 		end
 	end
 end
@@ -445,4 +446,16 @@ function Scoreboard:OnLevelDestroy()
 	WebUI:ExecuteJS("closeSmart()")
 end
 
-return Scoreboard
+function Scoreboard:GetToggleScoreboard()
+	return self.m_ToggleScoreboard
+end
+
+function Scoreboard:SetIgnoreReleaseTab(p_Enable)
+	self.m_IgnoreReleaseTab = p_Enable
+end
+
+if g_Scoreboard == nil then
+	g_Scoreboard = Scoreboard()
+end
+
+return g_Scoreboard

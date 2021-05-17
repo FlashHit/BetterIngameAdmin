@@ -1,20 +1,24 @@
 class 'Ping'
 
 function Ping:__init()
-	self.cumulatedTimeForPing = 0
+	self.m_CumulatedTimeForPing = 0
 end
 
 function Ping:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
-	self.cumulatedTimeForPing = self.cumulatedTimeForPing + p_DeltaTime
-	if self.cumulatedTimeForPing >= 5 then
-		local pingTable = {}
-		for i,player in pairs(PlayerManager:GetPlayers()) do
-			pingTable[player.name] = player.ping
-			table.insert(pingTable, pingplayer)
+	self.m_CumulatedTimeForPing = self.m_CumulatedTimeForPing + p_DeltaTime
+	if self.m_CumulatedTimeForPing >= 5 then
+		local s_PingTable = {}
+		for i, l_Player in pairs(PlayerManager:GetPlayers()) do
+			s_PingTable[l_Player.name] = l_Player.ping
+			table.insert(s_PingTable, pingplayer)
 		end
-		self.cumulatedTimeForPing = 0
-		NetEvents:Broadcast('Player:Ping', pingTable)
+		self.m_CumulatedTimeForPing = 0
+		NetEvents:Broadcast('Player:Ping', s_PingTable)
 	end
 end
 
-return Ping
+if g_Ping == nil then
+	g_Ping = Ping()
+end
+
+return g_Ping

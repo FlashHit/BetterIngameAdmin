@@ -1,8 +1,8 @@
 class 'Assist'
 
 function Assist:__init()
-    self.enableAssistFunction = true
-	
+	self.m_EnableAssistFunction = true
+
 	-- Region Assist
 	Events:Subscribe('WebUI:AssistEnemyTeam', self, self.OnWebUIAssistEnemyTeam)
 	Events:Subscribe('WebUI:CancelAssistEnemyTeam', self, self.OnWebUICancelAssistEnemyTeam)
@@ -20,7 +20,11 @@ function Assist:OnWebUICancelAssistEnemyTeam()
 end
 
 function Assist:SetEnableAssistFunction(p_EnableAssistFunction)
-    self.enableAssistFunction = p_EnableAssistFunction
+	self.m_EnableAssistFunction = p_EnableAssistFunction
 end
 
-return Assist
+if g_Assist == nil then
+	g_Assist = Assist()
+end
+
+return g_Assist

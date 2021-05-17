@@ -1,148 +1,148 @@
 class 'ModSettings'
 
 function ModSettings:__init()
-	self.loadedModSettings = false
-	self.showEnemyCorpses = true
-	self.voteDuration = 30
-	self.cooldownBetweenVotes = 0
-	self.maxVotingStartsPerPlayer = 3
-	self.votingParticipationNeeded = 50
-	self.enableAssistFunction = true
-    self.showLoadingScreenInfo = true
+	self.m_LoadedModSettings = false
+	self.m_ShowEnemyCorpses = true
+	self.m_VoteDuration = 30
+	self.m_CooldownBetweenVotes = 0
+	self.m_MaxVotingStartsPerPlayer = 3
+	self.m_VotingParticipationNeeded = 50
+	self.m_EnableAssistFunction = true
+	self.m_ShowLoadingScreenInfo = true
 end
 
 function ModSettings:OnAuthenticated(p_Player)
-	NetEvents:SendTo('RefreshModSettings', p_Player, {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction, self.showLoadingScreenInfo})
+	NetEvents:SendTo('RefreshModSettings', p_Player, {self.m_ShowEnemyCorpses, self.m_VoteDuration, self.m_CooldownBetweenVotes, self.m_MaxVotingStartsPerPlayer, self.m_VotingParticipationNeeded, self.m_EnableAssistFunction, self.m_ShowLoadingScreenInfo})
 end
 
-function ModSettings:OnLevelLoaded(levelName, gameMode, round, roundsPerMap)
-    if self.loadedModSettings == false then
-        if not SQL:Open() then
-            return
-        end
-        
-        local query = [[
-        CREATE TABLE IF NOT EXISTS mod_settings (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            showEnemyCorpses BOOLEAN,
-            voteDuration INTEGER,
-            cooldownBetweenVotes INTEGER,
-            maxVotingStartsPerPlayer INTEGER,
-            votingParticipationNeeded INTEGER,
-            enableAssistFunction BOOLEAN,
-            showLoadingScreenInfo BOOLEAN
-        )
-        ]]
-        if not SQL:Query(query) then
-        print('Failed to execute query: ' .. SQL:Error())
-        return
-        end
-        
-        -- Fetch all rows from the table.
-        results = SQL:Query('SELECT * FROM mod_settings')
+function ModSettings:OnLevelLoaded(p_LevelName, p_GameMode, p_Round, p_RoundsPerMap)
+	if self.m_LoadedModSettings == false then
+		if not SQL:Open() then
+			return
+		end
 
-        if not results then
-        print('Failed to execute query: ' .. SQL:Error())
-        return
-        end
-        
-        SQL:Close()
+		local s_Query = [[
+		CREATE TABLE IF NOT EXISTS mod_settings (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			showEnemyCorpses BOOLEAN,
+			voteDuration INTEGER,
+			cooldownBetweenVotes INTEGER,
+			maxVotingStartsPerPlayer INTEGER,
+			votingParticipationNeeded INTEGER,
+			enableAssistFunction BOOLEAN,
+			showLoadingScreenInfo BOOLEAN
+		)
+		]]
+		if not SQL:Query(s_Query) then
+		print('Failed to execute query: ' .. SQL:Error())
+		return
+		end
 
-        if #results == 0 then
-            print("MODSETTINGS - LIST EMPTY - CREATING LIST")
-            self:SQLSaveModSettings()
-        end
-        if results[1]["showEnemyCorpses"] == 1 then
-            self.showEnemyCorpses = true
-        else
-            self.showEnemyCorpses = false
-        end
-        self.cooldownBetweenVotes = results[1]["cooldownBetweenVotes"]
-        self.votingParticipationNeeded = results[1]["votingParticipationNeeded"]
-        self.voteDuration = results[1]["voteDuration"]
-        self.maxVotingStartsPerPlayer = results[1]["maxVotingStartsPerPlayer"]
-        if results[1]["enableAssistFunction"] == 1 then
-            self.enableAssistFunction = true
-        else
-            self.enableAssistFunction = false
-        end
-        if results[1]["showLoadingScreenInfo"] == 0 then
-            self.showLoadingScreenInfo = false
-        else
-            self.showLoadingScreenInfo = true
-        end
-        self.loadedModSettings = true
-    end
+		-- Fetch all rows from the table.
+		local s_Results = SQL:Query('SELECT * FROM mod_settings')
 
-    local syncedBFSettings = ResourceManager:GetSettings("SyncedBFSettings")
-    if syncedBFSettings ~= nil then
-        syncedBFSettings = SyncedBFSettings(syncedBFSettings)
-        if self.enableAssistFunction == true then
-            syncedBFSettings.teamSwitchingAllowed = false
-        else
-            syncedBFSettings.teamSwitchingAllowed = true
-        end
-    end
+		if not s_Results then
+		print('Failed to execute query: ' .. SQL:Error())
+		return
+		end
+
+		SQL:Close()
+
+		if #s_Results == 0 then
+			print("MODSETTINGS - LIST EMPTY - CREATING LIST")
+			self:SQLSaveModSettings()
+		end
+		if s_Results[1]["showEnemyCorpses"] == 1 then
+			self.m_ShowEnemyCorpses = true
+		else
+			self.m_ShowEnemyCorpses = false
+		end
+		self.m_CooldownBetweenVotes = s_Results[1]["m_CooldownBetweenVotes"]
+		self.m_VotingParticipationNeeded = s_Results[1]["m_VotingParticipationNeeded"]
+		self.m_VoteDuration = s_Results[1]["m_VoteDuration"]
+		self.m_MaxVotingStartsPerPlayer = s_Results[1]["m_MaxVotingStartsPerPlayer"]
+		if s_Results[1]["enableAssistFunction"] == 1 then
+			self.m_EnableAssistFunction = true
+		else
+			self.m_EnableAssistFunction = false
+		end
+		if s_Results[1]["showLoadingScreenInfo"] == 0 then
+			self.m_ShowLoadingScreenInfo = false
+		else
+			self.m_ShowLoadingScreenInfo = true
+		end
+		self.m_LoadedModSettings = true
+	end
+
+	local s_SyncedBFSettings = ResourceManager:GetSettings("SyncedBFSettings")
+	if s_SyncedBFSettings ~= nil then
+		s_SyncedBFSettings = SyncedBFSettings(s_SyncedBFSettings)
+		if self.m_EnableAssistFunction == true then
+			s_SyncedBFSettings.teamSwitchingAllowed = false
+		else
+			s_SyncedBFSettings.teamSwitchingAllowed = true
+		end
+	end
 end
 
 function ModSettings:ResetModSettings()
-	self.showEnemyCorpses = true
-	self.voteDuration = 30
-	self.cooldownBetweenVotes = 0
-	self.maxVotingStartsPerPlayer = 3
-	self.votingParticipationNeeded = 50
-	self.enableAssistFunction = true
-	self.showLoadingScreenInfo = true
-    NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction, self.showLoadingScreenInfo})
+	self.m_ShowEnemyCorpses = true
+	self.m_VoteDuration = 30
+	self.m_CooldownBetweenVotes = 0
+	self.m_MaxVotingStartsPerPlayer = 3
+	self.m_VotingParticipationNeeded = 50
+	self.m_EnableAssistFunction = true
+	self.m_ShowLoadingScreenInfo = true
+	NetEvents:Broadcast('RefreshModSettings', {self.m_ShowEnemyCorpses, self.m_VoteDuration, self.m_CooldownBetweenVotes, self.m_MaxVotingStartsPerPlayer, self.m_VotingParticipationNeeded, self.m_EnableAssistFunction, self.m_ShowLoadingScreenInfo})
 end
 
 function ModSettings:SetModSettings(args)
-	self.showEnemyCorpses = args[1]
-	self.voteDuration = tonumber(args[2])
-	self.cooldownBetweenVotes = tonumber(args[3])
-	self.maxVotingStartsPerPlayer = tonumber(args[4])
-	self.votingParticipationNeeded = tonumber(args[5])
-	self.enableAssistFunction = args[6]
-    self.showLoadingScreenInfo = args[7]
-    NetEvents:Broadcast('RefreshModSettings', {self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction, self.showLoadingScreenInfo})
+	self.m_ShowEnemyCorpses = args[1]
+	self.m_VoteDuration = tonumber(args[2])
+	self.m_CooldownBetweenVotes = tonumber(args[3])
+	self.m_MaxVotingStartsPerPlayer = tonumber(args[4])
+	self.m_VotingParticipationNeeded = tonumber(args[5])
+	self.m_EnableAssistFunction = args[6]
+	self.m_ShowLoadingScreenInfo = args[7]
+	NetEvents:Broadcast('RefreshModSettings', {self.m_ShowEnemyCorpses, self.m_VoteDuration, self.m_CooldownBetweenVotes, self.m_MaxVotingStartsPerPlayer, self.m_VotingParticipationNeeded, self.m_EnableAssistFunction, self.m_ShowLoadingScreenInfo})
 end
 
 function ModSettings:SQLSaveModSettings()
-	
+
 	if not SQL:Open() then
 		return
 	end
-	local query = [[DROP TABLE IF EXISTS mod_settings]]
-	if not SQL:Query(query) then
+	local s_Query = [[DROP TABLE IF EXISTS mod_settings]]
+	if not SQL:Query(s_Query) then
 		print('Failed to execute query: ' .. SQL:Error())
 		return
 	end
-	query = [[
-	  CREATE TABLE IF NOT EXISTS mod_settings (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		showEnemyCorpses BOOLEAN,
-		voteDuration INTEGER,
-		cooldownBetweenVotes INTEGER,
-		maxVotingStartsPerPlayer INTEGER,
-		votingParticipationNeeded INTEGER,
-		enableAssistFunction BOOLEAN,
-		showLoadingScreenInfo BOOLEAN
-	  )
+	s_Query = [[
+		CREATE TABLE IF NOT EXISTS mod_settings (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			showEnemyCorpses BOOLEAN,
+			voteDuration INTEGER,
+			cooldownBetweenVotes INTEGER,
+			maxVotingStartsPerPlayer INTEGER,
+			votingParticipationNeeded INTEGER,
+			enableAssistFunction BOOLEAN,
+			showLoadingScreenInfo BOOLEAN
+		)
 	]]
-	if not SQL:Query(query) then
-	  print('Failed to execute query: ' .. SQL:Error())
-	  return
-	end
-	query = 'INSERT INTO mod_settings (showEnemyCorpses, voteDuration, cooldownBetweenVotes, maxVotingStartsPerPlayer, votingParticipationNeeded, enableAssistFunction, showLoadingScreenInfo) VALUES (?, ?, ?, ?, ?, ?, ?)'
-	if not SQL:Query(query, self.showEnemyCorpses, self.voteDuration, self.cooldownBetweenVotes, self.maxVotingStartsPerPlayer, self.votingParticipationNeeded, self.enableAssistFunction, self.showLoadingScreenInfo) then
+	if not SQL:Query(s_Query) then
 		print('Failed to execute query: ' .. SQL:Error())
 		return
 	end
-	
+	s_Query = 'INSERT INTO mod_settings (showEnemyCorpses, voteDuration, cooldownBetweenVotes, maxVotingStartsPerPlayer, votingParticipationNeeded, enableAssistFunction, showLoadingScreenInfo) VALUES (?, ?, ?, ?, ?, ?, ?)'
+	if not SQL:Query(s_Query, self.m_ShowEnemyCorpses, self.m_VoteDuration, self.m_CooldownBetweenVotes, self.m_MaxVotingStartsPerPlayer, self.m_VotingParticipationNeeded, self.m_EnableAssistFunction, self.m_ShowLoadingScreenInfo) then
+		print('Failed to execute query: ' .. SQL:Error())
+		return
+	end
+
 	-- Fetch all rows from the table.
-	results = SQL:Query('SELECT * FROM mod_settings')
-	
-	if not results then
+	local s_Results = SQL:Query('SELECT * FROM mod_settings')
+
+	if not s_Results then
 		print('Failed to execute query: ' .. SQL:Error())
 		return
 	end
@@ -150,4 +150,24 @@ function ModSettings:SQLSaveModSettings()
 	SQL:Close()
 end
 
-return ModSettings
+function ModSettings:GetEnableAssistFunction()
+	return self.m_EnableAssistFunction
+end
+
+function ModSettings:GetVoteDuration()
+	return self.m_VoteDuration
+end
+
+function ModSettings:GetCooldownBetweenVotes()
+	return self.m_CooldownBetweenVotes
+end
+
+function ModSettings:GetMaxVotingStartsPerPlayer()
+	return self.m_MaxVotingStartsPerPlayer
+end
+
+if g_ModSettings == nil then
+	g_ModSettings = ModSettings()
+end
+
+return g_ModSettings

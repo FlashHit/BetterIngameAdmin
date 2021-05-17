@@ -1,16 +1,16 @@
 class 'Voting'
 
 function Voting:__init()
-	self.voteInProgress = false
-	self.cumulatedTime = 0
-    self.count = 1
-    
-	self.voteDuration = 30
-	self.cooldownBetweenVotes = 0
-	self.maxVotingStartsPerPlayer = 3
-    self.votingParticipationNeeded = 50
-    
-    Events:Subscribe('WebUI:VotekickPlayer', self, self.OnWebUIVotekickPlayer)
+	self.m_VoteInProgress = false
+	self.m_CumulatedTime = 0
+	self.m_Count = 1
+
+	self.m_VoteDuration = 30
+	self.m_CooldownBetweenVotes = 0
+	self.m_MaxVotingStartsPerPlayer = 3
+	self.m_VotingParticipationNeeded = 50
+
+	Events:Subscribe('WebUI:VotekickPlayer', self, self.OnWebUIVotekickPlayer)
 	Events:Subscribe('WebUI:VotebanPlayer', self, self.OnWebUIVotebanPlayer)
 	Events:Subscribe('WebUI:Surrender', self, self.OnWebUISurrender)
 	NetEvents:Subscribe('Start:VotekickPlayer', self, self.OnStartVotekickPlayer)
@@ -26,7 +26,7 @@ function Voting:__init()
 end
 
 function Voting:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
-    if self.voteInProgress == true then
+	if self.m_VoteInProgress == true then
 		if InputManager:WentKeyDown(InputDeviceKeys.IDK_F8) then
 			NetEvents:Send('CheckVoteYes')
 			WebUI:ExecuteJS(string.format("fontWeightYes()"))
@@ -34,52 +34,52 @@ function Voting:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
 			NetEvents:Send('CheckVoteNo')
 			WebUI:ExecuteJS(string.format("fontWeightNo()"))
 		end
-		self.cumulatedTime = self.cumulatedTime + p_DeltaTime
-		if self.cumulatedTime >= self.count and self.count <= self.voteDuration + 1 then
-			self.count = self.count + 1
-			if self.count >= self.voteDuration + 1 then
-				self.voteInProgress = false
-				self.cumulatedTime = 0
-				self.count = 1
+		self.m_CumulatedTime = self.m_CumulatedTime + p_DeltaTime
+		if self.m_CumulatedTime >= self.m_Count and self.m_Count <= self.m_VoteDuration + 1 then
+			self.m_Count = self.m_Count + 1
+			if self.m_Count >= self.m_VoteDuration + 1 then
+				self.m_VoteInProgress = false
+				self.m_CumulatedTime = 0
+				self.m_Count = 1
 			end
 			WebUI:ExecuteJS(string.format("updateTimer()"))
 		end
 	end
 end
 
-function Voting:OnWebUIVotekickPlayer(playerName)
-	NetEvents:Send('VotekickPlayer', playerName)
+function Voting:OnWebUIVotekickPlayer(p_PlayerName)
+	NetEvents:Send('VotekickPlayer', p_PlayerName)
 end
 
-function Voting:OnWebUIVotebanPlayer(playerName)
-	NetEvents:Send('VotebanPlayer', playerName)
+function Voting:OnWebUIVotebanPlayer(p_PlayerName)
+	NetEvents:Send('VotebanPlayer', p_PlayerName)
 end
 
 function Voting:OnWebUISurrender()
 	NetEvents:Send('Surrender')
 end
 
-function Voting:OnStartVotekickPlayer(votekickPlayer)
-	self.voteInProgress = true
-	local args = {votekickPlayer, self.voteDuration}
-	WebUI:ExecuteJS(string.format("startvotekick(%s)", json.encode(args)))
+function Voting:OnStartVotekickPlayer(p_VotekickPlayer)
+	self.m_VoteInProgress = true
+	local s_Args = {p_VotekickPlayer, self.m_VoteDuration}
+	WebUI:ExecuteJS(string.format("startvotekick(%s)", json.encode(s_Args)))
 end
 
-function Voting:OnStartVotebanPlayer(votebanPlayer)
-	self.voteInProgress = true
-	local args = {votebanPlayer, self.voteDuration}
-	WebUI:ExecuteJS(string.format("startvoteban(%s)", json.encode(args)))
+function Voting:OnStartVotebanPlayer(p_VotebanPlayer)
+	self.m_VoteInProgress = true
+	local s_Args = {p_VotebanPlayer, self.m_VoteDuration}
+	WebUI:ExecuteJS(string.format("startvoteban(%s)", json.encode(s_Args)))
 end
 
-function Voting:OnStartSurrender(typeOfVote)
-	self.voteInProgress = true
-	local player = PlayerManager:GetLocalPlayer()
-	if typeOfVote == "surrenderUS" then
-		if player.teamId == TeamId.Team1 then
+function Voting:OnStartSurrender(p_TypeOfVote)
+	self.m_VoteInProgress = true
+	local s_Player = PlayerManager:GetLocalPlayer()
+	if p_TypeOfVote == "surrenderUS" then
+		if s_Player.teamId == TeamId.Team1 then
 			WebUI:ExecuteJS("startsurrender()")
 		end
-	elseif typeOfVote == "surrenderRU" then
-		if player.teamId == TeamId.Team2 then
+	elseif p_TypeOfVote == "surrenderRU" then
+		if s_Player.teamId == TeamId.Team2 then
 			WebUI:ExecuteJS("startsurrender()")
 		end
 	end
@@ -106,10 +106,14 @@ function Voting:OnVoteInProgress()
 end
 
 function Voting:SetSettings(p_VoteDuration, p_CooldownBetweenVotes, p_MaxVotingStartsPerPlayer, P_VotingParticipationNeeded)
-	self.voteDuration = p_VoteDuration
-	self.cooldownBetweenVotes = p_CooldownBetweenVotes
-	self.maxVotingStartsPerPlayer = p_MaxVotingStartsPerPlayer
-	self.votingParticipationNeeded = P_VotingParticipationNeeded
+	self.m_VoteDuration = p_VoteDuration
+	self.m_CooldownBetweenVotes = p_CooldownBetweenVotes
+	self.m_MaxVotingStartsPerPlayer = p_MaxVotingStartsPerPlayer
+	self.m_VotingParticipationNeeded = P_VotingParticipationNeeded
 end
 
-return Voting
+if g_Voting == nil then
+	g_Voting = Voting()
+end
+
+return g_Voting

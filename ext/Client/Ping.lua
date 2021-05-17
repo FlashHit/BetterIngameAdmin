@@ -1,27 +1,31 @@
 class 'Ping'
 
 function Ping:__init()
-    self.showPing = false
-    
+	self.m_ShowPing = false
+
 	Events:Subscribe('WebUI:ShowPing', self, self.OnWebUIShowPing)
 	Events:Subscribe('WebUI:HidePing', self, self.OnWebUIHidePing)
 end
 
 function Ping:OnWebUIShowPing()
-	self.showPing = true
+	self.m_ShowPing = true
 end
 
 function Ping:OnWebUIHidePing()
-	self.showPing = false
+	self.m_ShowPing = false
 end
 
 function Ping:UpdateLocalPlayerPing(p_PingTable)
-    if self.showPing == true then
-        local localPlayer = PlayerManager:GetLocalPlayer()
-        if localPlayer ~= nil and p_PingTable[localPlayer.name] ~= nil and p_PingTable[localPlayer.name] < 999 then
-            WebUI:ExecuteJS(string.format("updateLocalPlayerPing(%s)", json.encode(p_PingTable[localPlayer.name])))
-        end
-    end
+	if self.m_ShowPing == true then
+		local s_LocalPlayer = PlayerManager:GetLocalPlayer()
+		if s_LocalPlayer ~= nil and p_PingTable[s_LocalPlayer.name] ~= nil and p_PingTable[s_LocalPlayer.name] < 999 then
+			WebUI:ExecuteJS(string.format("updateLocalPlayerPing(%s)", json.encode(p_PingTable[s_LocalPlayer.name])))
+		end
+	end
 end
 
-return Ping
+if g_Ping == nil then
+	g_Ping = Ping()
+end
+
+return g_Ping
