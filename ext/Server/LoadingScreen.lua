@@ -43,7 +43,7 @@ function LoadingScreen:OnAuthenticated(p_Player)
 	NetEvents:SendTo('Info', p_Player, {self.m_ServerName, self.m_ServerDescription, self.m_BannerUrl})
 end
 
-function LoadingScreen:OnLevelLoaded(levelName, gameMode, round, roundsPerMap)
+function LoadingScreen:OnLevelLoaded(p_LevelName, p_GameMode, p_Round, p_RoundsPerMap)
 	local s_Args = RCON:SendCommand('vars.serverName')
 	self.m_ServerName = s_Args[2]
 	s_Args = RCON:SendCommand('vars.serverDescription')
