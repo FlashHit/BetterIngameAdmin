@@ -7,7 +7,7 @@ function LoadingScreen:__init()
 end
 
 function LoadingScreen:OnExtensionLoaded()
-	if self.m_ShowLoadingScreenInfo == false then
+	if self.m_ShowLoadingScreenInfo == false or self:GetIsHotReload() then
 		WebUI:ExecuteJS("hideLoadingScreen()")
 	end
 end
@@ -33,6 +33,14 @@ end
 
 function LoadingScreen:SetLoadingScreenInfo(p_ShowLoadingScreenInfo)
 	self.m_ShowLoadingScreenInfo = p_ShowLoadingScreenInfo
+end
+
+function LoadingScreen:GetIsHotReload()
+	if SharedUtils:GetLevelName() == "Levels/Web_Loading/Web_Loading" then
+		return false
+	else
+		return true
+	end
 end
 
 if g_LoadingScreen == nil then

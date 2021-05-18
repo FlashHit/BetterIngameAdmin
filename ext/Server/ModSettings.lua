@@ -51,6 +51,7 @@ function ModSettings:OnLevelLoaded(p_LevelName, p_GameMode, p_Round, p_RoundsPer
 		if #s_Results == 0 then
 			print("MODSETTINGS - LIST EMPTY - CREATING LIST")
 			self:SQLSaveModSettings()
+			return
 		end
 		if s_Results[1]["showEnemyCorpses"] == 1 then
 			self.m_ShowEnemyCorpses = true
