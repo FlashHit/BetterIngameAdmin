@@ -1816,9 +1816,9 @@ function updateScoreboardBody4(sendThis3)
 	sendThis3[1] = sendThis3[1].replace(/\>/g,"&gt;");
 	place3 += 1;
 	if(sendThis3[5] == true){
-		document.getElementById("table3tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis3[1]+'&apos;, '+0+')"><td id="place3">'+place3+'</td><td id="name3">'+sendThis3[1]+'</td><td id="kills3">'+sendThis3[2]+'</td><td id="deaths3">'+sendThis3[3]+'</td><td id="points3">'+sendThis3[4]+'</td><td id="ping3">'+sendThis3[5]+'</td></tr>';
+		document.getElementById("table3tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis3[1]+'&apos;, '+0+')"><td id="place3">'+place3+'</td><td id="name3">'+sendThis3[1]+'</td><td id="kills3">'+sendThis3[2]+'</td><td id="deaths3">'+sendThis3[3]+'</td><td id="points3">'+sendThis3[4]+'</td><td id="ping3">'+sendThis3[6]+'</td></tr>';
 	}else{
-		document.getElementById("table3tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis3[1]+'&apos;, '+0+')" class="isDead"><td id="place3">'+place3+'</td><td id="name3">'+sendThis3[1]+'</td><td id="kills3">'+sendThis3[2]+'</td><td id="deaths3">'+sendThis3[3]+'</td><td id="points3">'+sendThis3[4]+'</td><td id="ping3">'+sendThis3[5]+'</td></tr>';
+		document.getElementById("table3tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis3[1]+'&apos;, '+0+')" class="isDead"><td id="place3">'+place3+'</td><td id="name3">'+sendThis3[1]+'</td><td id="kills3">'+sendThis3[2]+'</td><td id="deaths3">'+sendThis3[3]+'</td><td id="points3">'+sendThis3[4]+'</td><td id="ping3">'+sendThis3[6]+'</td></tr>';
 	}
 }
 function updateScoreboardBody5(sendThis4) 
@@ -1827,9 +1827,9 @@ function updateScoreboardBody5(sendThis4)
 	sendThis4[1] = sendThis4[1].replace(/\>/g,"&gt;");
 	place4 += 1;
 	if(sendThis4[5] == true){
-		document.getElementById("table4tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis4[1]+'&apos;, '+0+')"><td id="place4">'+place4+'</td><td id="name4">'+sendThis4[1]+'</td><td id="kills4">'+sendThis4[2]+'</td><td id="deaths4">'+sendThis4[3]+'</td><td id="points4">'+sendThis4[4]+'</td><td id="ping4">'+sendThis4[5]+'</td></tr>';
+		document.getElementById("table4tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis4[1]+'&apos;, '+0+')"><td id="place4">'+place4+'</td><td id="name4">'+sendThis4[1]+'</td><td id="kills4">'+sendThis4[2]+'</td><td id="deaths4">'+sendThis4[3]+'</td><td id="points4">'+sendThis4[4]+'</td><td id="ping4">'+sendThis4[6]+'</td></tr>';
 	}else{
-		document.getElementById("table4tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis4[1]+'&apos;, '+0+')" class="isDead"><td id="place4">'+place4+'</td><td id="name4">'+sendThis4[1]+'</td><td id="kills4">'+sendThis4[2]+'</td><td id="deaths4">'+sendThis4[3]+'</td><td id="points4">'+sendThis4[4]+'</td><td id="ping4">'+sendThis4[5]+'</td></tr>';
+		document.getElementById("table4tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis4[1]+'&apos;, '+0+')" class="isDead"><td id="place4">'+place4+'</td><td id="name4">'+sendThis4[1]+'</td><td id="kills4">'+sendThis4[2]+'</td><td id="deaths4">'+sendThis4[3]+'</td><td id="points4">'+sendThis4[4]+'</td><td id="ping4">'+sendThis4[6]+'</td></tr>';
 	}
 }
 function updateScoreboardBody6() 
