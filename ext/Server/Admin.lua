@@ -138,6 +138,12 @@ function Admin:OnKickPlayer(p_Player, p_Args)
 		NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
 		print("ADMIN KICK - Error Player " .. p_Player.name .. " is no admin")
 		return
+	elseif m_GameAdmin:IsAdmin(p_Args[1]) or m_ServerOwner:IsOwner(p_Args[1]) then
+		s_Messages[1] = "Error."
+		s_Messages[2] = "Sorry, that player is protected."
+		NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+		print("ADMIN KICK - Error Player " .. p_Args[1] .. " is protected")
+		return
 	end
 	local s_TargetPlayer = PlayerManager:GetPlayerByName(p_Args[1])
 	if s_TargetPlayer == nil then
@@ -168,6 +174,12 @@ function Admin:OnTBanPlayer(p_Player, p_Args)
 		s_Messages[2] = "Sorry, you are no admin or at least don't have the required abilitities to do this action."
 		NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
 		print("ADMIN TBAN - Error Player " .. p_Player.name .. " is no admin")
+		return
+	elseif m_GameAdmin:IsAdmin(p_Args[1]) or m_ServerOwner:IsOwner(p_Args[1]) then
+		s_Messages[1] = "Error."
+		s_Messages[2] = "Sorry, that player is protected."
+		NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+		print("ADMIN TBAN - Error Player " .. p_Args[1] .. " is protected")
 		return
 	end
 	local s_TargetPlayer = PlayerManager:GetPlayerByName(p_Args[1])
@@ -202,6 +214,12 @@ function Admin:OnBanPlayer(p_Player, p_Args)
 		s_Messages[2] = "Sorry, you are no admin or at least don't have the required abilitities to do this action."
 		NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
 		print("ADMIN BAN - Error Player " .. p_Player.name .. " is no admin")
+		return
+	elseif m_GameAdmin:IsAdmin(p_Args[1]) or m_ServerOwner:IsOwner(p_Args[1]) then
+		s_Messages[1] = "Error."
+		s_Messages[2] = "Sorry, that player is protected."
+		NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+		print("ADMIN BAN - Error Player " .. p_Args[1] .. " is protected")
 		return
 	end
 	local s_TargetPlayer = PlayerManager:GetPlayerByName(p_Args[1])
