@@ -205,7 +205,7 @@ function votekick(playerName) {
 	closepopup();
 	document.getElementById("voteyes").style.fontWeight = "900";
 }
-function voteban(args) {
+function voteban(playerName) {
 	showHideVotings = true;
 	WebUI.Call('DispatchEvent', 'WebUI:VotebanPlayer', playerName);
 	closepopup();

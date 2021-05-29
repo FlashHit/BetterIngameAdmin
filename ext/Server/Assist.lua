@@ -75,18 +75,22 @@ function Assist:AssistTarget(p_Player, p_IsInQueueList)
 	for l_TeamId = 1, s_EnemyTeams do
 		local s_EnemyTeamCount = TeamSquadManager:GetTeamPlayerCount(l_TeamId)
 		local s_EnemyTeamTickets = TicketManager:GetTicketCount(l_TeamId)
-		if s_CurrentTeamCount > s_EnemyTeamCount or (s_CurrentTeamTickets >= s_EnemyTeamTickets and s_CurrentTeamCount > (s_EnemyTeamCount - 2)) then
-			if p_Player.alive == true then
-				RCON:SendCommand('admin.killPlayer', {p_Player.name})
+		if l_TeamId ~= p_Player.teamId then
+			if s_CurrentTeamCount > s_EnemyTeamCount or (s_CurrentTeamTickets >= s_EnemyTeamTickets and s_CurrentTeamCount > (s_EnemyTeamCount - 2)) then
+				if p_Player.alive == true then
+					RCON:SendCommand('admin.killPlayer', {p_Player.name})
+				end
+				p_Player.teamId = l_TeamId
+				if p_IsInQueueList ~= 0 then
+					table.remove(self.m_QueueAssistList[p_IsInQueueList], 1)
+				end
+				local s_Messages = {}
+				s_Messages[1] = "Assist Enemy Team."
+				s_Messages[2] = "You have been switched because of your assist request."
+				NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
+				print("ASSIST - MOVE - Player " .. p_Player.name .. " is now helping the enemy team " .. p_Player.teamId .. ".")
+				return
 			end
-			p_Player.teamId = l_TeamId
-			table.remove(self.m_QueueAssistList[p_IsInQueueList], 1)
-			local s_Messages = {}
-			s_Messages[1] = "Assist Enemy Team."
-			s_Messages[2] = "You have been switched because of your assist request."
-			NetEvents:SendTo('PopupResponse', p_Player, s_Messages)
-			print("ASSIST - MOVE - Player " .. p_Player.name .. " is now helping the enemy team " .. p_Player.teamId .. ".")
-			return
 		end
 	end
 	if p_IsInQueueList == 0 then

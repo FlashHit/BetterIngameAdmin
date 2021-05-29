@@ -58,10 +58,10 @@ function ModSettings:OnLevelLoaded(p_LevelName, p_GameMode, p_Round, p_RoundsPer
 		else
 			self.m_ShowEnemyCorpses = false
 		end
-		self.m_CooldownBetweenVotes = s_Results[1]["m_CooldownBetweenVotes"]
-		self.m_VotingParticipationNeeded = s_Results[1]["m_VotingParticipationNeeded"]
-		self.m_VoteDuration = s_Results[1]["m_VoteDuration"]
-		self.m_MaxVotingStartsPerPlayer = s_Results[1]["m_MaxVotingStartsPerPlayer"]
+		self.m_CooldownBetweenVotes = tonumber(s_Results[1]["cooldownBetweenVotes"])
+		self.m_VotingParticipationNeeded = tonumber(s_Results[1]["votingParticipationNeeded"])
+		self.m_VoteDuration = tonumber(s_Results[1]["voteDuration"])
+		self.m_MaxVotingStartsPerPlayer = tonumber(s_Results[1]["maxVotingStartsPerPlayer"])
 		if s_Results[1]["enableAssistFunction"] == 1 then
 			self.m_EnableAssistFunction = true
 		else
