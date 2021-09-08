@@ -850,6 +850,8 @@ function generateModeUrl(mode){
 		return "UI/Art/GameMode/gm_ctf"
 	}else if(mode == "AirSuperiority0"){
 		return "UI/Art/GameMode/gm_as"
+	}else{
+		return "UI/Art/GameMode/gm_cq"
 	}
 }
 function generateMapUrl(map){
@@ -911,6 +913,8 @@ function generateMapUrl(map){
 		return "UI/Art/Menu/LevelThumbs/Xp5_003_thumb"
 	}else if(map == "XP5_004"){
 		return "UI/Art/Menu/LevelThumbs/Xp5_004_thumb"
+	}else{
+		return "UI/Art/Menu/LevelThumbs/empty_thumb"
 	}
 }
 
@@ -973,6 +977,44 @@ function generateMapName(map){
 		return "Kiasar Railroad"
 	}else if(map == "XP5_004"){
 		return "Sabalan Pipeline"
+	}else if(map == "COOP_007"){
+		return "Operation Exodus"
+	}else if(map == "COOP_006"){
+		return "Fire from the Sky"
+	}else if(map == "COOP_009"){
+		return "Exfiltration"
+	}else if(map == "COOP_002"){
+		return "Hit and Run"
+	}else if(map == "COOP_003"){
+		return "Drop \'Em Like Liquid"
+	}else if(map == "COOP_010"){
+		return "The Eleventh Hour"
+	}else if(map == "SP_New_York"){
+		return "Semper Fidelis"
+	}else if(map == "SP_Earthquake"){
+		return "Operation Swordbreaker"
+	}else if(map == "SP_Earthquake_2"){
+		return "Uprising"
+	}else if(map == "SP_Jet"){
+		return "Going Hunting"
+	}else if(map == "SP_Bank"){
+		return "Operation Guillotine"
+	}else if(map == "SP_Paris"){
+		return "Comrades"
+	}else if(map == "SP_Tank"){
+		return "Thunder Run"
+	}else if(map == "SP_Tank_B"){
+		return "Fear No Evil"
+	}else if(map == "SP_Sniper"){
+		return "Night Shift"
+	}else if(map == "SP_Valley"){
+		return "Rock and a Hard Place"
+	}else if(map == "SP_Villa"){
+		return "Kaffarov"
+	}else if(map == "SP_Finale"){
+		return "The Great Destroyer"
+	}else{
+		return map
 	}
 }
 
@@ -1009,6 +1051,8 @@ function generateModeName(mode){
 		return "Capture the Flag"
 	}else if(mode == "AirSuperiority0"){
 		return "Air Superiority"
+	}else{
+		return mode
 	}
 }
 
