@@ -93,11 +93,13 @@ enableAssistFunction = true;
 /* Region PopUp (gets triggered on click on playerName on scoreboard */
 function action(playerName ,squadId, isSquadPrivate)
 {
-	playerName = playerName.replace(/\</g,"&lt;");
-	playerName = playerName.replace(/\>/g,"&gt;");
+	let playerNameInline = playerName
+	let playerNameCompare = escapestring(playerName, false)
+	playerName = escapestring(playerName, true)
+
 	WebUI.Call('DispatchEvent', 'WebUI:IgnoreReleaseTab');
 	document.getElementById("popup").style.display = "inline";
-	if(playerName == localPlayer) {
+	if(playerNameCompare == localPlayer) {
 		document.getElementById("popup").innerHTML = '<div id="titlepopup">Actions for yourself<div id="close" onclick="closepopup()"></div></div></div>';
 		document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
 		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="surrender()">Surrender</div>';
@@ -116,25 +118,25 @@ function action(playerName ,squadId, isSquadPrivate)
 			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="createSquad()">Create Squad</div>';
 		}
 		if(admin == true || isOwner == true){
-			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="adminpopup(&apos;'+playerName+'&apos;)">Admin</div>';		
+			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="adminpopup(&grave;'+playerName+'&grave;)">Admin</div>';		
 		}
 	}else{
-		document.getElementById("popup").innerHTML = '<div id="titlepopup">Actions for the player: '+playerName+'<div id="close" onclick="closepopup()"></div></div></div>';
+		document.getElementById("popup").innerHTML = '<div id="titlepopup">Actions for the player: '+playerNameInline+'<div id="close" onclick="closepopup()"></div></div></div>';
 		document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
-		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="votekick(&apos;'+playerName+'&apos;)">Votekick</div>';
-		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="voteban(&apos;'+playerName+'&apos;)">Voteban</div>';
-		if(playersMuted.includes(playerName)) {
-			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="unmute(&apos;'+playerName+'&apos;)">Unmute</div>';
+		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="votekick(&grave;'+playerName+'&grave;)">Votekick</div>';
+		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="voteban(&grave;'+playerName+'&grave;)">Voteban</div>';
+		if(playersMuted.includes(playerNameCompare)) {
+			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="unmute(&grave;'+playerName+'&grave;)">Unmute</div>';
 		}else{		
-			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="mute(&apos;'+playerName+'&apos;)">Mute</div>';
+			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="mute(&grave;'+playerName+'&grave;)">Mute</div>';
 		}
 		if(squadId == localPlayerSquad && localPlayerIsSquadLeader == true) {
-			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="squad(&apos;'+playerName+'&apos;)">Squad</div>';
+			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="squad(&grave;'+playerName+'&grave;)">Squad</div>';
 		}else if(squadId != localPlayerSquad && squadId != 0 && squadCount[squadId] < maxSquadSize && isSquadPrivate == false) {
-			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="joinSquad(&apos;'+playerName+'&apos;)">Join Squad</div>';
+			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="joinSquad(&grave;'+playerName+'&grave;)">Join Squad</div>';
 		}
 		if(admin == true || isOwner == true){
-			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="adminpopup(&apos;'+playerName+'&apos;)">Admin</div>';		
+			document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="adminpopup(&grave;'+playerName+'&grave;)">Admin</div>';		
 		}
 	}
 	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
@@ -144,25 +146,28 @@ function action(playerName ,squadId, isSquadPrivate)
 }
 /* Region AdminPopup (gets triggered in popup button "Admin")*/
 function adminpopup(playerName) {
-	document.getElementById("popup").innerHTML = '<div id="titlepopup">Actions for the player: '+playerName+'<div id="close" onclick="closepopup()"></div></div></div>';
+	let playerNameInline = playerName
+	playerName = escapestring(playerName, true)
+
+	document.getElementById("popup").innerHTML = '<div id="titlepopup">Actions for the player: '+playerNameInline+'<div id="close" onclick="closepopup()"></div></div></div>';
 	document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
 		if(canMovePlayers == true || isOwner == true ){
-		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="move(&apos;'+playerName+'&apos;)">Move</div>';
+		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="move(&grave;'+playerName+'&grave;)">Move</div>';
 	}
 	if(canKillPlayers == true || isOwner == true ){
-		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="kill(&apos;'+playerName+'&apos;)">Kill</div>';
+		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="kill(&grave;'+playerName+'&grave;)">Kill</div>';
 	}	
 	if(canKickPlayers == true || isOwner == true ){
-		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="kick(&apos;'+playerName+'&apos;)">Kick</div>';
+		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="kick(&grave;'+playerName+'&grave;)">Kick</div>';
 	}
 	if(canTemporaryBanPlayers == true || isOwner == true ){
-		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="tban(&apos;'+playerName+'&apos;)">TBan</div>';
+		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="tban(&grave;'+playerName+'&grave;)">TBan</div>';
 	}
 	if(canPermanentlyBanPlayers == true || isOwner == true ){
-		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="ban(&apos;'+playerName+'&apos;)">Ban</div>';
+		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="ban(&grave;'+playerName+'&grave;)">Ban</div>';
 	}
 	if(canEditGameAdminList == true || isOwner == true ) {
-		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="getAdminRightsOfPlayer(&apos;'+playerName+'&apos;)">Edit rights</div>';
+		document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="getAdminRightsOfPlayer(&grave;'+playerName+'&grave;)">Edit rights</div>';
 	}
 	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
 	{
@@ -213,8 +218,12 @@ function voteban(playerName) {
 }
 function startvotekick(args) 
 {
-	let playerName = args[0].replace(/\</g,"&lt;");
+	let playerName = args[0].replace(/\&/g,"&amp;");
+	playerName = playerName.replace(/\</g,"&lt;");
 	playerName = playerName.replace(/\>/g,"&gt;");
+	playerName = playerName.replace(/\"/g,"&quot;");
+	playerName = playerName.replace(/\'/g,"&#39;");
+	playerName = playerName.replace(/\\/g,"&#92;");
 	isVoteInProgress = true;
 	secondsLeft = args[1];
 	yesvotes = 1;
@@ -237,8 +246,12 @@ function startvotekick(args)
 }
 function startvoteban(args) 
 {
-	let playerName = args[0].replace(/\</g,"&lt;");
+	let playerName = args[0].replace(/\&/g,"&amp;");
+	playerName = playerName.replace(/\</g,"&lt;");
 	playerName = playerName.replace(/\>/g,"&gt;");
+	playerName = playerName.replace(/\"/g,"&quot;");
+	playerName = playerName.replace(/\'/g,"&#39;");
+	playerName = playerName.replace(/\\/g,"&#92;");
 	isVoteInProgress = true;
 	secondsLeft = args[1];
 	yesvotes = 1;
@@ -333,13 +346,14 @@ function voteInProgress()
 
 /* Region Player Mute */
 function mute(playerName) {
-	playersMuted.push(playerName); 
+	playersMuted.push(escapestring(playerName, false)); 
 	WebUI.Call('DispatchEvent', 'WebUI:MutePlayer', playerName);
 	closepopup();
 }
 function unmute(playerName) {
-	if (playersMuted.indexOf(playerName) > -1) {
-		playersMuted.splice(playersMuted.indexOf(playerName), 1);
+	let playerNameArg = escapestring(playerName, false)
+	if (playersMuted.indexOf(playerNameArg) > -1) {
+		playersMuted.splice(playersMuted.indexOf(playerNameArg), 1);
 	}
 	WebUI.Call('DispatchEvent', 'WebUI:UnmutePlayer', playerName);
 	closepopup();
@@ -379,10 +393,14 @@ function createSquad() {
 
 /* Region Squad Action for other players */
 function squad(playerName) {
-	document.getElementById("popup").innerHTML = '<div id="titlepopup">Squadactions for the player: '+playerName+'<div id="close" onclick="closepopup()"></div></div></div>';
+
+	let playerNameInline = playerName
+	playerName = escapestring(playerName, true)
+
+	document.getElementById("popup").innerHTML = '<div id="titlepopup">Squadactions for the player: '+playerNameInline+'<div id="close" onclick="closepopup()"></div></div></div>';
 	document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="kickSquad(&apos;'+playerName+'&apos;)">Kick from Squad</div>';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="makeSquadLeader(&apos;'+playerName+'&apos;)">Promote to SQ Leader</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="kickSquad(&grave;'+playerName+'&grave;)">Kick from Squad</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="makeSquadLeader(&grave;'+playerName+'&grave;)">Promote to SQ Leader</div>';
 	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
 	{
 		document.getElementById("popupelements").style.height = "100%";	
@@ -1297,14 +1315,17 @@ function surrender()
 /* Region admin actions for player */
 function move(playerName)
 {
+	let playerNameInline = playerName
+	playerName = escapestring(playerName, true)
+
 	WebUI.Call('DispatchEvent', 'WebUI:IgnoreReleaseTab');
 	WebUI.Call('EnableKeyboard');
-	document.getElementById("popup").innerHTML = '<div id="titlepopup">Moving: '+playerName+'<div id="close" onclick="keyboardResetAndClosepopup()"></div></div>';
+	document.getElementById("popup").innerHTML = '<div id="titlepopup">Moving: '+playerNameInline+'<div id="close" onclick="keyboardResetAndClosepopup()"></div></div>';
 	document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
-	document.getElementById("popupelements").innerHTML += '<div class="dropdown"><input onclick="teamDropdownOpen()" id="teamIdInput" type="textbox" name="1" value="Team US"></input><div class="dropDownButton" onclick="teamDropdownOpen()"></div><div id="teamNamesDropDown" class="dropdown-content"><p onclick="teamDropdownClose(&apos;1&apos;, &apos;Team US&apos;)">Team US</p><p onclick="teamDropdownClose(&apos;2&apos;, &apos;Team RU&apos;)">Team RU</p></div></div>';
-	document.getElementById("popupelements").innerHTML += '<div class="dropdown"><input onclick="squadDropdownOpen()" id="squadIdInput" type="textbox" name="0" value="No Squad"></input><div class="dropDownButton" onclick="squadDropdownOpen()"></div><div id="squadNamesDropDown" class="dropdown-content"><p onclick="squadDropdownClose(&apos;0&apos;, &apos;No Squad&apos;)">No Squad</p><p onclick="squadDropdownClose(&apos;1&apos;, &apos;Squad Alpha&apos;)">Squad Alpha</p><p onclick="squadDropdownClose(&apos;2&apos;, &apos;Squad Bravo&apos;)">Squad Bravo</p><p onclick="squadDropdownClose(&apos;3&apos;, &apos;Squad Charlie&apos;)">Squad Charlie</p><p onclick="squadDropdownClose(&apos;4&apos;, &apos;Squad Delta&apos;)">Squad Delta</p><p onclick="squadDropdownClose(&apos;5&apos;, &apos;Squad Echo&apos;)">Squad Echo</p><p onclick="squadDropdownClose(&apos;6&apos;, &apos;Squad Foxtrot&apos;)">Squad Foxtrot</p><p onclick="squadDropdownClose(&apos;7&apos;, &apos;Squad Golf&apos;)">Squad Golf</p><p onclick="squadDropdownClose(&apos;8&apos;, &apos;Squad Hotel&apos;)">Squad Hotel</p><p onclick="squadDropdownClose(&apos;9&apos;, &apos;Squad India&apos;)">Squad India</p><p onclick="squadDropdownClose(&apos;10&apos;, &apos;Squad Juliet&apos;)">Squad Juliet</p><p onclick="squadDropdownClose(&apos;11&apos;, &apos;Squad Kilo&apos;)">Squad Kilo</p><p onclick="squadDropdownClose(&apos;12&apos;, &apos;Squad Lima&apos;)">Squad Lima</p><p onclick="squadDropdownClose(&apos;13&apos;, &apos;Squad Mike&apos;)">Squad Mike</p><p onclick="squadDropdownClose(&apos;14&apos;, &apos;Squad November&apos;)">Squad November</p><p onclick="squadDropdownClose(&apos;15&apos;, &apos;Squad Oscar&apos;)">Squad Oscar</p><p onclick="squadDropdownClose(&apos;16&apos;, &apos;Squad Papa&apos;)">Squad Papa</p><p onclick="squadDropdownClose(&apos;17&apos;, &apos;Squad Quebec&apos;)">Squad Quebec</p><p onclick="squadDropdownClose(&apos;18&apos;, &apos;Squad Romeo&apos;)">Squad Romeo</p><p onclick="squadDropdownClose(&apos;19&apos;, &apos;Squad Sierra&apos;)">Squad Sierra</p><p onclick="squadDropdownClose(&apos;20&apos;, &apos;Squad Tango&apos;)">Squad Tango</p><p onclick="squadDropdownClose(&apos;21&apos;, &apos;Squad Uniform&apos;)">Squad Uniform</p><p onclick="squadDropdownClose(&apos;22&apos;, &apos;Squad Victor&apos;)">Squad Victor</p><p onclick="squadDropdownClose(&apos;23&apos;, &apos;Squad Whiskey&apos;)">Squad Whiskey</p><p onclick="squadDropdownClose(&apos;24&apos;, &apos;Squad Xray&apos;)">Squad Xray</p><p onclick="squadDropdownClose(&apos;25&apos;, &apos;Squad Yankee&apos;)">Squad Yankee</p><p onclick="squadDropdownClose(&apos;26&apos;, &apos;Squad Zulu&apos;)">Squad Zulu</p><p onclick="squadDropdownClose(&apos;27&apos;, &apos;Squad Haggard&apos;)">Squad Haggard</p><p onclick="squadDropdownClose(&apos;28&apos;, &apos;Squad Sweetwater&apos;)">Squad Sweetwater</p><p onclick="squadDropdownClose(&apos;29&apos;, &apos;Squad Preston&apos;)">Squad Preston</p><p onclick="squadDropdownClose(&apos;30&apos;, &apos;Squad Redford&apos;)">Squad Redford</p><p onclick="squadDropdownClose(&apos;31&apos;, &apos;Squad Faith&apos;)">Squad Faith</p><p onclick="squadDropdownClose(&apos;32&apos;, &apos;Squad Celeste&apos;)">Squad Celeste</p></div></div>';
+	document.getElementById("popupelements").innerHTML += '<div class="dropdown"><input onclick="teamDropdownOpen()" id="teamIdInput" type="textbox" name="1" value="Team US"></input><div class="dropDownButton" onclick="teamDropdownOpen()"></div><div id="teamNamesDropDown" class="dropdown-content"><p onclick="teamDropdownClose(&grave;1&grave;, &grave;Team US&grave;)">Team US</p><p onclick="teamDropdownClose(&grave;2&grave;, &grave;Team RU&grave;)">Team RU</p></div></div>';
+	document.getElementById("popupelements").innerHTML += '<div class="dropdown"><input onclick="squadDropdownOpen()" id="squadIdInput" type="textbox" name="0" value="No Squad"></input><div class="dropDownButton" onclick="squadDropdownOpen()"></div><div id="squadNamesDropDown" class="dropdown-content"><p onclick="squadDropdownClose(&grave;0&grave;, &grave;No Squad&grave;)">No Squad</p><p onclick="squadDropdownClose(&grave;1&grave;, &grave;Squad Alpha&grave;)">Squad Alpha</p><p onclick="squadDropdownClose(&grave;2&grave;, &grave;Squad Bravo&grave;)">Squad Bravo</p><p onclick="squadDropdownClose(&grave;3&grave;, &grave;Squad Charlie&grave;)">Squad Charlie</p><p onclick="squadDropdownClose(&grave;4&grave;, &grave;Squad Delta&grave;)">Squad Delta</p><p onclick="squadDropdownClose(&grave;5&grave;, &grave;Squad Echo&grave;)">Squad Echo</p><p onclick="squadDropdownClose(&grave;6&grave;, &grave;Squad Foxtrot&grave;)">Squad Foxtrot</p><p onclick="squadDropdownClose(&grave;7&grave;, &grave;Squad Golf&grave;)">Squad Golf</p><p onclick="squadDropdownClose(&grave;8&grave;, &grave;Squad Hotel&grave;)">Squad Hotel</p><p onclick="squadDropdownClose(&grave;9&grave;, &grave;Squad India&grave;)">Squad India</p><p onclick="squadDropdownClose(&grave;10&grave;, &grave;Squad Juliet&grave;)">Squad Juliet</p><p onclick="squadDropdownClose(&grave;11&grave;, &grave;Squad Kilo&grave;)">Squad Kilo</p><p onclick="squadDropdownClose(&grave;12&grave;, &grave;Squad Lima&grave;)">Squad Lima</p><p onclick="squadDropdownClose(&grave;13&grave;, &grave;Squad Mike&grave;)">Squad Mike</p><p onclick="squadDropdownClose(&grave;14&grave;, &grave;Squad November&grave;)">Squad November</p><p onclick="squadDropdownClose(&grave;15&grave;, &grave;Squad Oscar&grave;)">Squad Oscar</p><p onclick="squadDropdownClose(&grave;16&grave;, &grave;Squad Papa&grave;)">Squad Papa</p><p onclick="squadDropdownClose(&grave;17&grave;, &grave;Squad Quebec&grave;)">Squad Quebec</p><p onclick="squadDropdownClose(&grave;18&grave;, &grave;Squad Romeo&grave;)">Squad Romeo</p><p onclick="squadDropdownClose(&grave;19&grave;, &grave;Squad Sierra&grave;)">Squad Sierra</p><p onclick="squadDropdownClose(&grave;20&grave;, &grave;Squad Tango&grave;)">Squad Tango</p><p onclick="squadDropdownClose(&grave;21&grave;, &grave;Squad Uniform&grave;)">Squad Uniform</p><p onclick="squadDropdownClose(&grave;22&grave;, &grave;Squad Victor&grave;)">Squad Victor</p><p onclick="squadDropdownClose(&grave;23&grave;, &grave;Squad Whiskey&grave;)">Squad Whiskey</p><p onclick="squadDropdownClose(&grave;24&grave;, &grave;Squad Xray&grave;)">Squad Xray</p><p onclick="squadDropdownClose(&grave;25&grave;, &grave;Squad Yankee&grave;)">Squad Yankee</p><p onclick="squadDropdownClose(&grave;26&grave;, &grave;Squad Zulu&grave;)">Squad Zulu</p><p onclick="squadDropdownClose(&grave;27&grave;, &grave;Squad Haggard&grave;)">Squad Haggard</p><p onclick="squadDropdownClose(&grave;28&grave;, &grave;Squad Sweetwater&grave;)">Squad Sweetwater</p><p onclick="squadDropdownClose(&grave;29&grave;, &grave;Squad Preston&grave;)">Squad Preston</p><p onclick="squadDropdownClose(&grave;30&grave;, &grave;Squad Redford&grave;)">Squad Redford</p><p onclick="squadDropdownClose(&grave;31&grave;, &grave;Squad Faith&grave;)">Squad Faith</p><p onclick="squadDropdownClose(&grave;32&grave;, &grave;Squad Celeste&grave;)">Squad Celeste</p></div></div>';
 	document.getElementById("popupelements").innerHTML += '<div><input id="moveReason" type="textbox" placeholder="Reason: (Optional)"></input></div>';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="moveNow(&apos;'+playerName+'&apos;)">Move</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="moveNow(&grave;'+playerName+'&grave;)">Move</div>';
 	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
 	{
 		document.getElementById("popupelements").style.height = "100%";	
@@ -1343,12 +1364,15 @@ function moveNow(playerName)
 }
 function kill(playerName)
 {
+	let playerNameInline = playerName
+	playerName = escapestring(playerName, true)
+
 	WebUI.Call('DispatchEvent', 'WebUI:IgnoreReleaseTab');
 	WebUI.Call('EnableKeyboard');
-	document.getElementById("popup").innerHTML = '<div id="titlepopup">Killing: '+playerName+'<div id="close" onclick="keyboardResetAndClosepopup()"></div></div>';
+	document.getElementById("popup").innerHTML = '<div id="titlepopup">Killing: '+playerNameInline+'<div id="close" onclick="keyboardResetAndClosepopup()"></div></div>';
 	document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
 	document.getElementById("popupelements").innerHTML += '<div><input id="killReason" type="textbox" placeholder="Reason: (Optional)"></input></div>';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="killNow(&apos;'+playerName+'&apos;)">Kill</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="killNow(&grave;'+playerName+'&grave;)">Kill</div>';
 	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
 	{
 		document.getElementById("popupelements").style.height = "100%";	
@@ -1364,12 +1388,15 @@ function killNow(playerName)
 }
 function kick(playerName)
 {
+	let playerNameInline = playerName
+	playerName = escapestring(playerName, true)
+
 	WebUI.Call('DispatchEvent', 'WebUI:IgnoreReleaseTab');
 	WebUI.Call('EnableKeyboard');
-	document.getElementById("popup").innerHTML = '<div id="titlepopup">Kicking: '+playerName+'<div id="close" onclick="keyboardResetAndClosepopup()"></div></div>';
+	document.getElementById("popup").innerHTML = '<div id="titlepopup">Kicking: '+playerNameInline+'<div id="close" onclick="keyboardResetAndClosepopup()"></div></div>';
 	document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
 	document.getElementById("popupelements").innerHTML += '<div><input id="kickReason" type="textbox" placeholder="Reason: (Optional)"></input></div>';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="kickNow(&apos;'+playerName+'&apos;)">Kick</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="kickNow(&grave;'+playerName+'&grave;)">Kick</div>';
 	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
 	{
 		document.getElementById("popupelements").style.height = "100%";	
@@ -1385,14 +1412,17 @@ function kickNow(playerName)
 }
 
 function tban(playerName)
-{	
+{
+	let playerNameInline = playerName
+	playerName = escapestring(playerName, true)
+
 	WebUI.Call('DispatchEvent', 'WebUI:IgnoreReleaseTab');
 	WebUI.Call('EnableKeyboard');
-	document.getElementById("popup").innerHTML = '<div id="titlepopup">Temp. Ban: '+playerName+'<div id="close" onclick="keyboardResetAndClosepopup()"></div></div>';
+	document.getElementById("popup").innerHTML = '<div id="titlepopup">Temp. Ban: '+playerNameInline+'<div id="close" onclick="keyboardResetAndClosepopup()"></div></div>';
 	document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
 	document.getElementById("popupelements").innerHTML += '<div><input id="tbanDuration" type="textbox" placeholder="Time: (in minutes)"></input></div>';
 	document.getElementById("popupelements").innerHTML += '<div><input id="tbanReason" type="textbox" placeholder="Reason: (Optional)"></input></div>';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="tbanNow(&apos;'+playerName+'&apos;)">TBan</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="tbanNow(&grave;'+playerName+'&grave;)">TBan</div>';
 	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
 	{
 		document.getElementById("popupelements").style.height = "100%";	
@@ -1408,12 +1438,15 @@ function tbanNow(playerName)
 }
 function ban(playerName)
 {
+	let playerNameInline = playerName
+	playerName = escapestring(playerName, true)
+
 	WebUI.Call('DispatchEvent', 'WebUI:IgnoreReleaseTab');
 	WebUI.Call('EnableKeyboard');
-	document.getElementById("popup").innerHTML = '<div id="titlepopup">Banning: '+playerName+'<div id="close" onclick="keyboardResetAndClosepopup()"></div></div>';
+	document.getElementById("popup").innerHTML = '<div id="titlepopup">Banning: '+playerNameInline+'<div id="close" onclick="keyboardResetAndClosepopup()"></div></div>';
 	document.getElementById("popup").innerHTML += '<div id="popupelements"></div>';
 	document.getElementById("popupelements").innerHTML += '<div><input id="banReason" type="textbox" placeholder="Reason: (Optional)"></input></div>';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="banNow(&apos;'+playerName+'&apos;)">Ban</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="banNow(&grave;'+playerName+'&grave;)">Ban</div>';
 	if(document.getElementById("popupelements").offsetHeight > document.getElementById("popup").offsetHeight)
 	{
 		document.getElementById("popupelements").style.height = "100%";	
@@ -1589,13 +1622,16 @@ function getAdminRightsOfPlayerDone(abilities)
 
 function adminrights(playerName)
 {
-	document.getElementById("popup").innerHTML = '<div id="titlepopup">Edit Admin Rights: '+playerName+'<div id="close" onclick="closeEditAdminpopup()"></div></div>';
+	let playerNameInline = playerName
+	playerName = escapestring(playerName, true)
+
+	document.getElementById("popup").innerHTML = '<div id="titlepopup">Edit Admin Rights: '+playerNameInline+'<div id="close" onclick="closeEditAdminpopup()"></div></div>';
 	document.getElementById("popup").innerHTML += '<div id="popupelements"><div id="checkBoxSwitches"></div></div>';
 	
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="deleteAdminRights(&apos;'+playerName+'&apos;)">Delete</div>';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="deleteAndSaveAdminRights(&apos;'+playerName+'&apos;)">Delete & Save</div>';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="applyAdminRights(&apos;'+playerName+'&apos;)">Apply</div>';
-	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="saveAdminRights(&apos;'+playerName+'&apos;)">Save</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="deleteAdminRights(&grave;'+playerName+'&grave;)">Delete</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="deleteAndSaveAdminRights(&grave;'+playerName+'&grave;)">Delete & Save</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="applyAdminRights(&grave;'+playerName+'&grave;)">Apply</div>';
+	document.getElementById("popupelements").innerHTML += '<div id="popupelement" onclick="saveAdminRights(&grave;'+playerName+'&grave;)">Save</div>';
 	
 }
 
@@ -1770,8 +1806,12 @@ function updateScoreboardHeader(scoreboardHeader)
 	document.getElementById("tickets1").innerHTML = scoreboardHeader[1];
 	document.getElementById("team2").innerHTML = scoreboardHeader[2];
 	document.getElementById("tickets2").innerHTML = scoreboardHeader[3];
-	localPlayer = scoreboardHeader[4].replace(/\</g,"&lt;");
+	localPlayer = scoreboardHeader[4].replace(/\&/g,"&amp;");
+	localPlayer = localPlayer.replace(/\</g,"&lt;");
 	localPlayer = localPlayer.replace(/\>/g,"&gt;");
+	localPlayer = localPlayer.replace(/\"/g,"&quot;");
+	localPlayer = localPlayer.replace(/\'/g,"&#39;");
+	localPlayer = localPlayer.replace(/\\/g,"&#92;");
 	localPlayerSquad = scoreboardHeader[5];
 	localPlayerIsSquadLeader = scoreboardHeader[6];
 	localPlayerIsSquadPrivate = scoreboardHeader[7];
@@ -1794,8 +1834,9 @@ function updateScoreboardHeader2(scoreboardHeader)
 
 function updateScoreboardBody1(sendThis1) 
 {
-	sendThis1[1] = sendThis1[1].replace(/\</g,"&lt;");
-	sendThis1[1] = sendThis1[1].replace(/\>/g,"&gt;");
+	let playerNameArg = escapestring(sendThis1[1], true)
+	sendThis1[1] = escapestring(sendThis1[1], false)
+
 	if(squadCount[sendThis1[5]] == null){
 		squadCount[sendThis1[5]] = 1;
 	}else{
@@ -1806,33 +1847,34 @@ function updateScoreboardBody1(sendThis1)
 		localPing = sendThis1[8];
 		document.getElementById("showLocalPing").innerHTML = '<p>Ping: <span>'+localPing+' ms</span></p>';
 		if(sendThis1[6] == true){
-			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+', '+sendThis1[9]+')" id="localPlayerScoreboard" class="'+sendThis1[7]+'"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
+			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&grave;'+playerNameArg+'&grave;, '+sendThis1[5]+', '+sendThis1[9]+')" id="localPlayerScoreboard" class="'+sendThis1[7]+'"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
 		}else{
-			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+', '+sendThis1[9]+')" id="localPlayerScoreboard" class="'+sendThis1[7]+' isDead"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
+			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&grave;'+playerNameArg+'&grave;, '+sendThis1[5]+', '+sendThis1[9]+')" id="localPlayerScoreboard" class="'+sendThis1[7]+' isDead"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
 		}
 	}else if(localPlayerSquad == sendThis1[5] && localPlayerSquad != 0) {
 		if(sendThis1[6] == true){
-			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+', '+sendThis1[9]+')" id="squadMates" class="'+sendThis1[7]+'"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
+			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&grave;'+playerNameArg+'&grave;, '+sendThis1[5]+', '+sendThis1[9]+')" id="squadMates" class="'+sendThis1[7]+'"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
 		}else{
-			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+', '+sendThis1[9]+')" id="squadMates" class="'+sendThis1[7]+' isDead"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
+			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&grave;'+playerNameArg+'&grave;, '+sendThis1[5]+', '+sendThis1[9]+')" id="squadMates" class="'+sendThis1[7]+' isDead"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
 		}
 	}else{
 		if(sendThis1[6] == true){
-			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+', '+sendThis1[9]+')" class="squad'+sendThis1[5]+' '+sendThis1[7]+'" onmouseover="showWholeSquad(&apos;squad'+sendThis1[5]+'&apos;)" onmouseout="hideWholeSquad(&apos;squad'+sendThis1[5]+'&apos;)"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
+			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&grave;'+playerNameArg+'&grave;, '+sendThis1[5]+', '+sendThis1[9]+')" class="squad'+sendThis1[5]+' '+sendThis1[7]+'" onmouseover="showWholeSquad(&grave;squad'+sendThis1[5]+'&grave;)" onmouseout="hideWholeSquad(&grave;squad'+sendThis1[5]+'&grave;)"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
 		}else{
-			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis1[1]+'&apos;, '+sendThis1[5]+', '+sendThis1[9]+')" class="squad'+sendThis1[5]+' '+sendThis1[7]+' isDead" onmouseover="showWholeSquad(&apos;squad'+sendThis1[5]+'&apos;)" onmouseout="hideWholeSquad(&apos;squad'+sendThis1[5]+'&apos;)"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
+			document.getElementById("table1tbody").innerHTML += '<tr onmousedown="action(&grave;'+playerNameArg+'&grave;, '+sendThis1[5]+', '+sendThis1[9]+')" class="squad'+sendThis1[5]+' '+sendThis1[7]+' isDead" onmouseover="showWholeSquad(&grave;squad'+sendThis1[5]+'&grave;)" onmouseout="hideWholeSquad(&grave;squad'+sendThis1[5]+'&grave;)"><td id="place1">'+place1+'</td><td id="name1">'+sendThis1[1]+'</td><td id="kills1">'+sendThis1[2]+'</td><td id="deaths1">'+sendThis1[3]+'</td><td id="points1">'+sendThis1[4]+'</td><td id="ping1">'+sendThis1[8]+'</td></tr>';
 		}
 	}
 }
 function updateScoreboardBody2(sendThis2) 
 {
-	sendThis2[1] = sendThis2[1].replace(/\</g,"&lt;");
-	sendThis2[1] = sendThis2[1].replace(/\>/g,"&gt;");
+	let playerNameArg = escapestring(sendThis2[1], true)
+	sendThis2[1] = escapestring(sendThis2[1], false)
+
 	place2 += 1;
 	if(sendThis2[5] == true){
-		document.getElementById("table2tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis2[1]+'&apos;, '+0+', '+true+')"><td id="place2">'+place2+'</td><td id="name2">'+sendThis2[1]+'</td><td id="kills2">'+sendThis2[2]+'</td><td id="deaths2">'+sendThis2[3]+'</td><td id="points2">'+sendThis2[4]+'</td><td id="ping2">'+sendThis2[6]+'</td></tr>';
+		document.getElementById("table2tbody").innerHTML += '<tr onmousedown="action(&grave;'+playerNameArg[1]+'&grave;, '+0+', '+true+')"><td id="place2">'+place2+'</td><td id="name2">'+sendThis2[1]+'</td><td id="kills2">'+sendThis2[2]+'</td><td id="deaths2">'+sendThis2[3]+'</td><td id="points2">'+sendThis2[4]+'</td><td id="ping2">'+sendThis2[6]+'</td></tr>';
 	}else{
-		document.getElementById("table2tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis2[1]+'&apos;, '+0+', '+true+')" class="isDead"><td id="place2">'+place2+'</td><td id="name2">'+sendThis2[1]+'</td><td id="kills2">'+sendThis2[2]+'</td><td id="deaths2">'+sendThis2[3]+'</td><td id="points2">'+sendThis2[4]+'</td><td id="ping2">'+sendThis2[6]+'</td></tr>';
+		document.getElementById("table2tbody").innerHTML += '<tr onmousedown="action(&grave;'+playerNameArg[1]+'&grave;, '+0+', '+true+')" class="isDead"><td id="place2">'+place2+'</td><td id="name2">'+sendThis2[1]+'</td><td id="kills2">'+sendThis2[2]+'</td><td id="deaths2">'+sendThis2[3]+'</td><td id="points2">'+sendThis2[4]+'</td><td id="ping2">'+sendThis2[6]+'</td></tr>';
 	}
 }
 function updateScoreboardBody3(size) 
@@ -1856,24 +1898,26 @@ function updateScoreboardBody3(size)
 }
 function updateScoreboardBody4(sendThis3) 
 {
-	sendThis3[1] = sendThis3[1].replace(/\</g,"&lt;");
-	sendThis3[1] = sendThis3[1].replace(/\>/g,"&gt;");
+	let playerNameArg = escapestring(sendThis3[1], true)
+	sendThis3[1] = escapestring(sendThis3[1], false)
+
 	place3 += 1;
 	if(sendThis3[5] == true){
-		document.getElementById("table3tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis3[1]+'&apos;, '+0+')"><td id="place3">'+place3+'</td><td id="name3">'+sendThis3[1]+'</td><td id="kills3">'+sendThis3[2]+'</td><td id="deaths3">'+sendThis3[3]+'</td><td id="points3">'+sendThis3[4]+'</td><td id="ping3">'+sendThis3[6]+'</td></tr>';
+		document.getElementById("table3tbody").innerHTML += '<tr onmousedown="action(&grave;'+playerNameArg[1]+'&grave;, '+0+')"><td id="place3">'+place3+'</td><td id="name3">'+sendThis3[1]+'</td><td id="kills3">'+sendThis3[2]+'</td><td id="deaths3">'+sendThis3[3]+'</td><td id="points3">'+sendThis3[4]+'</td><td id="ping3">'+sendThis3[6]+'</td></tr>';
 	}else{
-		document.getElementById("table3tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis3[1]+'&apos;, '+0+')" class="isDead"><td id="place3">'+place3+'</td><td id="name3">'+sendThis3[1]+'</td><td id="kills3">'+sendThis3[2]+'</td><td id="deaths3">'+sendThis3[3]+'</td><td id="points3">'+sendThis3[4]+'</td><td id="ping3">'+sendThis3[6]+'</td></tr>';
+		document.getElementById("table3tbody").innerHTML += '<tr onmousedown="action(&grave;'+playerNameArg[1]+'&grave;, '+0+')" class="isDead"><td id="place3">'+place3+'</td><td id="name3">'+sendThis3[1]+'</td><td id="kills3">'+sendThis3[2]+'</td><td id="deaths3">'+sendThis3[3]+'</td><td id="points3">'+sendThis3[4]+'</td><td id="ping3">'+sendThis3[6]+'</td></tr>';
 	}
 }
 function updateScoreboardBody5(sendThis4) 
 {
-	sendThis4[1] = sendThis4[1].replace(/\</g,"&lt;");
-	sendThis4[1] = sendThis4[1].replace(/\>/g,"&gt;");
+	let playerNameArg = escapestring(sendThis4[1], true)
+	sendThis4[1] = escapestring(sendThis4[1], false)
+
 	place4 += 1;
 	if(sendThis4[5] == true){
-		document.getElementById("table4tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis4[1]+'&apos;, '+0+')"><td id="place4">'+place4+'</td><td id="name4">'+sendThis4[1]+'</td><td id="kills4">'+sendThis4[2]+'</td><td id="deaths4">'+sendThis4[3]+'</td><td id="points4">'+sendThis4[4]+'</td><td id="ping4">'+sendThis4[6]+'</td></tr>';
+		document.getElementById("table4tbody").innerHTML += '<tr onmousedown="action(&grave;'+playerNameArg[1]+'&grave;, '+0+')"><td id="place4">'+place4+'</td><td id="name4">'+sendThis4[1]+'</td><td id="kills4">'+sendThis4[2]+'</td><td id="deaths4">'+sendThis4[3]+'</td><td id="points4">'+sendThis4[4]+'</td><td id="ping4">'+sendThis4[6]+'</td></tr>';
 	}else{
-		document.getElementById("table4tbody").innerHTML += '<tr onmousedown="action(&apos;'+sendThis4[1]+'&apos;, '+0+')" class="isDead"><td id="place4">'+place4+'</td><td id="name4">'+sendThis4[1]+'</td><td id="kills4">'+sendThis4[2]+'</td><td id="deaths4">'+sendThis4[3]+'</td><td id="points4">'+sendThis4[4]+'</td><td id="ping4">'+sendThis4[6]+'</td></tr>';
+		document.getElementById("table4tbody").innerHTML += '<tr onmousedown="action(&grave;'+playerNameArg[1]+'&grave;, '+0+')" class="isDead"><td id="place4">'+place4+'</td><td id="name4">'+sendThis4[1]+'</td><td id="kills4">'+sendThis4[2]+'</td><td id="deaths4">'+sendThis4[3]+'</td><td id="points4">'+sendThis4[4]+'</td><td id="ping4">'+sendThis4[6]+'</td></tr>';
 	}
 }
 function updateScoreboardBody6() 
@@ -3609,3 +3653,20 @@ function quickServerSetup()
 	//document.getElementById("quickSetupPopup").style.display = "inline";
 }
 /* Endregion */
+
+function escapestring(stringToEscape, withBackSlash)
+{
+	stringToEscape = stringToEscape.replace(/\&/g,"&amp;");
+	stringToEscape = stringToEscape.replace(/\</g,"&lt;");
+	stringToEscape = stringToEscape.replace(/\>/g,"&gt;");
+	stringToEscape = stringToEscape.replace(/\"/g,"&quot;");
+	stringToEscape = stringToEscape.replace(/\'/g,"&#39;");
+
+	if (withBackSlash == true)
+	{
+		stringToEscape = stringToEscape.replace(/\\/g,"&#92;&#92;");
+	}else{
+		stringToEscape = stringToEscape.replace(/\\/g,"&#92;");
+	}
+	return stringToEscape
+}

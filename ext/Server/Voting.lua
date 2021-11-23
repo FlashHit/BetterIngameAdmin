@@ -149,6 +149,12 @@ function Voting:OnVotekickPlayer(p_Player, p_VotekickPlayer)
 				s_Args[2] = "You reached the maximum amount of votes for this round."
 				NetEvents:SendTo('PopupResponse', p_Player, s_Args)
 			end
+		else
+			print("VOTEKICK: Failed - Player " .. p_VotekickPlayer .. " was not found.")
+			local s_Args = {}
+			s_Args[1] = "ERROR: Player not found."
+			s_Args[2] = "Please retry or let the admin know."
+			NetEvents:SendTo('PopupResponse', p_Player, s_Args)
 		end
 	else
 		local s_Args = {}
@@ -208,6 +214,12 @@ function Voting:OnVotebanPlayer(p_Player, p_VotebanPlayer)
 				s_Args[2] = "You reached the maximum amount of votes for this round."
 				NetEvents:SendTo('PopupResponse', p_Player, s_Args)
 			end
+		else
+			print("VOTEBAN: Failed - Player " .. p_VotebanPlayer .. " was not found.")
+			local s_Args = {}
+			s_Args[1] = "ERROR: Player not found."
+			s_Args[2] = "Please retry or let the admin know."
+			NetEvents:SendTo('PopupResponse', p_Player, s_Args)
 		end
 	else
 		local s_Args = {}

@@ -17,14 +17,20 @@ function Mute:OnWebUIMutePlayer(p_PlayerName)
 	for _, l_MutedPlayer in pairs(self.m_MutedPlayers) do
 		if l_MutedPlayer == s_Player.id then
 			s_PlayerAlreadyMuted = true
-			return
+			break
 		end
 	end
 	if s_PlayerAlreadyMuted == false then
 		table.insert(self.m_MutedPlayers, s_Player.id)
-		WebUI:ExecuteJS(string.format("successPlayerMuted()"))
+		local s_Message = {}
+		s_Message[1] = "You muted " .. p_PlayerName .. " successfully!"
+		s_Message[2] = "Now you won't see any messages from " .. p_PlayerName .. " anymore."
+		WebUI:ExecuteJS(string.format("showPopupResponse(%s)", json.encode(s_Message)))
 	else
-		WebUI:ExecuteJS(string.format("errorPlayerAlreadyMuted()"))
+		local s_Message = {}
+		s_Message[1] = "You muted " .. p_PlayerName .. " already!"
+		s_Message[2] = "You can't mute " .. p_PlayerName .. " twice."
+		WebUI:ExecuteJS(string.format("showPopupResponse(%s)", json.encode(s_Message)))
 	end
 end
 
@@ -35,13 +41,19 @@ function Mute:OnWebUIUnmutePlayer(p_PlayerName)
 		if l_MutedPlayer == s_Player.id then
 			s_PlayerAlreadyMuted = true
 			table.remove(self.m_MutedPlayers, i)
-			return
+			break
 		end
 	end
 	if s_PlayerAlreadyMuted == true then
-		WebUI:ExecuteJS(string.format("successPlayerUnmuted()"))
+		local s_Message = {}
+		s_Message[1] = "You unmuted " .. p_PlayerName .. "successfully!"
+		s_Message[2] = "Now you will see all messages from " .. p_PlayerName .. " again."
+		WebUI:ExecuteJS(string.format("showPopupResponse(%s)", json.encode(s_Message)))
 	else
-		WebUI:ExecuteJS(string.format("errorPlayerWasNotMuted()"))
+		local s_Message = {}
+		s_Message[1] = "The player " .. p_PlayerName .. " was not muted!"
+		s_Message[2] = "You can't unmute " .. p_PlayerName .. " as he was not muted."
+		WebUI:ExecuteJS(string.format("showPopupResponse(%s)", json.encode(s_Message)))
 	end
 end
 
