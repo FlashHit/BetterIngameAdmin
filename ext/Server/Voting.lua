@@ -46,15 +46,15 @@ end
 
 function Voting:EndVote()
 	if self.m_PlayersVotedYesCount > self.m_PlayersVotedNoCount and self.m_PlayersVotedYesCount >= 4 then
-		if (self.m_PlayersVotedYesCount + self.m_PlayersVotedNoCount) >= (TeamSquadManager:GetTeamPlayerCount(TeamId.Team1) * self.m_VotingParticipationNeeded / 100) and self.m_TypeOfVote == "surrenderUS" then
+		if (self.m_PlayersVotedYesCount + self.m_PlayersVotedNoCount) >= (TeamSquadManager:GetTeamPlayerCount(TeamId.Team1) * m_ModSettings:GetVotingParticipationNeeded() / 100) and self.m_TypeOfVote == "surrenderUS" then
 			local s_Args = {"2"}
 			RCON:SendCommand('mapList.endround', s_Args)
 			print("VOTE SURRENDER: Success - The US team surrenders. RESULT - YES: " .. self.m_PlayersVotedYesCount .. " Players | NO: " .. self.m_PlayersVotedNoCount .. " Players.")
-		elseif (self.m_PlayersVotedYesCount + self.m_PlayersVotedNoCount) >= (TeamSquadManager:GetTeamPlayerCount(TeamId.Team2) * self.m_VotingParticipationNeeded / 100) and self.m_TypeOfVote == "surrenderRU" then
+		elseif (self.m_PlayersVotedYesCount + self.m_PlayersVotedNoCount) >= (TeamSquadManager:GetTeamPlayerCount(TeamId.Team2) * m_ModSettings:GetVotingParticipationNeeded() / 100) and self.m_TypeOfVote == "surrenderRU" then
 			local s_Args = {"1"}
 			RCON:SendCommand('mapList.endround', s_Args)
 			print("VOTE SURRENDER: Success - The RU team surrenders. RESULT - YES: " .. self.m_PlayersVotedYesCount .. " Players | NO: " .. self.m_PlayersVotedNoCount .. " Players.")
-		elseif (self.m_PlayersVotedYesCount + self.m_PlayersVotedNoCount) >= (PlayerManager:GetPlayerCount() * self.m_VotingParticipationNeeded / 100) then
+		elseif (self.m_PlayersVotedYesCount + self.m_PlayersVotedNoCount) >= (PlayerManager:GetPlayerCount() * m_ModSettings:GetVotingParticipationNeeded() / 100) then
 			if (self.m_TypeOfVote == "votekick" or self.m_TypeOfVote == "voteban") and self.m_PlayerToVote ~= nil then
 				local votedPlayer = PlayerManager:GetPlayerByName(self.m_PlayerToVote)
 				if self.m_TypeOfVote == "votekick" and votedPlayer ~= nil then

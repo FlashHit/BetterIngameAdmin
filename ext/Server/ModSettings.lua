@@ -159,6 +159,10 @@ function ModSettings:GetVoteDuration()
 	return self.m_VoteDuration
 end
 
+function ModSettings:GetVotingParticipationNeeded()
+	return self.m_VotingParticipationNeeded
+end
+
 function ModSettings:GetCooldownBetweenVotes()
 	return self.m_CooldownBetweenVotes
 end
