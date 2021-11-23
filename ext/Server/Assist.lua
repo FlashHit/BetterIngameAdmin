@@ -67,14 +67,35 @@ function Assist:AssistTarget(p_Player, p_IsInQueueList)
 	local s_CurrentTeamCount = TeamSquadManager:GetTeamPlayerCount(p_Player.teamId)
 	local s_CurrentTeamTickets = TicketManager:GetTicketCount(p_Player.teamId)
 	local s_EnemyTeams = 2
+	local s_CurrentGameMode = SharedUtils:GetCurrentGameMode()
 
-	if SharedUtils:GetCurrentGameMode() ~= nil and SharedUtils:GetCurrentGameMode() == "SquadDeathMatch0" then
+	if s_CurrentGameMode ~= nil and s_CurrentGameMode == "SquadDeathMatch0" then
 		s_EnemyTeams = 4
 	end
 
 	for l_TeamId = 1, s_EnemyTeams do
 		local s_EnemyTeamCount = TeamSquadManager:GetTeamPlayerCount(l_TeamId)
 		local s_EnemyTeamTickets = TicketManager:GetTicketCount(l_TeamId)
+
+		local RCON_Response = RCON:SendCommand('vars.gameModeCounter')
+		local s_GameModeCounter = tonumber(RCON_Response[2]) / 100
+
+		if s_CurrentGameMode ~= nil then
+			if s_CurrentGameMode == "RushLarge0" then
+				if s_EnemyTeamTickets >= 751 then
+					s_EnemyTeamTickets = s_EnemyTeamTickets - (924 * s_GameModeCounter)
+				elseif s_CurrentTeamTickets >= 751 then
+					s_CurrentTeamTickets = s_CurrentTeamTickets - (924 * s_GameModeCounter)
+				end
+			elseif s_CurrentGameMode == "SquadRush0" then
+				if s_EnemyTeamTickets >= 201 then
+					s_EnemyTeamTickets = s_EnemyTeamTickets - (979 * s_GameModeCounter)
+				elseif s_CurrentTeamTickets >= 201 then
+					s_CurrentTeamTickets = s_CurrentTeamTickets - (979 * s_GameModeCounter)
+				end
+			end
+		end
+
 		if l_TeamId ~= p_Player.teamId then
 			if s_CurrentTeamCount > s_EnemyTeamCount or (s_CurrentTeamTickets >= s_EnemyTeamTickets and s_CurrentTeamCount > (s_EnemyTeamCount - 2)) then
 				if p_Player.alive == true then
