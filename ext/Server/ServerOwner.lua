@@ -1,4 +1,5 @@
-class 'ServerOwner'
+---@class ServerOwner
+ServerOwner = class 'ServerOwner'
 
 local m_GeneralSettings = require('GeneralSettings')
 

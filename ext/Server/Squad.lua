@@ -1,4 +1,5 @@
-class 'Squad'
+---@class Squad
+Squad = class 'Squad'
 
 local m_GeneralSettings = require('GeneralSettings')
 

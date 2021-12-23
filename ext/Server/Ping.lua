@@ -1,4 +1,5 @@
-class 'Ping'
+---@class Ping
+Ping = class 'Ping'
 
 function Ping:__init()
 	self.m_CumulatedTimeForPing = 0
@@ -10,7 +11,6 @@ function Ping:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
 		local s_PingTable = {}
 		for i, l_Player in pairs(PlayerManager:GetPlayers()) do
 			s_PingTable[l_Player.name] = l_Player.ping
-			table.insert(s_PingTable, pingplayer)
 		end
 		self.m_CumulatedTimeForPing = 0
 		NetEvents:Broadcast('Player:Ping', s_PingTable)

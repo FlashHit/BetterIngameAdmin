@@ -1,13 +1,21 @@
-class 'BetterIngameAdmin'
+---@class BetterIngameAdmin
+BetterIngameAdmin = class 'BetterIngameAdmin'
 
+---@type LoadingScreen
 local m_LoadingScreen = require('LoadingScreen')
+---@type Voting
 local m_Voting = require('Voting')
+---@type Assist
 local m_Assist = require('Assist')
 require('Mute')
 require('Admin')
+---@type ZoomLevel
 local m_ZoomLevel = require('ZoomLevel')
+---@type Ping
 local m_Ping = require('Ping')
+---@type MinimapConfig
 local m_MinimapConfig = require('MinimapConfig')
+---@type Scoreboard
 local m_Scoreboard = require('Scoreboard')
 require('Squad')
 require('ChatLagFix')

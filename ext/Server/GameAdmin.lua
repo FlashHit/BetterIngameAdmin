@@ -1,4 +1,5 @@
-class 'GameAdmin'
+---@class GameAdmin
+GameAdmin = class 'GameAdmin'
 
 function GameAdmin:__init()
 	self.m_AdminList = {}

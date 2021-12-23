@@ -1,4 +1,5 @@
-class 'MinimapConfig'
+---@class MinimapConfig
+MinimapConfig = class 'MinimapConfig'
 
 function MinimapConfig:__init()
 	self.m_LargeMap = false

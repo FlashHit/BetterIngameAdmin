@@ -1,4 +1,5 @@
-class 'Squad'
+---@class Squad
+Squad = class 'Squad'
 
 function Squad:__init()
 	Events:Subscribe('WebUI:LeaveSquad', self, self.OnWebUILeaveSquad)

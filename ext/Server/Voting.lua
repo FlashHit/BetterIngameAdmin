@@ -1,4 +1,5 @@
-class 'Voting'
+---@class Voting
+Voting = class 'Voting'
 
 local m_ModSettings = require('ModSettings')
 local m_GameAdmin = require('GameAdmin')
@@ -103,7 +104,7 @@ function Voting:OnVotekickPlayer(p_Player, p_VotekickPlayer)
 	if self.m_CooldownIsRunning == true then
 		local s_Args = {}
 		s_Args[1] = "Cooldown is running."
-		s_Args[2] = "Please wait ".. math.floor(self.m_CooldownBetweenVotes - self.m_CumulatedCooldownTime) .." seconds and try again."
+		s_Args[2] = "Please wait ".. math.floor(m_ModSettings:GetCooldownBetweenVotes() - self.m_CumulatedCooldownTime) .." seconds and try again."
 		NetEvents:SendTo('PopupResponse', p_Player, s_Args)
 		return
 	end
@@ -168,7 +169,7 @@ function Voting:OnVotebanPlayer(p_Player, p_VotebanPlayer)
 	if self.m_CooldownIsRunning == true then
 		local s_Args = {}
 		s_Args[1] = "Cooldown is running."
-		s_Args[2] = "Please wait ".. self.m_CooldownBetweenVotes - self.m_CumulatedCooldownTime .." seconds and try again."
+		s_Args[2] = "Please wait ".. m_ModSettings:GetCooldownBetweenVotes() - self.m_CumulatedCooldownTime .." seconds and try again."
 		NetEvents:SendTo('PopupResponse', p_Player, s_Args)
 		return
 	end
@@ -233,7 +234,7 @@ function Voting:OnSurrender(p_Player)
 	if self.m_CooldownIsRunning == true then
 		local s_Args = {}
 		s_Args[1] = "Cooldown is running."
-		s_Args[2] = "Please wait ".. self.m_CooldownBetweenVotes - self.m_CumulatedCooldownTime .." seconds and try again."
+		s_Args[2] = "Please wait ".. m_ModSettings:GetCooldownBetweenVotes() - self.m_CumulatedCooldownTime .." seconds and try again."
 		NetEvents:SendTo('PopupResponse', p_Player, s_Args)
 		return
 	end

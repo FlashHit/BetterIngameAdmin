@@ -1,4 +1,5 @@
-class 'GeneralSettings'
+---@class GeneralSettings
+GeneralSettings = class 'GeneralSettings'
 
 function GeneralSettings:__init()
 	self.m_ServerConfig = {}

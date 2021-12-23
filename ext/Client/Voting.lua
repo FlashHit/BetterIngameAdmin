@@ -1,4 +1,5 @@
-class 'Voting'
+---@class Voting
+Voting = class 'Voting'
 
 function Voting:__init()
 	self.m_VoteInProgress = false

@@ -1,4 +1,5 @@
-class 'Scoreboard'
+---@class Scoreboard
+Scoreboard = class 'Scoreboard'
 
 function Scoreboard:__init()
 	self.m_ShowEnemyCorpses = true

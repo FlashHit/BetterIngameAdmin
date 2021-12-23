@@ -1,4 +1,5 @@
-class 'Admin'
+---@class Admin
+Admin = class 'Admin'
 
 local m_ModSettings = require('ModSettings')
 local m_GameAdmin = require('GameAdmin')

@@ -1,4 +1,5 @@
-class 'ModSettings'
+---@class ModSettings
+ModSettings = class 'ModSettings'
 
 function ModSettings:__init()
 	self.m_LoadedModSettings = false

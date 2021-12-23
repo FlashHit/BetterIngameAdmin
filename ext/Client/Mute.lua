@@ -1,4 +1,5 @@
-class 'Mute'
+---@class Mute
+Mute = class 'Mute'
 
 function Mute:__init()
 	self.m_MutedPlayers = {}

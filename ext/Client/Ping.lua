@@ -1,4 +1,5 @@
-class 'Ping'
+---@class Ping
+Ping = class 'Ping'
 
 function Ping:__init()
 	self.m_ShowPing = false

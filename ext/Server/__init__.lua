@@ -1,14 +1,23 @@
-class 'BetterIngameAdmin'
+---@class BetterIngameAdmin
+BetterIngameAdmin = class 'BetterIngameAdmin'
 
 require('Admin')
+---@type Assist
 local m_Assist = require('Assist')
+---@type GameAdmin
 local m_GameAdmin = require('GameAdmin')
+---@type GeneralSettings
 local m_GeneralSettings = require('GeneralSettings')
+---@type LoadingScreen
 local m_LoadingScreen = require('LoadingScreen')
+---@type ModSettings
 local m_ModSettings = require('ModSettings')
+---@type Ping
 local m_Ping = require('Ping')
+---@type ServerOwner
 local m_ServerOwner = require('ServerOwner')
 require('Squad')
+---@type Voting
 local m_Voting = require('Voting')
 
 function BetterIngameAdmin:__init()

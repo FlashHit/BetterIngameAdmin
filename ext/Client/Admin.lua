@@ -1,4 +1,5 @@
-class 'Admin'
+---@class Admin
+Admin = class 'Admin'
 
 function Admin:__init()
 	-- Admin actions for players

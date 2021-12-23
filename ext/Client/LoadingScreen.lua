@@ -1,4 +1,5 @@
-class 'LoadingScreen'
+---@class LoadingScreen
+LoadingScreen = class 'LoadingScreen'
 
 function LoadingScreen:__init()
 	self.m_ShowLoadingScreenInfo = true

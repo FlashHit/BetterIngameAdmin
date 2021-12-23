@@ -19,7 +19,7 @@ local s_CheckURL = "https://raw.githubusercontent.com/FlashHit/BetterIngameAdmin
 local s_ShowUptodateMsg = true
 
 -- Check last version code
-function GetCurrentVersion()
+local function GetCurrentVersion()
 	local s_Options = HttpOptions({}, 10)
 	s_Options.verifyCertificate = false; --ignore cert for wine users
 	local s_Res = Net:GetHTTP(s_CheckURL, s_Options)
@@ -36,7 +36,7 @@ function GetCurrentVersion()
 	end
 end
 
-function CheckVersion()
+local function CheckVersion()
 	local s_CurrentVersion = GetCurrentVersion()
 
 	if s_CurrentVersion == nil then

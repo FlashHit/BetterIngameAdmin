@@ -1,4 +1,5 @@
-class 'Assist'
+---@class Assist
+Assist = class 'Assist'
 
 local m_ModSettings = require('ModSettings')
 

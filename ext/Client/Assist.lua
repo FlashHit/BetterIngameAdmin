@@ -1,4 +1,5 @@
-class 'Assist'
+---@class Assist
+Assist = class 'Assist'
 
 function Assist:__init()
 	self.m_EnableAssistFunction = true

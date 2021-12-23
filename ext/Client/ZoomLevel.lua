@@ -1,5 +1,7 @@
-class 'ZoomLevel'
+---@class ZoomLevel
+ZoomLevel = class 'ZoomLevel'
 
+---@type Scoreboard
 local m_Scoreboard = require('Scoreboard')
 
 function ZoomLevel:__init()
