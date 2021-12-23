@@ -46,46 +46,60 @@ end
 function Admin:OnWebUIMovePlayer(p_Args)
 	NetEvents:Send('MovePlayer', json.decode(p_Args))
 end
+
 function Admin:OnWebUIKillPlayer(p_Args)
 	NetEvents:Send('KillPlayer', json.decode(p_Args))
 end
+
 function Admin:OnWebUIKickPlayer(p_Args)
 	NetEvents:Send('KickPlayer', json.decode(p_Args))
 end
+
 function Admin:OnWebUITBanPlayer(p_Args)
 	NetEvents:Send('TBanPlayer', json.decode(p_Args))
 end
+
 function Admin:OnWebUIBanPlayer(p_Args)
 	NetEvents:Send('BanPlayer', json.decode(p_Args))
 end
+
 function Admin:OnWebUIGetAdminRightsOfPlayer(p_GetAdminRightsOfPlayer)
 	NetEvents:Send('GetAdminRightsOfPlayer', p_GetAdminRightsOfPlayer)
 end
+
 function Admin:OnAdminRightsOfPlayer(p_Args)
 	WebUI:ExecuteJS(string.format("getAdminRightsOfPlayerDone(%s)", json.encode(p_Args)))
 end
+
 function Admin:OnWebUIDeleteAdminRights(p_Args)
 	NetEvents:Send('DeleteAdminRights', json.decode(p_Args))
 end
+
 function Admin:OnWebUIDeleteAndSaveAdminRights(p_Args)
 	NetEvents:Send('DeleteAndSaveAdminRights', json.decode(p_Args))
 end
+
 function Admin:OnWebUIUpdateAdminRights(p_Args)
 	NetEvents:Send('UpdateAdminRights', json.decode(p_Args))
 end
+
 function Admin:OnWebUIUpdateAndSaveAdminRights(p_Args)
 	NetEvents:Send('UpdateAndSaveAdminRights', json.decode(p_Args))
 end
 
+-- Map Commands
 function Admin:OnMapRotation(p_Args)
 	WebUI:ExecuteJS(string.format("getCurrentMapRotation(%s)", json.encode(p_Args)))
 end
+
 function Admin:OnSetNextMap(p_MapIndex)
 	NetEvents:Send('SetNextMap', json.decode(p_MapIndex))
 end
+
 function Admin:OnWebUIRunNextRound()
 	NetEvents:Send('RunNextRound')
 end
+
 function Admin:OnWebUIRestartRound()
 	NetEvents:Send('RestartRound')
 end
@@ -139,8 +153,4 @@ function Admin:OnQuickServerSetup()
 	WebUI:ExecuteJS(string.format("quickServerSetup()"))
 end
 
-if g_Admin == nil then
-	g_Admin = Admin()
-end
-
-return g_Admin
+return Admin()

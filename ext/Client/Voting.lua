@@ -35,14 +35,18 @@ function Voting:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
 			NetEvents:Send('CheckVoteNo')
 			WebUI:ExecuteJS(string.format("fontWeightNo()"))
 		end
+
 		self.m_CumulatedTime = self.m_CumulatedTime + p_DeltaTime
+
 		if self.m_CumulatedTime >= self.m_Count and self.m_Count <= self.m_VoteDuration + 1 then
 			self.m_Count = self.m_Count + 1
+
 			if self.m_Count >= self.m_VoteDuration + 1 then
 				self.m_VoteInProgress = false
 				self.m_CumulatedTime = 0
 				self.m_Count = 1
 			end
+
 			WebUI:ExecuteJS(string.format("updateTimer()"))
 		end
 	end
@@ -75,6 +79,7 @@ end
 function Voting:OnStartSurrender(p_TypeOfVote)
 	self.m_VoteInProgress = true
 	local s_Player = PlayerManager:GetLocalPlayer()
+
 	if p_TypeOfVote == "surrenderUS" then
 		if s_Player.teamId == TeamId.Team1 then
 			WebUI:ExecuteJS("startsurrender()")
@@ -113,8 +118,4 @@ function Voting:SetSettings(p_VoteDuration, p_CooldownBetweenVotes, p_MaxVotingS
 	self.m_VotingParticipationNeeded = P_VotingParticipationNeeded
 end
 
-if g_Voting == nil then
-	g_Voting = Voting()
-end
-
-return g_Voting
+return Voting()

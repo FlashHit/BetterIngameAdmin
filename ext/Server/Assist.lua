@@ -1,6 +1,7 @@
 ---@class Assist
 Assist = class 'Assist'
 
+---@type ModSettings
 local m_ModSettings = require('ModSettings')
 
 function Assist:__init()
@@ -53,12 +54,15 @@ end
 function Assist:CheckQueueAssist()
 	for l_TeamId = 1, 4 do
 		::continue::
+
 		if self.m_QueueAssistList[l_TeamId][1] ~= nil then
 			local s_Player = PlayerManager:GetPlayerByName(self.m_QueueAssistList[l_TeamId][1])
+
 			if s_Player == nil then
 				table.remove(self.m_QueueAssistList[l_TeamId], 1)
 				goto continue
 			end
+
 			self:AssistTarget(s_Player, l_TeamId)
 		end
 	end
@@ -102,10 +106,13 @@ function Assist:AssistTarget(p_Player, p_IsInQueueList)
 				if p_Player.alive == true then
 					RCON:SendCommand('admin.killPlayer', {p_Player.name})
 				end
+
 				p_Player.teamId = l_TeamId
+
 				if p_IsInQueueList ~= 0 then
 					table.remove(self.m_QueueAssistList[p_IsInQueueList], 1)
 				end
+
 				local s_Messages = {}
 				s_Messages[1] = "Assist Enemy Team."
 				s_Messages[2] = "You have been switched because of your assist request."
@@ -115,6 +122,7 @@ function Assist:AssistTarget(p_Player, p_IsInQueueList)
 			end
 		end
 	end
+
 	if p_IsInQueueList == 0 then
 		self:QuickSwitch(p_Player)
 	end
@@ -126,23 +134,29 @@ function Assist:QuickSwitch(p_Player)
 
 	for l_TeamId = 1, 4 do
 		::__continue__::
+
 		if l_TeamId ~= p_Player.teamId and self.m_QueueAssistList[l_TeamId][1] ~= nil then
 			s_ListPlayer = PlayerManager:GetPlayerByName(self.m_QueueAssistList[l_TeamId][1])
+
 			if s_ListPlayer == nil then
 				table.remove(self.m_QueueAssistList[l_TeamId], 1)
 				goto __continue__
 			end
+
 			if s_ListPlayer.alive == true then
 				RCON:SendCommand('admin.killPlayer', {s_ListPlayer.name})
 			end
+
 			if p_Player.alive == true then
 				RCON:SendCommand('admin.killPlayer', {p_Player.name})
 			end
+
 			s_ListPlayer.teamId = TeamId.Team1
 			p_Player.teamId = TeamId.Team2
 			table.remove(self.m_QueueAssistList[l_TeamId], 1)
 		end
 	end
+
 	-- If it didn't work then we do this
 	if s_PlayerTeamId == p_Player.teamId then
 		self:OnQueueAssistEnemyTeam(p_Player)
@@ -172,6 +186,7 @@ function Assist:OnCancelAssistEnemyTeam(p_Player)
 			return
 		end
 	end
+
 	-- if he is not in the list for his team, then maybe he is stuck in some other queuelist :o
 	-- so this shouldn't happen
 	for l_TeamId = 1, 4 do
@@ -189,12 +204,9 @@ function Assist:OnCancelAssistEnemyTeam(p_Player)
 			end
 		end
 	end
+
 	-- Error you are in no queue
 	print("ASSIST - CANCEL Error - Player " .. p_Player.name .. " was in no assist queue.")
 end
 
-if g_Assist == nil then
-	g_Assist = Assist()
-end
-
-return g_Assist
+return Assist()

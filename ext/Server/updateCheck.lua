@@ -23,10 +23,13 @@ local function GetCurrentVersion()
 	local s_Options = HttpOptions({}, 10)
 	s_Options.verifyCertificate = false; --ignore cert for wine users
 	local s_Res = Net:GetHTTP(s_CheckURL, s_Options)
+
 	if s_Res.status ~= 200 then
 		return nil
 	end
+
 	local s_Json = json.decode(s_Res.body)
+
 	if s_Json.Version ~= nil then
 		return s_Json.Version
 	elseif s_Json.tag_name ~= nil then

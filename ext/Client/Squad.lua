@@ -15,24 +15,25 @@ end
 function Squad:OnWebUILeaveSquad()
 	NetEvents:Send('LeaveSquad')
 end
+
 function Squad:OnWebUICreateSquad()
 	NetEvents:Send('CreateSquad')
 end
+
 function Squad:OnWebUIJoinSquad(p_PlayerName)
 	NetEvents:Send('JoinSquad', p_PlayerName)
 end
+
 function Squad:OnWebUIPrivateSquad()
 	NetEvents:Send('PrivateSquad')
 end
+
 function Squad:OnWebUIKickFromSquad(p_PlayerName)
 	NetEvents:Send('KickFromSquad', p_PlayerName)
 end
+
 function Squad:OnWebUIMakeSquadLeader(p_PlayerName)
 	NetEvents:Send('MakeSquadLeader', p_PlayerName)
 end
 
-if g_Squad == nil then
-	g_Squad = Squad()
-end
-
-return g_Squad
+return Squad()

@@ -51,8 +51,4 @@ function LoadingScreen:OnLevelLoaded(p_LevelName, p_GameMode, p_Round, p_RoundsP
 	self.m_ServerDescription = s_Args[2]
 end
 
-if g_LoadingScreen == nil then
-	g_LoadingScreen = LoadingScreen()
-end
-
-return g_LoadingScreen
+return LoadingScreen()

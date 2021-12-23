@@ -1,6 +1,7 @@
 ---@class ServerOwner
 ServerOwner = class 'ServerOwner'
 
+---@type GeneralSettings
 local m_GeneralSettings = require('GeneralSettings')
 
 function ServerOwner:__init()
@@ -109,8 +110,4 @@ function ServerOwner:OnAuthenticated(p_Player)
 	end
 end
 
-if g_ServerOwner == nil then
-	g_ServerOwner = ServerOwner()
-end
-
-return g_ServerOwner
+return ServerOwner()

@@ -11,6 +11,7 @@ end
 function GameAdmin:OnGameAdminPlayer(p_PlayerName, p_Abilities)
 	self.m_AdminList[p_PlayerName] = p_Abilities
 	local s_Player = PlayerManager:GetPlayerByName(p_PlayerName)
+
 	if s_Player ~= nil then
 		NetEvents:SendTo('AdminPlayer', s_Player, p_Abilities)
 	end
@@ -19,10 +20,12 @@ end
 function GameAdmin:OnGameAdminClear()
 	for l_AdminName, l_Abilities in pairs(self.m_AdminList) do
 		local s_Admin = PlayerManager:GetPlayerByName(l_AdminName)
+
 		if s_Admin ~= nil then
 			NetEvents:SendTo('AdminPlayer', s_Admin)
 		end
 	end
+
 	self.m_AdminList = {}
 end
 
@@ -109,8 +112,4 @@ function GameAdmin:GetAdminRightsOfPlayer(p_PlayerName)
 	return self.m_AdminList[p_PlayerName]
 end
 
-if g_GameAdmin == nil then
-	g_GameAdmin = GameAdmin()
-end
-
-return g_GameAdmin
+return GameAdmin()

@@ -1,6 +1,7 @@
 ---@class Squad
 Squad = class 'Squad'
 
+---@type GeneralSettings
 local m_GeneralSettings = require('GeneralSettings')
 
 function Squad:__init()
@@ -15,6 +16,7 @@ end
 
 function Squad:OnLeaveSquad(p_Player)
 	p_Player.squadId = SquadId.SquadNone
+
 	local s_Messages = {}
 	s_Messages[1] = "Left Squad."
 	s_Messages[2] = "You left the squad."
@@ -26,6 +28,7 @@ function Squad:OnCreateSquad(p_Player)
 		if TeamSquadManager:GetSquadPlayerCount(p_Player.teamId, i) == 0 then
 			p_Player.squadId = i
 			RCON:SendCommand('squad.private', {tostring(p_Player.teamId), tostring(p_Player.squadId), "false"})
+
 			local s_Messages = {}
 			s_Messages[1] = "Create Squad."
 			s_Messages[2] = "You created a squad with the ID: ".. p_Player.squadId .."."
@@ -38,6 +41,7 @@ end
 function Squad:OnJoinSquad(p_Player, p_PlayerName)
 	local s_Messages = {}
 	local s_TargetPlayer = PlayerManager:GetPlayerByName(p_PlayerName)
+
 	if s_TargetPlayer ~= nil then
 		if p_Player.teamId == s_TargetPlayer.teamId and s_TargetPlayer.isSquadPrivate == false and m_GeneralSettings:GetSquadSize() > TeamSquadManager:GetSquadPlayerCount(s_TargetPlayer.teamId, s_TargetPlayer.squadId) then
 			p_Player.squadId = s_TargetPlayer.squadId
@@ -56,6 +60,7 @@ end
 
 function Squad:OnPrivateSquad(p_Player)
 	local s_Messages = {}
+
 	if p_Player.isSquadPrivate == false and p_Player.isSquadLeader == true then
 		RCON:SendCommand('squad.private', {tostring(p_Player.teamId), tostring(p_Player.squadId), "true"})
 		s_Messages = {}
@@ -73,6 +78,7 @@ end
 
 function Squad:OnKickFromSquad(p_Player, p_PlayerName)
 	local s_TargetPlayer = PlayerManager:GetPlayerByName(p_PlayerName)
+
 	if s_TargetPlayer ~= nil and p_Player.isSquadLeader == true then
 		s_TargetPlayer.squadId = SquadId.SquadNone
 		local s_Messages = {}
@@ -84,6 +90,7 @@ end
 
 function Squad:OnMakeSquadLeader(p_Player, p_PlayerName)
 	local s_TargetPlayer = PlayerManager:GetPlayerByName(p_PlayerName)
+
 	if s_TargetPlayer ~= nil and p_Player.isSquadLeader == true then
 		RCON:SendCommand('squad.leader', {tostring(s_TargetPlayer.teamId), tostring(s_TargetPlayer.squadId), p_PlayerName})
 		local s_Messages = {}
@@ -93,8 +100,4 @@ function Squad:OnMakeSquadLeader(p_Player, p_PlayerName)
 	end
 end
 
-if g_Squad == nil then
-	g_Squad = Squad()
-end
-
-return g_Squad
+return Squad()

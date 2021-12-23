@@ -1,8 +1,11 @@
 ---@class Voting
 Voting = class 'Voting'
 
+---@type ModSettings
 local m_ModSettings = require('ModSettings')
+---@type GameAdmin
 local m_GameAdmin = require('GameAdmin')
+---@type ServerOwner
 local m_ServerOwner = require('ServerOwner')
 
 function Voting:__init()
@@ -32,12 +35,15 @@ end
 function Voting:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
 	if self.m_VoteInProgress == true then
 		self.m_CumulatedTime = self.m_CumulatedTime + p_DeltaTime
+
 		if self.m_CumulatedTime >= m_ModSettings:GetVoteDuration() + 1 then
 			self:EndVote()
 		end
 	end
+
 	if self.m_CooldownIsRunning == true then
 		self.m_CumulatedCooldownTime = self.m_CumulatedCooldownTime + p_DeltaTime
+
 		if m_ModSettings:GetCooldownBetweenVotes() <= self.m_CumulatedCooldownTime then
 			self.m_CumulatedCooldownTime = 0
 			self.m_CooldownIsRunning = false
@@ -58,6 +64,7 @@ function Voting:EndVote()
 		elseif (self.m_PlayersVotedYesCount + self.m_PlayersVotedNoCount) >= (PlayerManager:GetPlayerCount() * m_ModSettings:GetVotingParticipationNeeded() / 100) then
 			if (self.m_TypeOfVote == "votekick" or self.m_TypeOfVote == "voteban") and self.m_PlayerToVote ~= nil then
 				local votedPlayer = PlayerManager:GetPlayerByName(self.m_PlayerToVote)
+
 				if self.m_TypeOfVote == "votekick" and votedPlayer ~= nil then
 					votedPlayer:Kick("Votekick")
 					print("VOTEKICK: Success - The Player " .. self.m_PlayerToVote .. " got kicked. RESULT - YES: " .. self.m_PlayersVotedYesCount .. " Players | NO: " .. self.m_PlayersVotedNoCount .. " Players.")
@@ -88,6 +95,7 @@ function Voting:EndVote()
 			print("VOTE SURRENDER US: Failed - Not enough players voted with yes. RESULT - YES: " .. self.m_PlayersVotedYesCount .. " Players | NO: " .. self.m_PlayersVotedNoCount .. " Players.")
 		end
 	end
+
 	self.m_PlayersVotedYesCount = 0
 	self.m_PlayersVotedNoCount = 0
 	self.m_PlayersVotedYes = {}
@@ -108,10 +116,13 @@ function Voting:OnVotekickPlayer(p_Player, p_VotekickPlayer)
 		NetEvents:SendTo('PopupResponse', p_Player, s_Args)
 		return
 	end
+
 	if self.m_VoteInProgress == false then
 		self.m_PlayerToVote = nil
+
 		if PlayerManager:GetPlayerByName(p_VotekickPlayer) ~= nil then
 			self.m_PlayerToVote = PlayerManager:GetPlayerByName(p_VotekickPlayer).name
+
 			if m_GameAdmin:CanKickPlayers(self.m_PlayerToVote) then
 				-- That guy is admin and can Kick. So he is protected.
 				local s_Args = {}
@@ -129,9 +140,11 @@ function Voting:OnVotekickPlayer(p_Player, p_VotekickPlayer)
 				print("VOTEKICK: Protection - Player " .. p_Player.name .. " tried to votekick Owner " .. p_VotekickPlayer)
 				return
 			end
+
 			if self.m_PlayerStartedVoteCounter[p_Player.name] == nil then
 				self.m_PlayerStartedVoteCounter[p_Player.name] = 0
 			end
+
 			if self.m_PlayerStartedVoteCounter[p_Player.name] < m_ModSettings:GetMaxVotingStartsPerPlayer() then
 				self.m_PlayerStartedVoteCounter[p_Player.name] = self.m_PlayerStartedVoteCounter[p_Player.name] + 1
 				NetEvents:Broadcast('Start:VotekickPlayer', p_VotekickPlayer)
@@ -141,6 +154,7 @@ function Voting:OnVotekickPlayer(p_Player, p_VotekickPlayer)
 				self.m_TypeOfVote = "votekick"
 				ChatManager:SendMessage(p_Player.name .. " started a votekick on " .. self.m_PlayerToVote)
 				print("VOTEKICK: Started - Player " .. p_Player.name .. " started votekick on Player " .. p_VotekickPlayer)
+
 				if self.m_PlayerStartedVoteCounter[p_Player.name] == m_ModSettings:GetMaxVotingStartsPerPlayer() then
 					NetEvents:SendTo('HideVoteButtons', p_Player)
 				end
@@ -173,10 +187,12 @@ function Voting:OnVotebanPlayer(p_Player, p_VotebanPlayer)
 		NetEvents:SendTo('PopupResponse', p_Player, s_Args)
 		return
 	end
+
 	if self.m_VoteInProgress == false then
 		if PlayerManager:GetPlayerByName(p_VotebanPlayer) ~= nil then
 			self.m_PlayerToVote = PlayerManager:GetPlayerByName(p_VotebanPlayer).name
 			self.m_PlayerToVoteAccountGuid = PlayerManager:GetPlayerByName(p_VotebanPlayer).accountGuid
+
 			if m_GameAdmin:CanKickPlayers(self.m_PlayerToVote) then
 				-- That guy is admin and can Kick. So he is protected.
 				local s_Args = {}
@@ -194,9 +210,11 @@ function Voting:OnVotebanPlayer(p_Player, p_VotebanPlayer)
 				print("VOTEBAN: Protection - Player " .. p_Player.name .. " tried to voteban Owner " .. p_VotebanPlayer)
 				return
 			end
+
 			if self.m_PlayerStartedVoteCounter[p_Player.name] == nil then
 				self.m_PlayerStartedVoteCounter[p_Player.name] = 0
 			end
+
 			if self.m_PlayerStartedVoteCounter[p_Player.name] < m_ModSettings:GetMaxVotingStartsPerPlayer() then
 				self.m_PlayerStartedVoteCounter[p_Player.name] = self.m_PlayerStartedVoteCounter[p_Player.name] + 1
 				NetEvents:Broadcast('Start:VotebanPlayer', p_VotebanPlayer)
@@ -206,6 +224,7 @@ function Voting:OnVotebanPlayer(p_Player, p_VotebanPlayer)
 				self.m_TypeOfVote = "voteban"
 				ChatManager:SendMessage(p_Player.name .. " started a voteban on " .. self.m_PlayerToVote)
 				print("VOTEBAN: Started - Player " .. p_Player.name .. " started voteban on Player " .. p_VotebanPlayer)
+
 				if self.m_PlayerStartedVoteCounter[p_Player.name] == m_ModSettings:GetMaxVotingStartsPerPlayer() then
 					NetEvents:SendTo('HideVoteButtons', p_Player)
 				end
@@ -238,15 +257,18 @@ function Voting:OnSurrender(p_Player)
 		NetEvents:SendTo('PopupResponse', p_Player, s_Args)
 		return
 	end
+
 	if self.m_VoteInProgress == false then
 		if p_Player.teamId == TeamId.Team1 then
 			self.m_TypeOfVote = "surrenderUS"
 		else
 			self.m_TypeOfVote = "surrenderRU"
 		end
+
 		if self.m_PlayerStartedVoteCounter[p_Player.name] == nil then
 			self.m_PlayerStartedVoteCounter[p_Player.name] = 0
 		end
+
 		if self.m_PlayerStartedVoteCounter[p_Player.name] < m_ModSettings:GetMaxVotingStartsPerPlayer() then
 			NetEvents:Broadcast('Start:Surrender', self.m_TypeOfVote)
 			table.insert(self.m_PlayersVotedYes, p_Player.name)
@@ -254,6 +276,7 @@ function Voting:OnSurrender(p_Player)
 			self.m_VoteInProgress = true
 			ChatManager:SendMessage(p_Player.name .. " started a surrender voting")
 			print("VOTE SURRENDER: Started - Player " .. p_Player.name .. " started a surrender voting for the team " .. p_Player.teamId)
+
 			if self.m_PlayerStartedVoteCounter[p_Player.name] == m_ModSettings:GetMaxVotingStartsPerPlayer() then
 				NetEvents:SendTo('HideVoteButtons', p_Player)
 			end
@@ -277,6 +300,7 @@ function Voting:OnCheckVoteYes(p_Player)
 			return
 		end
 	end
+
 	for i, l_PlayerName in pairs(self.m_PlayersVotedNo) do
 		if l_PlayerName == p_Player.name then
 			table.remove(self.m_PlayersVotedNo, i)
@@ -284,6 +308,7 @@ function Voting:OnCheckVoteYes(p_Player)
 			NetEvents:Broadcast('Remove:OneNoVote')
 		end
 	end
+
 	table.insert(self.m_PlayersVotedYes, p_Player.name)
 	self.m_PlayersVotedYesCount = self.m_PlayersVotedYesCount + 1
 	NetEvents:Broadcast('Vote:Yes')
@@ -295,6 +320,7 @@ function Voting:OnCheckVoteNo(p_Player)
 			return
 		end
 	end
+
 	for i, l_PlayerName in pairs(self.m_PlayersVotedYes) do
 		if l_PlayerName == p_Player.name then
 			table.remove(self.m_PlayersVotedYes, i)
@@ -302,6 +328,7 @@ function Voting:OnCheckVoteNo(p_Player)
 			NetEvents:Broadcast('Remove:OneYesVote')
 		end
 	end
+
 	table.insert(self.m_PlayersVotedNo, p_Player.name)
 	self.m_PlayersVotedNoCount = self.m_PlayersVotedNoCount + 1
 	NetEvents:Broadcast('Vote:No')
@@ -311,8 +338,4 @@ function Voting:OnLevelDestroy()
 	self.m_PlayerStartedVoteCounter = {}
 end
 
-if g_Voting == nil then
-	g_Voting = Voting()
-end
-
-return g_Voting
+return Voting()

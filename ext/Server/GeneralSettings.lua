@@ -324,339 +324,432 @@ end
 function GeneralSettings:OnBroadcastServerInfo()
 	local s_Args = {}
 	local s_Arg = RCON:SendCommand('vars.serverName')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.serverDescription')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.serverMessage')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.gamePassword')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.autoBalance')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.friendlyFire')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.killCam')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.minimap')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.hud')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.3dSpotting')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.miniMapSpotting')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.nameTag')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.3pCam')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.regenerateHealth')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.vehicleSpawnAllowed')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.onlySquadLeaderSpawn')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vu.DestructionEnabled')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vu.DesertingAllowed')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vu.VehicleDisablingEnabled')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vu.HighPerformanceReplication')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vu.SunFlareEnabled')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vu.ColorCorrectionEnabled')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.maxPlayers')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.teamKillCountForKick')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.teamKillValueForKick')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.teamKillValueIncrease')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.teamKillValueDecreasePerSecond')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.teamKillKickForBan')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.idleTimeout')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.idleBanRounds')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.roundStartPlayerCount')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.roundRestartPlayerCount')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.roundLockdownCountdown')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.vehicleSpawnDelay')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.soldierHealth')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.playerRespawnTime')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.playerManDownTime')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.bulletDamage')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.gameModeCounter')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.gunMasterWeaponsPreset')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vu.SuppressionMultiplier')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vu.TimeScale')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vu.SquadSize')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vu.ServerBanner')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.insert(s_Args, s_Arg[2])
 	else
 		table.insert(s_Args, " ")
 	end
 
-
 	s_Arg = RCON:SendCommand('mapList.list')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.remove(s_Arg, 1)
 		table.insert(s_Args, s_Arg)
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('mapList.getMapIndices')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.remove(s_Arg, 1)
 		table.insert(s_Args, s_Arg)
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('mapList.getRounds')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.remove(s_Arg, 1)
 		table.insert(s_Args, s_Arg)
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('serverInfo')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		if s_Arg[9] == "2" then
 			table.insert(s_Args, s_Arg[22])
@@ -668,38 +761,47 @@ function GeneralSettings:OnBroadcastServerInfo()
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.ctfRoundTimeModifier')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.remove(s_Arg, 1)
 		table.insert(s_Args, s_Arg)
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vu.FrequencyMode')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.remove(s_Arg, 1)
 		table.insert(s_Args, s_Arg)
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('modList.ListRunning')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.remove(s_Arg, 1)
 		table.insert(s_Args, s_Arg)
 	else
 		table.insert(s_Args, " ")
 	end
+
 	s_Arg = nil
 	s_Arg = RCON:SendCommand('vars.serverOwner')
+
 	if s_Arg ~= nil and s_Arg[2] ~= nil then
 		table.remove(s_Arg, 1)
 		table.insert(s_Args, s_Arg[1])
 	else
 		table.insert(s_Args, " ")
 	end
+
 	self.m_ServerConfig = s_Args
 	NetEvents:Broadcast('ServerInfo', s_Args)
 end
@@ -709,7 +811,7 @@ function GeneralSettings:OnAuthenticated(p_Player)
 end
 
 function GeneralSettings:SetOwner(p_PlayerName)
-		self.m_ServerConfig[52] = p_PlayerName
+	self.m_ServerConfig[52] = p_PlayerName
 end
 
 function GeneralSettings:GetSquadSize()
@@ -728,8 +830,4 @@ function GeneralSettings:OnLevelLoaded(p_LevelName, p_GameMode, p_Round, p_Round
 	self:OnBroadcastServerInfo()
 end
 
-if g_GeneralSettings == nil then
-	g_GeneralSettings = GeneralSettings()
-end
-
-return g_GeneralSettings
+return GeneralSettings()

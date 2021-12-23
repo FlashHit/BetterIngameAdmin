@@ -9,8 +9,4 @@ function ChatLagFix:__init()
 	end)
 end
 
-if g_ChatLagFix == nil then
-	g_ChatLagFix = ChatLagFix()
-end
-
-return g_ChatLagFix
+return ChatLagFix()

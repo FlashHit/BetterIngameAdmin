@@ -47,18 +47,23 @@ end
 function BetterIngameAdmin:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
 	m_Voting:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
 	m_Ping:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
+
 	if not self.m_IsHotReload then
 		return
 	end
+
 	self.m_HotReloadTimer = self.m_HotReloadTimer + p_DeltaTime
+
 	if self.m_HotReloadTimer > 1 then
 		self.m_IsHotReload = false
 		self.m_HotReloadTimer = 0
 		self:OnLevelLoaded()
 		local s_Players = PlayerManager:GetPlayers()
+
 		if s_Players == nil or #s_Players == 0 then
 			return
 		end
+
 		for _, l_Player in pairs(s_Players) do
 			m_ServerOwner:OnAuthenticated(l_Player)
 			m_GameAdmin:OnAuthenticated(l_Player)
@@ -98,4 +103,4 @@ function BetterIngameAdmin:GetIsHotReload()
 	end
 end
 
-g_BetterIngameAdmin = BetterIngameAdmin()
+BetterIngameAdmin()

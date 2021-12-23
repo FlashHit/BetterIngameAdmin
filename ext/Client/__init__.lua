@@ -107,4 +107,4 @@ function BetterIngameAdmin:OnLevelDestroy()
 	m_LoadingScreen:OnLevelDestroy()
 end
 
-g_BetterIngameAdmin = BetterIngameAdmin()
+BetterIngameAdmin()

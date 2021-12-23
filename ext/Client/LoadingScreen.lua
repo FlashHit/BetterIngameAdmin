@@ -21,6 +21,7 @@ end
 
 function LoadingScreen:OnInfo(p_Args)
 	WebUI:ExecuteJS(string.format("info(%s)", json.encode(p_Args)))
+
 	if self.m_ShowLoadingScreenInfo == false then
 		WebUI:ExecuteJS("hideLoadingScreen()")
 	end
@@ -44,8 +45,4 @@ function LoadingScreen:GetIsHotReload()
 	end
 end
 
-if g_LoadingScreen == nil then
-	g_LoadingScreen = LoadingScreen()
-end
-
-return g_LoadingScreen
+return LoadingScreen()
