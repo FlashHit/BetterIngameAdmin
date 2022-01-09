@@ -2331,6 +2331,20 @@ function resetGeneralClientSettings() {
 }
 /* Endregion */
 
+/* Region show/hide localPlayer ping */
+function showLocalPlayerPing()
+{
+	document.getElementById("showPing").innerHTML = "Yes";
+	document.getElementById("showLocalPing").style.display = "inline";
+}
+
+function hideLocalPlayerPing()
+{
+	document.getElementById("showPing").innerHTML = "No";
+	document.getElementById("showLocalPing").style.display = "none";
+}
+/* Endregion */
+
 /* Region Update localPlayer ping */
 function updateLocalPlayerPing(ping)
 {
