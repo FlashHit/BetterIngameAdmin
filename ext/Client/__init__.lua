@@ -57,6 +57,7 @@ function BetterIngameAdmin:OnExtensionLoaded()
 	WebUI:Init()
 	m_LoadingScreen:OnExtensionLoaded()
 	m_Ping:OnExtensionLoaded()
+	m_MinimapConfig:OnExtensionLoaded()
 end
 
 -- PopupResponse

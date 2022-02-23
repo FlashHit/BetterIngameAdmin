@@ -1,10 +1,31 @@
 ---@class MinimapConfig
 MinimapConfig = class 'MinimapConfig'
 
-function MinimapConfig:__init()
+function MinimapConfig:OnExtensionLoaded()
 	self.m_LargeMap = false
+
+	-- check if this vext version supports the SettingsManager
+	if SettingsManager then
+		local s_ModSetting = SettingsManager:GetSetting("DefaultMinimapSize")
+
+		-- declare the ModSetting if it is unknown
+		if not s_ModSetting then
+			local s_SettingOptions = SettingOptions()
+			s_SettingOptions.displayName = "Default Minimap Size"
+			s_SettingOptions.showInUi = false
+			s_ModSetting = SettingsManager:DeclareBool("DefaultMinimapSize", false, s_SettingOptions)
+			s_ModSetting.value = false
+		end
+
+		self.m_LargeMap = s_ModSetting.value
+
+		if self.m_LargeMap then
+			WebUI:ExecuteJS(string.format("toggleMinimapSize(%s)", '"Large"'))
+		end
+	end
+
 	self.m_MapSizeTimer = false
-	self.m_MapTimer = 0
+	self.m_MapTimer = 0.0
 
 	Events:Subscribe('WebUI:SmallMiniMapSize', self, self.OnWebUISmallMiniMapSize)
 	Events:Subscribe('WebUI:LargeMiniMapSize', self, self.OnWebUILargeMiniMapSize)
@@ -17,7 +38,7 @@ function MinimapConfig:OnMiniMapResetCallback(p_Instance)
 	p_Instance:MakeWritable()
 
 	for i = #p_Instance.eventConnections, 1, -1 do
-		if EventSpec(p_Instance.eventConnections[i].targetEvent).id == 1529486671 then
+		if p_Instance.eventConnections[i].targetEvent.id == MathUtils:FNVHash("ResetMinimap") then
 			p_Instance.eventConnections:erase(i)
 		end
 	end
@@ -25,10 +46,20 @@ end
 
 function MinimapConfig:OnWebUISmallMiniMapSize()
 	self.m_LargeMap = false
+
+	if SettingsManager then
+		local s_ModSetting = SettingsManager:GetSetting("DefaultMinimapSize")
+		s_ModSetting.value = false
+	end
 end
 
 function MinimapConfig:OnWebUILargeMiniMapSize()
 	self.m_LargeMap = true
+
+	if SettingsManager then
+		local s_ModSetting = SettingsManager:GetSetting("DefaultMinimapSize")
+		s_ModSetting.value = true
+	end
 end
 
 function MinimapConfig:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
@@ -43,7 +74,7 @@ function MinimapConfig:OnEngineUpdate(p_DeltaTime, p_SimulationDeltaTime)
 				if s_ClientUIGraphEntity.data.instanceGuid == Guid('02395EB3-5C41-4396-AC7E-A14FAA85757C') or s_ClientUIGraphEntity.data.instanceGuid == Guid('339168C6-FDEC-4EB2-8DAF-D42BDDDDD0A9') or s_ClientUIGraphEntity.data.instanceGuid == Guid('984185F4-1B3F-4E61-8B1C-54F1C53898DC') or s_ClientUIGraphEntity.data.instanceGuid == Guid('6D64CD68-CD5D-463D-8184-FF7A2D031F64') then
 					s_ClientUIGraphEntity = Entity(s_ClientUIGraphEntity)
 					self.m_MapSizeTimer = false
-					self.m_MapTimer = 0
+					self.m_MapTimer = 0.0
 					s_ClientUIGraphEntity:FireEvent('MapSize')
 
 					return

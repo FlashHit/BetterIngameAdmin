@@ -13,6 +13,15 @@ end
 
 function Mute:OnWebUIMutePlayer(p_PlayerName)
 	local s_Player = PlayerManager:GetPlayerByName(p_PlayerName)
+
+	if s_Player == nil then
+		local s_Message = {}
+		s_Message[1] = "Didn\'t find player: " .. p_PlayerName
+		s_Message[2] = "Please try again."
+		WebUI:ExecuteJS(string.format("showPopupResponse(%s)", json.encode(s_Message)))
+		return
+	end
+
 	local s_PlayerAlreadyMuted = false
 
 	for _, l_MutedPlayer in pairs(self.m_MutedPlayers) do
