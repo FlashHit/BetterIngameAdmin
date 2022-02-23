@@ -3,7 +3,7 @@
 	"Authors": ["Flash_Hit"],
 	"Description": "Provides addition functions for players and admins.",
 	"URL": "none",
-	"Version": "0.2.0",
+	"Version": "0.2.1",
 	"HasWebUI": true,
 	"HasVeniceEXT": true,
 	"Dependencies": {
