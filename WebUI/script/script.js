@@ -2884,6 +2884,36 @@ function onOff(id) {
     document.getElementById(id).innerHTML = "On";
   }
 }
+function setDefaultVoipVolume(volume) {
+  document.getElementById("defaultVoipVolumeSettingsElement").style.display =
+    "block";
+  document.getElementById("defaultVoipVolume").value = volume;
+}
+function setPlayerVoipLevel(level) {
+  document.getElementById("playerVoipLevelSettingsElement").style.display =
+    "block";
+  document.getElementById("playerVoipLevel").innerHTML = level;
+}
+function plusPlayerVoipLevel() {
+  if (document.getElementById("playerVoipLevel").innerHTML == "Squad") {
+    document.getElementById("playerVoipLevel").innerHTML = "Team";
+  } else if (document.getElementById("playerVoipLevel").innerHTML == "Team") {
+    document.getElementById("playerVoipLevel").innerHTML = "Disabled";
+  } else {
+    document.getElementById("playerVoipLevel").innerHTML = "Squad";
+  }
+}
+function minusPlayerVoipLevel() {
+  if (document.getElementById("playerVoipLevel").innerHTML == "Squad") {
+    document.getElementById("playerVoipLevel").innerHTML = "Disabled";
+  } else if (
+    document.getElementById("playerVoipLevel").innerHTML == "Disabled"
+  ) {
+    document.getElementById("playerVoipLevel").innerHTML = "Team";
+  } else {
+    document.getElementById("playerVoipLevel").innerHTML = "Squad";
+  }
+}
 function applyGeneralClientSettings() {
   if (document.getElementById("scoreboardMethod").innerHTML == "Hold Tab") {
     WebUI.Call("DispatchEvent", "WebUI:HoldScoreboard");
@@ -2931,8 +2961,13 @@ function applyGeneralClientSettings() {
   );
   WebUI.Call(
     "DispatchEvent",
-    "SetDefaultVolume",
+    "VoipMod:SetDefaultVolume",
     document.getElementById("defaultVoipVolume").value
+  );
+  WebUI.Call(
+    "DispatchEvent",
+    "VoipMod:PlayerVoipLevel",
+    document.getElementById("playerVoipLevel").innerHTML
   );
   closeSmart();
 }

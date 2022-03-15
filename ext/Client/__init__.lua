@@ -19,6 +19,7 @@ local m_MinimapConfig = require('MinimapConfig')
 local m_Scoreboard = require('Scoreboard')
 require('Squad')
 require('ChatLagFix')
+require('VoipSettings')
 
 function BetterIngameAdmin:__init()
 	print("Initializing BetterIngameAdmin")

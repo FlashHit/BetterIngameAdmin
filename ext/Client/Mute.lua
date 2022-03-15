@@ -22,6 +22,7 @@ function Mute:OnWebUIMutePlayer(p_PlayerName)
 		return
 	end
 
+	Events:Dispatch("VoipMod:MutePlayer", p_PlayerName, true)
 	local s_PlayerAlreadyMuted = false
 
 	for _, l_MutedPlayer in pairs(self.m_MutedPlayers) do
@@ -36,6 +37,11 @@ function Mute:OnWebUIMutePlayer(p_PlayerName)
 		local s_Message = {}
 		s_Message[1] = "You muted " .. p_PlayerName .. " successfully!"
 		s_Message[2] = "Now you won't see any messages from " .. p_PlayerName .. " anymore."
+
+		if Voip then
+			s_Message[2]  = s_Message[2] .. " You also won't hear that player anymore in VoIP."
+		end
+
 		WebUI:ExecuteJS(string.format("showPopupResponse(%s)", json.encode(s_Message)))
 	else
 		local s_Message = {}
@@ -47,6 +53,16 @@ end
 
 function Mute:OnWebUIUnmutePlayer(p_PlayerName)
 	local s_Player = PlayerManager:GetPlayerByName(p_PlayerName)
+
+	if s_Player == nil then
+		local s_Message = {}
+		s_Message[1] = "Didn\'t find player: " .. p_PlayerName
+		s_Message[2] = "Please try again."
+		WebUI:ExecuteJS(string.format("showPopupResponse(%s)", json.encode(s_Message)))
+		return
+	end
+
+	Events:Dispatch("VoipMod:MutePlayer", p_PlayerName, false)
 	local s_PlayerAlreadyMuted = false
 
 	for i, l_MutedPlayer in pairs(self.m_MutedPlayers) do
@@ -61,6 +77,11 @@ function Mute:OnWebUIUnmutePlayer(p_PlayerName)
 		local s_Message = {}
 		s_Message[1] = "You unmuted " .. p_PlayerName .. "successfully!"
 		s_Message[2] = "Now you will see all messages from " .. p_PlayerName .. " again."
+
+		if Voip then
+			s_Message[2]  = s_Message[2] .. " If enabled you will hear that player in VoIP as well again."
+		end
+
 		WebUI:ExecuteJS(string.format("showPopupResponse(%s)", json.encode(s_Message)))
 	else
 		local s_Message = {}
