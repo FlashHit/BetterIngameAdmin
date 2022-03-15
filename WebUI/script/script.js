@@ -2775,6 +2775,7 @@ function showGeneralClientSettings() {
     "none";
   document.getElementById("fovClientSettings").style.display = "none";
 }
+
 function showMouseSensitivtyClientSettings() {
   WebUI.Call("DispatchEvent", "WebUI:GetMouseSensitivity");
   WebUI.Call("DispatchEvent", "WebUI:GetMouseSensitivityMultipliers");
@@ -2913,26 +2914,26 @@ function applyGeneralClientSettings() {
   channelsMuted = [];
   if (document.getElementById("adminChannel").innerHTML == "Off") {
     channelsMuted.push("4");
-  } else {
   }
   if (document.getElementById("allChannel").innerHTML == "Off") {
     channelsMuted.push("0");
-  } else {
   }
   if (document.getElementById("teamChannel").innerHTML == "Off") {
     channelsMuted.push("1");
-  } else {
   }
   if (document.getElementById("squadChannel").innerHTML == "Off") {
     channelsMuted.push("2");
-  } else {
   }
   WebUI.Call(
     "DispatchEvent",
     "WebUI:ChatChannels",
     JSON.stringify(channelsMuted)
   );
-
+  WebUI.Call(
+    "DispatchEvent",
+    "SetDefaultVolume",
+    document.getElementById("defaultVoipVolume").value
+  );
   closeSmart();
 }
 function resetGeneralClientSettings() {

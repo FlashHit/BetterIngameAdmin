@@ -247,6 +247,10 @@
 					<div class="generalClientSettingsElementLeft"><p>[Squad] Channel</p></div>
 					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="onOff('squadChannel')"></i><span id="squadChannel">On</span><i class="arrow left" onclick="onOff('squadChannel')"></i></p></div>
 				</div>
+				<div id="generalClientSettingsElement">
+					<div class="generalClientSettingsElementLeft"><p>Default Voip Volume</p></div>
+					<div class="generalClientSettingsElementRight"><p><i class="arrow right" onclick="plus('defaultVoipVolume', 100, 0.1)"></i><span><input onKeyUp="if(this.value >=100) this.value = 100; if(this.value <=0) this.value = 0;" id="defaultVoipVolume" type="number" step="0.1" min="0.01" max="100" value="5.0"></span><i class="arrow left" onclick="minus('defaultVoipVolume', 0.01, 0.1)"></i></p></div>
+				</div>
 				<div id="serverSetup" onclick="serverSetup()">Server Setup</div>
 				<div id="mapRotationSetup" onclick="mapRotationSetup()">Map Rotation</div>
 				<div class="buttons">
