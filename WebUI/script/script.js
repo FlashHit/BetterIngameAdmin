@@ -2603,7 +2603,7 @@ function closeSmart() {
 }
 function showTabsAndEnableMouse() {
   WebUI.Call("EnableMouse");
-  document.getElementById("headertabs").style.display = "inline";
+  document.getElementById("headertabs").style.display = "block";
   document.getElementById("overlay").style.backgroundColor =
     "rgba(11, 35, 51, 0.28)";
 }
