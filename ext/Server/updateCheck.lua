@@ -3,7 +3,7 @@
 
 
 -- Add current mod version
-local s_LocalModVersion = "0.2.2" --temp fix, waiting for API to get version from mod.json
+local s_LocalModVersion = "0.2.3" --temp fix, waiting for API to get version from mod.json
 
 -- Project URL
 local s_ProjectURL = "https://community.veniceunleashed.net/t/betteringameadmin-alpha/658"
